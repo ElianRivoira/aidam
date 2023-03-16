@@ -1,9 +1,11 @@
 import http from 'http';
+import dotenv from 'dotenv';
 
 import app from './app';
 import { mongoConnect } from './services/mongo';
 //añadir import de modelos
 
+dotenv.config();
 
 const PORT: number | string = process.env.PORT || 8000;
 
