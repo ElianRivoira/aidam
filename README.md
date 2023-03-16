@@ -1,2 +1,0 @@
-# aidam
-aidam app
