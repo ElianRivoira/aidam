@@ -19,10 +19,7 @@ app.use(
     origin: 'http://localhost:3000',
   })
 );
-app.use(morgan('combined'));
-
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use(
   cookieSession({
     name: 'session',
@@ -33,6 +30,9 @@ app.use(
     sameSite: 'strict', // Recommended setting to prevent CSRF attacks
   })
 );
+app.use(morgan('combined'));
+
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.use('/api', apiRouter);
 
