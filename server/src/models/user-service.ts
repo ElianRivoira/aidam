@@ -42,7 +42,7 @@ async function userLogin(user: LoginAttrs): Promise<LoginResponse | undefined> {
 
 const getLoggedUser = async (id: String) => {
   const user = await User.findById(id, { password: 0, __v: 0 });
-  if(user) throw new BadRequestError('El usuario no existe');
+  if(!user) throw new BadRequestError('El usuario no existe');
   return user;
 };
 
