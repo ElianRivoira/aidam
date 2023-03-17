@@ -1,6 +1,8 @@
 import { NextFunction } from 'connect';
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
+
+import userService from '../../models/user-service';
 import { BadRequestError } from '../../errors/bad-request-error';
 import { RequestValidationError } from '../../errors/request-validation-error';
 import userService from '../../models/user-service';
