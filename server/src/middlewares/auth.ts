@@ -6,7 +6,7 @@ export interface AuthenticatedRequest extends Request {
   user?: {
     id: string;
     username: string;
-    dni: string;
+    email: string;
     admin: boolean;
   };
 }
@@ -16,7 +16,7 @@ const validateLoggedUser = (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.header('token');
+  const token = req.session?.token;;
   if (!token) return res.sendStatus(401);
 
   try {
