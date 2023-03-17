@@ -5,8 +5,7 @@ import { validationResult } from 'express-validator';
 import userService from '../../models/user-service';
 import { BadRequestError } from '../../errors/bad-request-error';
 import { RequestValidationError } from '../../errors/request-validation-error';
-import userService from '../../models/user-service';
-import { AuthenticatedRequest } from '../../middlewares/auth';
+import { validateToken } from '../../utils/tokens';
 
 const httpSignUp = async (req: Request, res: Response) => {
   const { body } = req;
@@ -33,42 +32,37 @@ const httpSignUp = async (req: Request, res: Response) => {
 };
 
 async function httpUserLogin(req: Request, res: Response) {
-  const user = req.body;
+  const { email, password } = req.body;
+  const errors = validationResult(req);
 
-  if (!user.email) {
-    return res.status(401).json({
-      error: 'Required user property',
-    });
-  }
-  if (!user.password) {
-    return res.status(401).json({
-      error: 'Required password',
-    });
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
   }
 
-  const loggedUser = await userService.userLogin(user);
+  const response = await userService.userLogin({ email, password });
 
   if (req.session) {
-    req.session.token = loggedUser?.token;
+    req.session.token = response?.token;
   }
 
-  res.send(loggedUser);
+  res.send(response?.user);
 }
 
 const httpGetUser = async (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    if (req.user) {
-      const userId = req.user.id;
-      const user = await userService.getLoggedUser(userId);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw new RequestValidationError(errors.array());
+    }
+
+    if (req.session?.token) {
+      const { userCookie } = validateToken(req.session.token)
+      const user = await userService.getLoggedUser(userCookie._id);
       res.send(user);
     }
-  } catch (e) {
-    next(e);
-  }
 };
 
 export default { httpSignUp, httpUserLogin, httpGetUser };

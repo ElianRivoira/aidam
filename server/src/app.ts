@@ -16,19 +16,22 @@ app.use(
     origin: 'http://localhost:3000',
   })
 );
+app.use(express.json());
+app.use(
+  cookieSession({
+    name: 'session',
+    secret: process.env.TOKEN_PASSPHRASE, // Replace with your own secret key
+    maxAge: 24 * 60 * 60 * 1000, // Set the cookie to expire after 24 hours
+    secure: false, // Set to true if using HTTPS
+    httpOnly: true,
+    sameSite: 'strict', // Recommended setting to prevent CSRF attacks
+  })
+);
 app.use(morgan('combined'));
 
-app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.use('/api', apiRouter);
-
-app.use(
-  cookieSession({
-    signed: false,
-    secure: true,
-  })
-);
 
 app.all('*', async (req, res) => {
   throw new NotFoundError();
