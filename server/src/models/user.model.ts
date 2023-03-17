@@ -3,9 +3,13 @@ import { Password } from '../services/password';
 
 // An interface that describes the properties
 // that are requried to create a new User
-interface UserAttrs {
+export interface UserAttrs {
+  name: string;
   email: string;
   password: string;
+  license: string;
+  profession: string;
+  phone: number;
 }
 
 // An interface that describes the properties
@@ -16,19 +20,60 @@ interface UserModel extends mongoose.Model<UserDoc> {
 
 // An interface that describes the properties
 // that a User Document has
-interface UserDoc extends mongoose.Document {
+export interface UserDoc extends mongoose.Document {
+  name: string;
   email: string;
   password: string;
+  license: string;
+  profession: string;
+  phone: number;
+  admin: boolean;
+  observationsId: [];
+  patientsId: [];
+  history: [];
 }
 
 const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   password: {
     type: String,
     required: true,
+  },
+  license: {
+    type: String,
+    required: true,
+  },
+  profession: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: Number,
+    required: true,
+  },
+  admin: {
+    type: Boolean,
+    default: false,
+  },
+  observationsId: {
+    type: Array,
+    default: [],
+  },
+  patientsId: {
+    type: Array,
+    default: [],
+  },
+  history: {
+    type: Array,
+    default: [],
   },
 });
 
@@ -46,4 +91,4 @@ userSchema.statics.build = (attrs: UserAttrs) => {
 
 const User = mongoose.model<UserDoc, UserModel>('User', userSchema);
 
-export { User };
+export default User;
