@@ -1,11 +1,11 @@
 const express = require('express');
 import { Request, Response } from 'express';
 
+import patientRouter from './patients/patient.router';
 
 const api = express.Router();
 
-api.use('/', function test(req: Request, res: Response) {
-  res.json('hola');
-});
+
+api.use('/patients', patientRouter);
 
 export default api;
