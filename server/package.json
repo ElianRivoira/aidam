@@ -29,6 +29,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.13",
     "@types/morgan": "^1.9.4",
+    "@types/node": "^18.15.3",
     "ts-node-dev": "^2.0.0"
   }
 }

@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import app from './app';
 import { mongoConnect } from './services/mongo';
 //añadir import de modelos
+import User from './models/user.model';
 
 dotenv.config();
 
