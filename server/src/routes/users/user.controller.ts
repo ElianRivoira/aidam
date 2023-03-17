@@ -6,6 +6,7 @@ import userService from '../../models/user-service';
 import { BadRequestError } from '../../errors/bad-request-error';
 import { RequestValidationError } from '../../errors/request-validation-error';
 import { validateToken } from '../../utils/tokens';
+import { UserDoc } from '../../models/user.model';
 
 const httpSignUp = async (req: Request, res: Response) => {
   const { body } = req;
@@ -48,21 +49,17 @@ async function httpUserLogin(req: Request, res: Response) {
   res.send(response?.user);
 }
 
-const httpGetUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      throw new RequestValidationError(errors.array());
-    }
+const httpGetUser = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!req.session) {
+    throw new RequestValidationError(errors.array());
+  }
 
-    if (req.session?.token) {
-      const { userCookie } = validateToken(req.session.token)
-      const user = await userService.getLoggedUser(userCookie._id);
-      res.send(user);
-    }
+  if (req.session?.token) {
+    const { user } = validateToken(req.session.token);
+    const loggedUser = await userService.getLoggedUser(user.id);
+    res.send(loggedUser);
+  }
 };
 
 export default { httpSignUp, httpUserLogin, httpGetUser };
