@@ -1,4 +1,6 @@
-import { body, cookie } from 'express-validator';
+import { body, cookie, validationResult } from 'express-validator';
+import { Request, Response, NextFunction } from 'express';
+import { RequestValidationError } from '../errors/request-validation-error';
 
 const validateSignUp = [
   body('name').notEmpty().withMessage('El nombre es requerido'),
@@ -19,7 +21,19 @@ const validateLogin = [
 ];
 
 const validateLoggedUser = [
-  cookie('session').notEmpty().withMessage('No existe la cookie')
-]
+  cookie('session').custom((value, { req }) => {
+    if (!req.session.token) {
+    throw new Error('Debe estar logueado en la aplicación');
+    }
+    return true;
+  }),
+  (req: Request, res: Response, next: NextFunction) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw new RequestValidationError(errors.array());
+    }
+    next();
+  }
+];
 
 export { validateSignUp, validateLogin, validateLoggedUser };
