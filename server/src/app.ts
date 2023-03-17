@@ -8,6 +8,9 @@ import apiRouter from './routes/api';
 import { errorHandler } from './middlewares/error-handler';
 import { NotFoundError } from './errors/not-found-error';
 import cookieSession from 'cookie-session';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app: Express = express();
 
