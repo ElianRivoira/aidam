@@ -1,11 +1,9 @@
-const express = require('express');
-import { Request, Response } from 'express';
+import express from 'express';
+import userRouter from './users/user.router'
 
 
 const api = express.Router();
 
-api.use('/', function test(req: Request, res: Response) {
-  res.json('hola');
-});
+api.use('/users', userRouter);
 
 export default api;
