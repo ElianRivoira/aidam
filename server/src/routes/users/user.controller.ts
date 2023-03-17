@@ -5,7 +5,7 @@ import { validationResult } from 'express-validator';
 import userService from '../../models/user-service';
 import { BadRequestError } from '../../errors/bad-request-error';
 import { RequestValidationError } from '../../errors/request-validation-error';
-import userService from '../../models/user-service';
+
 import { AuthenticatedRequest } from '../../middlewares/auth';
 
 const httpSignUp = async (req: Request, res: Response) => {
@@ -52,7 +52,9 @@ async function httpUserLogin(req: Request, res: Response) {
     req.session.token = loggedUser?.token;
   }
 
-  res.send(loggedUser);
+  console.log(loggedUser?.user);
+
+  res.send(loggedUser?.user);
 }
 
 const httpGetUser = async (
