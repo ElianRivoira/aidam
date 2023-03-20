@@ -18,7 +18,7 @@ const httpSignUp = async (req: Request, res: Response) => {
 
   const userExists = await userService.exists(body.email);
   if (userExists)
-    throw new BadRequestError('Ya existe una cuenta con ese email');
+    throw new BadRequestError('Ya existe una cuenta con este email. Por favor intente nuevamente con un correo distinto');
 
   const user = await userService.signUp({
     name: body.name,
