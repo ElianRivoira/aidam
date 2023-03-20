@@ -16,6 +16,8 @@ module.exports = {
         error: '#E53939',
         errorHover: '#E54949',
         black02: 'rgba(0, 0, 0, 0.2)',
+        aidam: '#0C0992',
+        aidam80: 'rgba(12, 9, 146, 0.8)',
       },
       fontSize: {
         xm: ['13px', '16px'],
