@@ -2,10 +2,10 @@ import Head from 'next/head';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
-import aidamTexto from '../assets/icons/aidamTexto.svg';
-import Input from '../components/form/Input';
-import { postUser } from '../services/users';
-import Modal from '../components/Modal';
+import aidamTexto from '@/assets/icons/aidamTexto.svg';
+import Input from '@/components/form/Input';
+import { postUser } from '@/services/users';
+import Modal from '@/components/Modal';
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -60,7 +60,7 @@ const Signup = () => {
         <title>AIDAM - Registro</title>
       </Head>
       <div className='h-screen flex justify-center items-center'>
-        <div className='w-full mx-5 shadow-xg rounded-3xl p-3.5 pb-5 max-w-md flex flex-col items-center'>
+        <div className='w-full shadow-xg rounded-3xl p-3.5 pb-5 max-w-md flex flex-col items-center'>
           <Image src={aidamTexto} alt='aidam' className='mb-8' />
           <form
             className='w-full px-4 flex flex-col items-center'
