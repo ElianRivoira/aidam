@@ -1,3 +1,16 @@
+interface User {
+  _id: string;
+  name: string;
+  email: number;
+  password: string;
+  license: number;
+  phone?: string;
+  admin: false;
+  observationsId: [];
+  patientsId: [];
+  history: [];
+}
+
 interface PostUser {
   name: string;
   email: string;
@@ -7,19 +20,8 @@ interface PostUser {
   password: string;
 }
 
-interface User {
-  name: string;
-  email: string;
-  profession: string;
-  license: string;
-  phone: number;
-  admin: boolean;
-  _id: string;
-  // observationsId: [];
-  // patientsId: [];
-  // history: [];
-}
 
 interface Error {
   message: string;
 }
+
