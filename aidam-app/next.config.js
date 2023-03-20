@@ -1,12 +1,10 @@
 /** @type {import('next').NextConfig} */
 
-const prod = process.env.NODE_ENV
-
-const withPWA = require("next-pwa")({
+const withPWA = require('next-pwa')({
   dest: 'public',
   register: true,
   skipWaiting: true,
-  disable: prod ? false : true
+  disable: process.env.NODE_ENV === 'production' ? false : true,
 });
 
 module.exports = withPWA({
