@@ -4,6 +4,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        aidam: '#0C0992',
+        aidam80: 'rgba(12, 9, 146, 0.8)',
         grey1: '#F5F5F5',
         grey2: '#F0F0F0',
         grey3: '#E1E1E1',
