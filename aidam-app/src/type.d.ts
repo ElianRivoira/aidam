@@ -20,6 +20,6 @@ interface User {
   // history: [];
 }
 
-interface Error {
+interface CustomError {
   message: string;
 }
