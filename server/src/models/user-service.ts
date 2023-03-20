@@ -19,9 +19,10 @@ interface LoginAttrs {
 }
 
 async function userLogin(user: LoginAttrs): Promise<LoginResponse | undefined> {
-  const loggedUser = await User.findOne({ email: user.email });
+  const loggedUser = await User.findOne({ email: user.email }, { __v: 0 });
   if (loggedUser) {
     const match = await Password.compare(loggedUser.password, user.password);
+    loggedUser.password = '';
     if (match) {
       const tokenPayload = {
         id: loggedUser._id,
@@ -42,7 +43,7 @@ async function userLogin(user: LoginAttrs): Promise<LoginResponse | undefined> {
 
 const getLoggedUser = async (id: String) => {
   const user = await User.findById(id, { password: 0, __v: 0 });
-  if(!user) throw new BadRequestError('El usuario no existe');
+  if (!user) throw new BadRequestError('El usuario no existe');
   return user;
 };
 

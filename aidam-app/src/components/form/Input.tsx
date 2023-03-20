@@ -10,9 +10,18 @@ interface inputProps {
   value: string;
   isEqual?: boolean;
   validate?: boolean;
+  pattern?: string;
 }
 
-const Input: React.FC<inputProps> = ({ label, type, onChange, value, isEqual, validate }) => {
+const Input: React.FC<inputProps> = ({
+  label,
+  type,
+  onChange,
+  value,
+  isEqual,
+  validate,
+  pattern,
+}) => {
   const [visible, setVisible] = useState(false);
 
   return (
@@ -28,8 +37,15 @@ const Input: React.FC<inputProps> = ({ label, type, onChange, value, isEqual, va
             type={visible ? 'text' : 'password'}
             id='password'
             value={value}
-            className={`w-full h-10 rounded-md border ${validate ? isEqual ? 'border-exito' : 'border-error' : 'border-black02'} p-1.5 outline-none ${value ? '' : 'hover:border-aidam80'}`}
+            className={`w-full h-10 rounded-md border ${
+              validate
+                ? isEqual
+                  ? 'border-exito'
+                  : 'border-error'
+                : 'border-black02'
+            } p-1.5 outline-none ${value ? '' : 'hover:border-aidam80'}`}
             required
+            pattern={pattern}
           ></input>
           <div className='absolute inset-y-0 right-2 pl-3 flex items-center'>
             <button
@@ -48,6 +64,7 @@ const Input: React.FC<inputProps> = ({ label, type, onChange, value, isEqual, va
           onChange={onChange}
           value={value}
           required
+          pattern={pattern}
         />
       )}
     </div>
