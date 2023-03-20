@@ -7,7 +7,7 @@ interface inputProps {
   label: string;
   type: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  value: string;
+  value: string | number;
   isEqual?: boolean;
   validate?: boolean;
   pattern?: string;
@@ -35,7 +35,8 @@ const Input: React.FC<inputProps> = ({
           <input
             onChange={onChange}
             type={visible ? 'text' : 'password'}
-            id='password'
+            id={label}
+            name={label}
             value={value}
             className={`w-full h-10 rounded-md border ${
               validate
@@ -59,6 +60,8 @@ const Input: React.FC<inputProps> = ({
         </div>
       ) : (
         <input
+          id={label}
+          name={label}
           type={type}
           className='w-full h-10 rounded-md border border-black02 mb-2.5 p-1.5 outline-none focus:border-aidam hover:border-aidam80'
           onChange={onChange}
