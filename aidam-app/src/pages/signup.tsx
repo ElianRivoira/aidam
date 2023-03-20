@@ -19,7 +19,7 @@ const Signup = () => {
   const [validate, setValidate] = useState(false);
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(0);
-  const [errors, setErrors] = useState<Error[]>([]);
+  const [errors, setErrors] = useState<CustomError[]>([]);
 
   useEffect(() => {
     if (password && repeatPassword) {
@@ -31,16 +31,22 @@ const Signup = () => {
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     try {
-      const user = await postUser({
-        name,
-        email,
-        phone,
-        profession,
-        license,
-        password,
-      });
-      setType(1);
-      setOpen(true);
+      if (password === repeatPassword) {
+        const user = await postUser({
+          name,
+          email,
+          phone,
+          profession,
+          license,
+          password,
+        });
+        setType(1);
+        setOpen(true);
+      } else {
+        setErrors([{message: 'Las contraseñas deben coincidir. Por favor revise los campos "contraseña" y "repetir contraseña"'}]);
+        setType(2);
+        setOpen(true);
+      }
     } catch (e: any) {
       setErrors(e.response.data.errors);
       setType(2);
@@ -51,7 +57,7 @@ const Signup = () => {
   return (
     <>
       <Head>
-        <title>Registro</title>
+        <title>AIDAM - Registro</title>
       </Head>
       <div className='h-screen flex justify-center items-center'>
         <div className='w-full mx-5 shadow-xg rounded-3xl p-3.5 pb-5 max-w-md flex flex-col items-center'>
@@ -129,7 +135,8 @@ const Signup = () => {
             type={type}
             errors={errors}
           >
-            Su cuenta se ha creado satisfactoriamente
+            <h1>Su cuenta se ha creado satisfactoriamente</h1>
+            <p className='text-sm font-normal mt-1'>Ya puede iniciar sesión en la aplicación</p>
           </Modal>
         </div>
       </div>

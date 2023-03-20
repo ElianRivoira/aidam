@@ -8,7 +8,7 @@ interface ModalProps {
   open: boolean;
   onClose: () => void;
   children?: React.ReactNode;
-  errors?: Error[];
+  errors?: CustomError[];
   type: number;
 }
 

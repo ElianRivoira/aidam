@@ -21,7 +21,7 @@ interface PostUser {
 }
 
 
-interface Error {
+interface CustomError {
   message: string;
 }
 
