@@ -20,6 +20,7 @@ module.exports = {
         black02: 'rgba(0, 0, 0, 0.2)',
         aidam: '#0C0992',
         aidam80: 'rgba(12, 9, 146, 0.8)',
+        aidam70: 'rgba(12, 9, 146, 0.7)',
       },
       fontSize: {
         xm: ['13px', '16px'],
@@ -34,6 +35,7 @@ module.exports = {
       },
       boxShadow: {
         xg: '0 0 24px rgba(0, 0, 0, 0.2)',
+        active: 'inset 0px 0px 8px rgba(0, 0, 0, 0.24)',
       },
     },
   },
