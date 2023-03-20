@@ -1,7 +1,8 @@
 import Head from 'next/head';
 import React from 'react';
 import Image from 'next/image';
-import aidam from '../assets/icons/aidam.svg';
+
+import aidamTexto from '../assets/icons/aidamTexto.svg';
 import Input from '@/components/form/Input';
 
 const Login = () => {
@@ -13,7 +14,7 @@ const Login = () => {
       <div className='flex h-screen justify-center items-center'>
         <div className='flex w-full flex-col items-center mx-5 shadow-xg rounded-3xl'>
           <div>
-            <Image src={aidam} alt='aidam' className='mb-6 mt-5' />
+            <Image src={aidamTexto} alt='aidam' className='mb-6 mt-5' />
           </div>
           <div className='mx-7 mb-3'>
             <Input label='Correo electronico' type='email'></Input>
