@@ -8,9 +8,11 @@ interface inputProps {
   type: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   value: string;
+  isEqual?: boolean;
+  validate?: boolean;
 }
 
-const Input: React.FC<inputProps> = ({ label, type, onChange, value }) => {
+const Input: React.FC<inputProps> = ({ label, type, onChange, value, isEqual, validate }) => {
   const [visible, setVisible] = useState(false);
 
   return (
@@ -24,9 +26,9 @@ const Input: React.FC<inputProps> = ({ label, type, onChange, value }) => {
           <input
             onChange={onChange}
             type={visible ? 'text' : 'password'}
-            id='passwordTwo'
+            id='password'
             value={value}
-            className='w-full h-10 rounded-md border border-black02 p-1.5'
+            className={`w-full h-10 rounded-md border ${validate ? isEqual ? 'border-exito' : 'border-error' : 'border-black02'} p-1.5 outline-none ${value ? '' : 'hover:border-aidam80'}`}
             required
           ></input>
           <div className='absolute inset-y-0 right-2 pl-3 flex items-center'>
@@ -42,9 +44,10 @@ const Input: React.FC<inputProps> = ({ label, type, onChange, value }) => {
       ) : (
         <input
           type={type}
-          className='w-full h-10 rounded-md border border-black02 mb-2.5 p-1.5'
+          className='w-full h-10 rounded-md border border-black02 mb-2.5 p-1.5 outline-none focus:border-aidam hover:border-aidam80'
           onChange={onChange}
           value={value}
+          required
         />
       )}
     </div>
