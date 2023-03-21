@@ -1,4 +1,4 @@
-/* import { getLoggedUser } from '@/services/users';
+import { getLoggedUser } from '@/services/users';
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 
 export const fetchUser = createAsyncThunk('LOGGED_USER', async thunkApi => {
@@ -30,4 +30,3 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
- */
