@@ -6,6 +6,7 @@ import aidamTexto from '@/assets/icons/aidamTexto.svg';
 import Input from '@/components/form/Input';
 import { postUser } from '@/services/users';
 import Modal from '@/components/Modal';
+import Navbar from '@/components/navbar/Navbar';
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -43,7 +44,12 @@ const Signup = () => {
         setType(1);
         setOpen(true);
       } else {
-        setErrors([{message: 'Las contraseñas deben coincidir. Por favor revise los campos "contraseña" y "repetir contraseña"'}]);
+        setErrors([
+          {
+            message:
+              'Las contraseñas deben coincidir. Por favor revise los campos "contraseña" y "repetir contraseña"',
+          },
+        ]);
         setType(2);
         setOpen(true);
       }
@@ -59,7 +65,8 @@ const Signup = () => {
       <Head>
         <title>AIDAM - Registro</title>
       </Head>
-      <div className='h-screen flex justify-center items-center'>
+      <div className='h-screen flex flex-col justify-center items-center'>
+        <Navbar />
         <div className='w-full shadow-xg rounded-3xl p-3.5 pb-5 max-w-md flex flex-col items-center'>
           <Image src={aidamTexto} alt='aidam' className='mb-8' />
           <form
@@ -136,7 +143,9 @@ const Signup = () => {
             errors={errors}
           >
             <h1>Su cuenta se ha creado satisfactoriamente</h1>
-            <p className='text-sm font-normal mt-1'>Ya puede iniciar sesión en la aplicación</p>
+            <p className='text-sm font-normal mt-1'>
+              Ya puede iniciar sesión en la aplicación
+            </p>
           </Modal>
         </div>
       </div>
