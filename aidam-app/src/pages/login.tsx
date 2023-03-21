@@ -17,13 +17,13 @@ const Login = () => {
     e.preventDefault();
     const user = await login(email, password);
     setUser(user);
-    router.push('patients');
+    // router.push('patients');
   };
 
   return (
     <>
       <Head>
-        <title>Login</title>
+        <title>AIDAM - Iniciar Sesión</title>
       </Head>
       <div className='flex h-screen justify-center items-center'>
         <div className='w-full shadow-xg rounded-3xl p-3.5 pb-5 max-w-md flex flex-col items-center'>

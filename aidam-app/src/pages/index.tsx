@@ -1,25 +1,41 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { getCookies, hasCookie } from 'cookies-next'
+import React, { useEffect } from 'react';
+import { hasCookie } from 'cookies-next';
+import { useRouter } from 'next/router';
+import { useQuery } from '@tanstack/react-query';
 
-import { AppDispatch, RootState } from '@/store';
-import { fetchUser } from '@/store/slices/userSlice';
+import { getLoggedUser } from '@/services/users';
 
 const index = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { user } = useSelector((state: RootState) => state.user);
+  const router = useRouter();
+
+  const {
+    isLoading,
+    data: user,
+    isError,
+    error,
+    isSuccess,
+  } = useQuery({
+    queryKey: ['user'],
+    enabled: hasCookie('session'),
+    queryFn: getLoggedUser,
+  });
 
   useEffect(() => {
-    console.log(getCookies())
-  
-    return () => {
-      
+    if (!hasCookie('session')) {
+      router.push('/login');
     }
-  }, [])
-  
-  return (
-    <div>index</div>
-  )
-}
+  }, []);
 
-export default index
+  if (isLoading) return <h1>Loading...</h1>;
+  if (isError) {
+    return <h1>{(error as any)?.response.data.errors[0].message}</h1>;
+  }
+  if (isSuccess) {
+    if (user?.admin) router.push('/admin');
+    else router.push('/patients');
+  }
+
+  return <></>;
+};
+
+export default index;
