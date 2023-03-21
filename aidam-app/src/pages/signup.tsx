@@ -6,7 +6,6 @@ import aidamTexto from '@/assets/icons/aidamTexto.svg';
 import Input from '@/components/form/Input';
 import { postUser } from '@/services/users';
 import Modal from '@/components/Modal';
-import Navbar from '@/components/navbar/Navbar';
 
 const Signup = () => {
   const [name, setName] = useState('');
