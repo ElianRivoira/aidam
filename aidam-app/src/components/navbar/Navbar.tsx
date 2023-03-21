@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 import hamburMenu from '@/assets/icons/hamburMenu.svg';
 import aidamLogo from '@/assets/icons/aidamLogo.svg';
-import HamburMenu from './HamburMenu';
+import Menu from './Menu';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +14,7 @@ const Navbar = () => {
         <Image src={hamburMenu} alt='menu' />
       </button>
       <Image src={aidamLogo} alt='logo' />
-      <HamburMenu isOpen={isOpen} setIsOpen={setIsOpen} />
+      <Menu isOpen={isOpen} setIsOpen={setIsOpen} />
     </nav>
   );
 };
