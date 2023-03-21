@@ -17,6 +17,7 @@ const app: Express = express();
 app.use(
   cors({
     origin: 'http://localhost:3000',
+    credentials: true,
   })
 );
 app.use(express.json());
@@ -27,7 +28,6 @@ app.use(
     maxAge: 24 * 60 * 60 * 1000, // Set the cookie to expire after 24 hours
     secure: false, // Set to true if using HTTPS
     httpOnly: true,
-    sameSite: 'strict', // Recommended setting to prevent CSRF attacks
   })
 );
 app.use(morgan('combined'));
