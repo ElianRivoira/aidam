@@ -20,6 +20,10 @@ interface PostUser {
   password: string;
 }
 
+interface UserState {
+  user: User | null;
+  loading: boolean;
+}
 
 interface CustomError {
   message: string;

@@ -1,5 +1,10 @@
 import { api } from './axiosInstance';
 
+export const postUser = async (data: PostUser): Promise<User>  => {
+  const res = await api.post('/users', data);
+  return res.data;
+}
+
 export async function login(email: string, password: string): Promise<User> {
   const res = await api.post('/users/login', {
     email,
@@ -8,7 +13,7 @@ export async function login(email: string, password: string): Promise<User> {
   return res.data;
 }
 
-export const postUser = async (data: PostUser): Promise<User> => {
-  const user = await api.post('/users', data);
-  return user.data;
-};
+export async function getLoggedUser(): Promise<User> {
+  const res = await api.get('/users/me');
+  return res.data;
+}
