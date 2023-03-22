@@ -23,6 +23,7 @@ const httpPostPatient = async (
     const patient = await patientService.postPatient({
       name: req.body.name,
       diagnosis: req.body.diagnosis,
+      authorizedModule: req.body.authorizedModule,
       socialwork: req.body.socialwork,
       affiliateNumber: req.body.affiliateNumber,
       dni: req.body.dni,

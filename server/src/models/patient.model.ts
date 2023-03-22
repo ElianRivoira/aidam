@@ -3,9 +3,9 @@ import mongoose from 'mongoose';
 export interface PatientAttrs {
   name: string;
   diagnosis: string;
+  authorizedModule: string;
   socialwork: string;
   affiliateNumber: string;
-  authorizedModule: string;
   dni: number;
   birth: Date;
   email: string;
