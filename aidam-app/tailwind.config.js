@@ -25,7 +25,8 @@ module.exports = {
         redLogout: '#B81212',
       },
       fontSize: {
-        xm: ['13px', '16px'],
+        sl: ['7px', '10px'],
+        xm: ['11px', '14px'],
         ss: ['14px', '16px'],
         ls: ['15px', '20px'],
         lm: ['15px', '18px'],
@@ -34,6 +35,7 @@ module.exports = {
         lx: ['19px', '24px'],
         xb: ['20px', '24px'],
         xg: ['20px', '20px'],
+        xl1: ['24px', '20px'],
         '4.5xl': ['40px', '47px'],
       },
       boxShadow: {
@@ -43,6 +45,9 @@ module.exports = {
       },
       height: {
         17.5: '70px',
+      },
+      margin: {
+        5.5: '22px',
       },
     },
   },

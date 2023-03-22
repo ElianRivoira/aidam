@@ -4,7 +4,7 @@ import React from 'react';
 import aidamTexto from '@/assets/icons/aidamTexto.svg';
 import x from '@/assets/icons/x.svg';
 import MenuOption from './MenuOption';
-import perfilLogo from '@/assets/icons/perfilLogo.svg';
+import profileLogo from '@/assets/icons/profileLogo.svg';
 import pacientesLogo from '@/assets/icons/pacientesLogo.svg';
 import logout from '@/assets/icons/logout.svg';
 
@@ -41,7 +41,7 @@ const Menu: React.FC<MenuProps> = ({ isOpen, setIsOpen, handleLogout }) => {
           </div>
           <hr className='w-full border-black03' />
           <ul className='flex flex-col'>
-            <MenuOption href='' logo={perfilLogo}>
+            <MenuOption href='' logo={profileLogo}>
               Mi Perfil
             </MenuOption>
             <MenuOption href='' logo={pacientesLogo}>
