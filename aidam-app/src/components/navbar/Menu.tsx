@@ -7,6 +7,9 @@ import MenuOption from './MenuOption';
 import profileLogo from '@/assets/icons/profileLogo.svg';
 import pacientesLogo from '@/assets/icons/pacientesLogo.svg';
 import logout from '@/assets/icons/logout.svg';
+import { useQuery } from '@tanstack/react-query';
+import { getLoggedUser } from '@/services/users';
+import { hasCookie } from 'cookies-next';
 
 interface MenuProps {
   isOpen: boolean;
@@ -15,6 +18,17 @@ interface MenuProps {
 }
 
 const Menu: React.FC<MenuProps> = ({ isOpen, setIsOpen, handleLogout }) => {
+  const {
+    isLoading,
+    data: user,
+    isError,
+    error,
+    isSuccess,
+  } = useQuery({
+    queryKey: ['user'],
+    enabled: hasCookie('session'),
+    queryFn: getLoggedUser,
+  });
 
   return (
     <>
@@ -31,7 +45,7 @@ const Menu: React.FC<MenuProps> = ({ isOpen, setIsOpen, handleLogout }) => {
       >
         <div>
           <div className='flex justify-between items-center mb-5'>
-            <Image src={aidamTexto} alt='aidam' className='h-10 w-32' />
+            <Image src={aidamTexto} alt='aidam' width={128} height={40} quality={100} />
             <Image
               src={x}
               alt='aidam'
@@ -41,10 +55,10 @@ const Menu: React.FC<MenuProps> = ({ isOpen, setIsOpen, handleLogout }) => {
           </div>
           <hr className='w-full border-black03' />
           <ul className='flex flex-col'>
-            <MenuOption href='' logo={profileLogo}>
+            <MenuOption href={`/profile/${user?._id}`} logo={profileLogo}>
               Mi Perfil
             </MenuOption>
-            <MenuOption href='' logo={pacientesLogo}>
+            <MenuOption href='/patients' logo={pacientesLogo}>
               Mis Pacientes
             </MenuOption>
           </ul>
