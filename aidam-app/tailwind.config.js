@@ -22,6 +22,7 @@ module.exports = {
         aidam: '#0C0992',
         aidam80: 'rgba(12, 9, 146, 0.8)',
         aidam70: 'rgba(12, 9, 146, 0.7)',
+        therapists: '#0B7EBE',
         redLogout: '#B81212',
       },
       fontSize: {
@@ -37,6 +38,7 @@ module.exports = {
         '4.5xl': ['40px', '47px'],
       },
       boxShadow: {
+        card: '0px 4px 5px rgba(0, 0, 0, 0.25)',
         xg: '0 0 24px rgba(0, 0, 0, 0.2)',
         xm: '0px 4px 4px rgba(0, 0, 0, 0.25)',
         active: 'inset 0px 0px 8px rgba(0, 0, 0, 0.24)',
