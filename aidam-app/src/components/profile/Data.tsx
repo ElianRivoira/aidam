@@ -9,7 +9,7 @@ interface DataProps {
 
 const Data: React.FC<DataProps> = ({icon, title, info}) => {
   return (
-    <div className='flex mb-8'>
+    <div className='flex mb-6'>
       <div className='flex flex-col items-start mr-1.5'>
         <Image src={icon} alt='icon' />
       </div>
