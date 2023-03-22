@@ -4,7 +4,7 @@ import React from 'react'
 interface DataProps {
   icon: any;
   title: string;
-  info: string;
+  info: string | number | undefined;
 }
 
 const Data: React.FC<DataProps> = ({icon, title, info}) => {

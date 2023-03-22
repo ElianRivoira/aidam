@@ -6,8 +6,8 @@ const patients = () => {
   return (
     <>
       <Navbar />
-      <div className='m-2'>
-        <PatientCard></PatientCard>
+      <div className='m-3.5 flex flex-col items-center'>
+        <PatientCard />
       </div>
     </>
   );
