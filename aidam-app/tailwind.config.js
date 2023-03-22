@@ -22,6 +22,7 @@ module.exports = {
         aidam: '#0C0992',
         aidam80: 'rgba(12, 9, 146, 0.8)',
         aidam70: 'rgba(12, 9, 146, 0.7)',
+        aidamNav: 'rgba(31, 27, 183, 0.64)',
         therapists: '#0B7EBE',
         redLogout: '#B81212',
       },
@@ -29,7 +30,7 @@ module.exports = {
         sl: ['7px', '10px'],
         xm: ['11px', '14px'],
         ss: ['14px', '16px'],
-        ls: ['15px', '20px'],
+        ls: ['10px', '20px'],
         lm: ['15px', '18px'],
         lb: ['16px', '20px'],
         ln: ['18px', '24px'],
@@ -46,6 +47,7 @@ module.exports = {
         active: 'inset 0px 0px 8px rgba(0, 0, 0, 0.24)',
       },
       height: {
+        7.5: '30px',
         17.5: '70px',
       },
       margin: {
