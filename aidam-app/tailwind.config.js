@@ -23,6 +23,7 @@ module.exports = {
         aidam80: 'rgba(12, 9, 146, 0.8)',
         aidam70: 'rgba(12, 9, 146, 0.7)',
         therapists: '#0B7EBE',
+        redLogout: '#B81212',
       },
       fontSize: {
         xm: ['13px', '16px'],
