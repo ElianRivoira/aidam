@@ -6,7 +6,7 @@ import rightArrow from '@/assets/icons/rightArrow.svg';
 
 interface MenuProps {
   children?: React.ReactNode;
-  href: string;
+  href?: string;
   logo?: any;
 }
 
@@ -14,7 +14,7 @@ const MenuOption: React.FC<MenuProps> = ({ children, href, logo }) => {
   return (
     <li className='block'>
       <Link
-        href={href}
+        href={href ? href : ''}
         className={`flex h-16 items-center text-xg text-black hover:bg-aidam70 rounded`}
       >
         <div className='filter hover:invert flex justify-between w-full h-full'>
