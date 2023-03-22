@@ -6,7 +6,11 @@ const getAllPatients = async (): Promise<PatientDoc[]> => {
 };
 
 const postPatient = async (data: PatientAttrs): Promise<PatientDoc> => {
-  const patient = Patient.build(data);
+  const birthDate = new Date(data.birth);
+  const patient = Patient.build({
+    ...data,
+    birth: birthDate,
+  });
   await patient.save();
   return patient;
 };
