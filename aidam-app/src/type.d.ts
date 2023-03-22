@@ -4,6 +4,7 @@ interface User {
   email: number;
   password: string;
   license: number;
+  profession: string;
   phone?: string;
   admin: false;
   observationsId: [];
