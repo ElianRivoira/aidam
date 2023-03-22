@@ -17,7 +17,7 @@ const Login = () => {
     e.preventDefault();
     const user = await login(email, password);
     setUser(user);
-    // router.push('patients');
+    router.push('/patients');
   };
 
   return (
@@ -26,7 +26,7 @@ const Login = () => {
         <title>AIDAM - Iniciar Sesión</title>
       </Head>
       <div className='flex h-screen justify-center items-center'>
-        <div className='w-full shadow-xg rounded-3xl p-3.5 pb-5 max-w-md flex flex-col items-center'>
+        <div className='w-full shadow-xg mx-5 rounded-3xl p-3.5 pb-5 max-w-md flex flex-col items-center'>
           <form
             onSubmit={handleSubmit}
             className='flex w-full px-4 flex-col items-center'
