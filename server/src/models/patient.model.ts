@@ -5,6 +5,7 @@ export interface PatientAttrs {
   diagnosis: string;
   socialwork: string;
   affiliateNumber: string;
+  authorizedModule: string;
   dni: number;
   birth: Date;
   email: string;
@@ -20,6 +21,7 @@ export interface PatientDoc extends mongoose.Document {
   diagnosis: string;
   socialwork: string;
   affiliateNumber: string;
+  authorizedModule: string;
   dni: number;
   birth: Date;
   email: string;
@@ -43,6 +45,10 @@ const patientSchema = new mongoose.Schema({
     required: true,
   },
   affiliateNumber: {
+    type: String,
+    required: true,
+  },
+  authorizedModule: {
     type: String,
     required: true,
   },
