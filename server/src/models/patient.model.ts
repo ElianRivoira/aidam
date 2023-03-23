@@ -1,4 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import { UserDoc } from './user.model';
+import { ObservationDoc } from './observations.model';
 
 export interface PatientAttrs {
   name: string;
@@ -27,8 +29,8 @@ export interface PatientDoc extends mongoose.Document {
   email: string;
   phone: number;
   horariosId: Array<string>;
-  observacionesId: Array<string>;
-  professionalsId: Array<string>;
+  observationsId: Array<ObservationDoc['_id']>;
+  professionalsId: Array<UserDoc['_id']>;
 }
 
 const patientSchema = new mongoose.Schema({
@@ -71,12 +73,8 @@ const patientSchema = new mongoose.Schema({
   schedulesId: {
     type: Array,
   },
-  observationsId: {
-    type: Array,
-  },
-  professionalsId: {
-    type: Array,
-  },
+  observationsId: [{ type: Schema.Types.ObjectId, ref: 'Observation' }],
+  professionalsId: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 });
 
 patientSchema.statics.build = (attrs: PatientAttrs) => {
