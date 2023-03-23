@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 
-const Navbar = () => {
+const NavbarPatient = () => {
   const router = useRouter();
 
   return (
@@ -22,4 +22,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavbarPatient;
