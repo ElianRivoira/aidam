@@ -30,3 +30,33 @@ interface CustomError {
   message: string;
 }
 
+interface PostObservation {
+  title: string;
+  observation: string;
+  date: Date;
+  professional: string;
+}
+
+interface Observation {
+  _id: string;
+  title: string;
+  observation: string;
+  date: Date;
+  professional: string | User;
+}
+
+interface Patient {
+  _id: string;
+  name: string;
+  diagnosis: string;
+  socialwork: string;
+  affiliateNumber: string;
+  authorizedModule: string;
+  dni: number;
+  birth: Date;
+  email: string;
+  phone: number;
+  schedulesId: [];
+  observationsId: Observation[];
+  professionalsId: []
+}
