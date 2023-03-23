@@ -38,6 +38,7 @@ module.exports = {
         xb: ['20px', '24px'],
         xg: ['20px', '20px'],
         xl1: ['24px', '20px'],
+        xl2: ['24px', '30px'],
         '4.5xl': ['40px', '47px'],
       },
       boxShadow: {
