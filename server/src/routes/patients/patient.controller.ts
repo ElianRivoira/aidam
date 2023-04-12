@@ -1,7 +1,22 @@
 import { Request, Response, NextFunction } from 'express';
 import patientService from '../../models/patient-service';
 
-const httpAllPatients = async (
+const httpGetAllPatientsFromTherapist = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const patients = await patientService.getAllPatientsFromTherapist(
+      req.params.id
+    );
+    res.status(200).send(patients);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const httpGetAllPatients = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -65,17 +80,22 @@ const httpEditPatient = async (
       birth,
       email,
       phone,
+      therapistId,
     } = req.body;
-    const editedPatient = await patientService.putPatient(req.params.id, {
-      name,
-      diagnosis,
-      socialwork,
-      affiliateNumber,
-      dni,
-      birth,
-      email,
-      phone,
-    });
+    const editedPatient = await patientService.putPatient(
+      req.params.id,
+      {
+        name,
+        diagnosis,
+        socialwork,
+        affiliateNumber,
+        dni,
+        birth,
+        email,
+        phone,
+      },
+      therapistId
+    );
     res.send(editedPatient);
   } catch (e) {
     next(e);
@@ -96,7 +116,8 @@ const httpDeletePatient = async (
 };
 
 export {
-  httpAllPatients,
+  httpGetAllPatientsFromTherapist,
+  httpGetAllPatients,
   httpPostPatient,
   httpGetOnePatient,
   httpEditPatient,

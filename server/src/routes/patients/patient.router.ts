@@ -3,7 +3,12 @@ const patientController = require('./patient.controller');
 
 const patientRouter = express.Router();
 
-patientRouter.get('/', patientController.httpAllPatients);
+patientRouter.get('/', patientController.httpGetAllPatients);
+
+patientRouter.get(
+  '/from/:id',
+  patientController.httpGetAllPatientsFromTherapist
+);
 
 patientRouter.post('/', patientController.httpPostPatient);
 
