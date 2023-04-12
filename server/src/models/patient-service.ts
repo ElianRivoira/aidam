@@ -5,6 +5,18 @@ const getAllPatients = async (): Promise<PatientDoc[]> => {
   return patients;
 };
 
+const getAllPatientsFromTherapist = async (
+  professionalId: string
+): Promise<PatientDoc[]> => {
+  try {
+    const patients = await Patient.find({ professionalsId: professionalId });
+    return patients;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 const postPatient = async (data: PatientAttrs): Promise<PatientDoc> => {
   const birthDate = new Date(data.birth);
   const patient = Patient.build({
@@ -28,11 +40,19 @@ const getOnePatient = async (id: string): Promise<PatientDoc | null> => {
 
 const putPatient = async (
   id: string,
-  data: object
+  data: object,
+  therapistId?: string
 ): Promise<PatientDoc | null> => {
-  const patient = await Patient.findByIdAndUpdate(id, data, {
-    new: true,
-  });
+  const patient = await Patient.findByIdAndUpdate(
+    id,
+    {
+      ...data,
+      $addToSet: { professionalsId: therapistId },
+    },
+    {
+      new: true,
+    }
+  );
   return patient;
 };
 
@@ -41,6 +61,7 @@ const deletePatient = async (id: string): Promise<void> => {
 };
 
 export default {
+  getAllPatientsFromTherapist,
   getAllPatients,
   postPatient,
   getOnePatient,
