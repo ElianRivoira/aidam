@@ -26,7 +26,7 @@ const Modal: React.FC<ModalProps> = ({
       <div className='text-center fixed top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 bg-white p-8 z-50 rounded-md font-semibold text-ln flex flex-col items-center'>
         {type === 1 ? (
           <>
-            <Image src={rightCheckbox} alt='error' className='w-12 h-12 mb-7' />
+            <Image src={rightCheckbox} alt='success' className='w-12 h-12 mb-7' />
             {children}
           </>
         ) : type === 2 ? (
@@ -42,6 +42,11 @@ const Modal: React.FC<ModalProps> = ({
                 </li>
               ))}
             </ul>
+          </>
+        ) : type === 3 ? (
+          <>
+            <Image src={rightCheckbox} alt='success' className='w-12 h-12 mb-7' />
+            <h1>Observación eliminada correctamente</h1>
           </>
         ) : null}
         <button
