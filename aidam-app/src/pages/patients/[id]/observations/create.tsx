@@ -2,13 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { hasCookie } from 'cookies-next';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import Navbar from '@/components/navbar/Navbar';
 import NavbarPatient from '@/components/profile/patient/NavbarPatient';
 import { postObservation } from '@/services/observations';
-import { getLoggedUser } from '@/services/users';
 import Modal from '@/components/Modal';
 import arrowLeft from '@/assets/icons/arrowLeft.svg';
 import { NextPageContext } from 'next';
@@ -36,12 +34,6 @@ const Create = ({ query }: MyPageProps) => {
     }
   });
 
-  const user = useQuery({
-    queryKey: ['user'],
-    enabled: hasCookie('session'),
-    queryFn: getLoggedUser,
-  });
-
   useEffect(() => {
     const todayDate = new Date();
     setDate(todayDate.toJSON().split('T')[0]);
@@ -49,12 +41,11 @@ const Create = ({ query }: MyPageProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (titleRef.current && obsRef.current && user.isSuccess) {
+    if (titleRef.current && obsRef.current) {
       postObs.mutate({
         title: titleRef.current.value,
         date: new Date(date),
         observation: obsRef.current.value,
-        professional: user.data._id,
         patientId: query.id
       });
     }

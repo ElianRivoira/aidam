@@ -60,9 +60,6 @@ const ObservationId = ({ query }: MyPageProps) => {
     onSuccess: newobs => {
       setType(3);
       setOpen(true);
-      router.push({
-        pathname: `/patients/${patient.data?._id}/observations`,
-      });
     },
     onError: (err: any) => {
       setType(2);
@@ -85,6 +82,14 @@ const ObservationId = ({ query }: MyPageProps) => {
     }
   }, [observation.data]);
 
+  useEffect(() => {
+    if (type === 3 && open === false) {
+      router.push({
+        pathname: `/patients/${patient.data?._id}/observations`,
+      });
+    }
+  }, [open])
+
   const handleEdit = () => {
     setReadonly(true);
 
@@ -95,7 +100,7 @@ const ObservationId = ({ query }: MyPageProps) => {
   };
 
   const handleDelete = () => {
-    deleteObs.mutate(query.obsId);
+    deleteObs.mutate({patientId:query.id, obsId:query.obsId});
   };
 
   return (

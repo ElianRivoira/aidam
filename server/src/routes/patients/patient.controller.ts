@@ -58,7 +58,7 @@ const httpGetOnePatient = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const patient = await patientService.getOnePatient(req.params.id);
+    const patient = await patientService.getOnePatient(req.params.id, true);
     res.status(200).send(patient);
   } catch (e) {
     next(e);

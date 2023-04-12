@@ -8,6 +8,7 @@ export interface ObservationAttrs {
   observation: string;
   date: Date;
   professional: string;
+  patient: string;
 }
 
 // An interface that describes the properties
@@ -41,6 +42,11 @@ const ObservationSchema = new mongoose.Schema({
   professional: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    required: true,
+  },
+  patient: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Patient',
     required: true,
   },
 });

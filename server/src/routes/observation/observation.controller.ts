@@ -4,54 +4,109 @@ import { validationResult } from 'express-validator';
 import observationService from '../../models/observations-service';
 import patientService from '../../models/patient-service';
 import { RequestValidationError } from '../../errors/request-validation-error';
+import userService from '../../models/user-service';
+import { validateToken } from '../../utils/tokens';
 
 const httpPostObservation = async (req: Request, res: Response) => {
-  const { body } = req;
+  const { title, observation, date, patientId } = req.body;
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     throw new RequestValidationError(errors.array());
   }
+  if (req.session?.token) {
+    const { user } = validateToken(req.session.token);
+    const loggedUser = await userService.getLoggedUser(user.id);
 
-  const obs = await observationService.postObservation({
-    title: body.title,
-    observation: body.observation,
-    date: body.date,
-    professional: body.professional,
-  });
+    const obs = await observationService.postObservation({
+      title: title,
+      observation: observation,
+      date: date,
+      professional: loggedUser._id,
+      patient: patientId,
+    });
 
-  const patient = await patientService.getOnePatient(body.patientId);
-  if (patient) {
-    patient.observationsId.push(obs._id);
-    patient.save();
+    const patient = await patientService.getOnePatient(patientId);
+    if (patient) {
+      patient.observationsId.push(obs._id);
+      patient.save();
+    }
+
+    if (loggedUser) {
+      loggedUser.observationsId.push(obs._id);
+      loggedUser.save();
+    }
+
+    res.status(201).send(obs);
   }
-
-  res.status(201).send(obs);
 };
 
 const httpGetObservation = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+
   const obsId = req.params.id;
 
   const observation = await observationService.getObservation(obsId);
 
   res.send(observation);
-}
+};
 
 const httpPutObservation = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+
   const obsId = req.params.id;
   const { text } = req.body;
 
   const observation = await observationService.putObservation(obsId, text);
 
   res.send(observation);
-}
+};
 
 const httpDeleteObservation = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+
   const obsId = req.params.id;
+  const patientId = req.params.patientId;
 
   const observation = await observationService.deleteObservation(obsId);
 
-  res.send(observation);
-}
+  const patient = await patientService.getOnePatient(patientId);
+  if (patient) {
+    const observationToDelete = obsId;
+    const index = patient.observationsId.indexOf(observationToDelete);
+    if (index > -1) {
+      patient.observationsId.splice(index, 1);
+      patient.save();
+    }
+  }
+  if (req.session?.token) {
+    const { user } = validateToken(req.session.token);
+    const loggedUser = await userService.getLoggedUser(user.id);
+    if (loggedUser) {
+      const observationToDelete = obsId;
+      const index = loggedUser.observationsId.indexOf(observationToDelete);
+      if (index > -1) {
+        loggedUser.observationsId.splice(index, 1);
+        loggedUser.save();
+      }
+    }
+  }
 
-export default { httpPostObservation, httpGetObservation, httpPutObservation, httpDeleteObservation };
+  res.send(observation);
+};
+
+export default {
+  httpPostObservation,
+  httpGetObservation,
+  httpPutObservation,
+  httpDeleteObservation,
+};

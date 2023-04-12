@@ -28,8 +28,8 @@ export interface UserDoc extends mongoose.Document {
   profession: string;
   phone: number;
   admin: boolean;
-  observationsId: [];
-  patientsId: [];
+  observationsId: string[];
+  patientsId: string[];
   history: [];
 }
 
@@ -63,18 +63,16 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  observationsId: {
-    type: Array,
-    default: [],
-  },
-  patientsId: {
-    type: Array,
-    default: [],
-  },
-  history: {
-    type: Array,
-    default: [],
-  },
+  observationsId: [
+    { type: mongoose.Schema.Types.ObjectId, ref: 'Observation' },
+  ],
+  patientsId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Patient' }],
+  history: [
+    {
+      type: String,
+      default: [],
+    },
+  ],
 });
 
 userSchema.pre('save', async function (done) {
