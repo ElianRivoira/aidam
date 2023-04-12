@@ -34,13 +34,17 @@ interface PostObservation {
   title: string;
   observation: string;
   date: Date;
-  professional: string;
   patientId: string;
 }
 
 interface PutObservation {
   id: string;
   text: string;
+}
+
+interface DeleteObservation {
+  patientId: string;
+  obsId: string;
 }
 
 interface Observation {

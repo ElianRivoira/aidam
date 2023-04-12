@@ -15,15 +15,23 @@ const postPatient = async (data: PatientAttrs): Promise<PatientDoc> => {
   return patient;
 };
 
-const getOnePatient = async (id: string): Promise<PatientDoc | null> => {
-  const patient = await Patient.findOne(
-    { _id: id },
-    { __v: 0, userId: 0 }
-  ).populate({
-    path: 'observationsId',
-    options: { populate: { path: 'professional' } },
-  });
-  return patient;
+const getOnePatient = async (
+  id: string,
+  populate?: boolean
+): Promise<PatientDoc | null> => {
+  if (populate) {
+    const patient = await Patient.findOne(
+      { _id: id },
+      { __v: 0, userId: 0 }
+    ).populate({
+      path: 'observationsId',
+      options: { populate: { path: 'professional' } },
+    });
+    return patient;
+  } else {
+    const patient = await Patient.findOne({ _id: id }, { __v: 0, userId: 0 });
+    return patient;
+  }
 };
 
 const putPatient = async (

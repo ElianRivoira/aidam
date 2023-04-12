@@ -1,16 +1,17 @@
 const express = require('express');
 const patientController = require('./patient.controller');
+import { validateLoggedUser } from '../../middlewares/userValidators';
 
 const patientRouter = express.Router();
 
-patientRouter.get('/', patientController.httpAllPatients);
+patientRouter.get('/', validateLoggedUser, patientController.httpAllPatients);
 
-patientRouter.post('/', patientController.httpPostPatient);
+patientRouter.post('/', validateLoggedUser, patientController.httpPostPatient);
 
-patientRouter.get('/:id', patientController.httpGetOnePatient);
+patientRouter.get('/:id', validateLoggedUser, patientController.httpGetOnePatient);
 
-patientRouter.put('/:id', patientController.httpEditPatient);
+patientRouter.put('/:id', validateLoggedUser, patientController.httpEditPatient);
 
-patientRouter.delete('/:id', patientController.httpDeletePatient);
+patientRouter.delete('/:id', validateLoggedUser, patientController.httpDeletePatient);
 
 export default patientRouter;
