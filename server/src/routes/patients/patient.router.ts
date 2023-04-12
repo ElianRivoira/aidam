@@ -4,7 +4,12 @@ import { validateLoggedUser } from '../../middlewares/userValidators';
 
 const patientRouter = express.Router();
 
-patientRouter.get('/', validateLoggedUser, patientController.httpAllPatients);
+patientRouter.get('/', validateLoggedUser, patientController.httpGetAllPatients);
+
+patientRouter.get(
+  '/from/:id',
+  patientController.httpGetAllPatientsFromTherapist
+);
 
 patientRouter.post('/', validateLoggedUser, patientController.httpPostPatient);
 
