@@ -5,6 +5,8 @@ import app from './app';
 import { mongoConnect } from './services/mongo';
 //añadir import de modelos
 import User from './models/user.model';
+import Observation from './models/observations.model';
+import Patient from './models/patient.model';
 
 dotenv.config();
 

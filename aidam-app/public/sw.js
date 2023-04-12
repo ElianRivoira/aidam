@@ -19,6 +19,8 @@ if (!self.define) {
   // In both cases, it's safe to use a global var because those functions are synchronous.
   let nextDefineUri;
 
+  self.__WB_DISABLE_DEV_LOGS = true
+  
   const singleRequire = (uri, parentUri) => {
     uri = new URL(uri + ".js", parentUri).href;
     return registry[uri] || (

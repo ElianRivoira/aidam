@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
+import { UserDoc } from './user.model';
 
 // An interface that describes the properties
 // that are requried to create a new Observation
 export interface ObservationAttrs {
   title: string;
   observation: string;
+  date: Date;
   professional: string;
 }
 
@@ -20,7 +22,7 @@ export interface ObservationDoc extends mongoose.Document {
   title: string;
   observation: string;
   date: Date;
-  professional: string;
+  professional: UserDoc['_id'];
 }
 
 const ObservationSchema = new mongoose.Schema({
@@ -34,16 +36,13 @@ const ObservationSchema = new mongoose.Schema({
   },
   date: {
     type: Date,
-  },
-  professional: {
-    type: String,
     required: true,
   },
-});
-
-ObservationSchema.pre('save', async function (done) {
-  this.set('date', new Date());
-  done();
+  professional: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
 });
 
 ObservationSchema.statics.build = (attrs: ObservationAttrs) => {

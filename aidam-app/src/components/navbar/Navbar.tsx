@@ -21,7 +21,9 @@ const Navbar = () => {
       <button onClick={() => setIsOpen(true)}>
         <Image src={hamburMenu} alt='menu' />
       </button>
-      <Image src={aidamLogo} alt='logo' />
+      <div className='w-fit flex items-center'>
+        <Image src={aidamLogo} alt='logo' className='w-10 h-10' />
+      </div>
       <Menu isOpen={isOpen} setIsOpen={setIsOpen} handleLogout={handleLogout} />
     </nav>
   );

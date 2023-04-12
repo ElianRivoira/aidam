@@ -35,6 +35,12 @@ interface PostObservation {
   observation: string;
   date: Date;
   professional: string;
+  patientId: string;
+}
+
+interface PutObservation {
+  id: string;
+  text: string;
 }
 
 interface Observation {

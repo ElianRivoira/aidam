@@ -17,7 +17,7 @@ const MenuOption: React.FC<MenuProps> = ({ children, href, logo }) => {
         href={href ? href : ''}
         className={`flex h-16 items-center text-xg text-black hover:bg-aidam70 rounded`}
       >
-        <div className='filter hover:invert flex justify-between w-full h-full'>
+        <div className='filter hover:invert flex justify-between w-full h-full px-3'>
           <div className='flex items-center'>
             {logo ? <Image src={logo} alt='logo' className='mr-2.5 ' /> : null}
             {children}

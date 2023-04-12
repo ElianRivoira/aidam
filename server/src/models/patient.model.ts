@@ -28,7 +28,7 @@ export interface PatientDoc extends mongoose.Document {
   birth: Date;
   email: string;
   phone: number;
-  horariosId: Array<string>;
+  schedulesId: Array<string>;
   observationsId: Array<ObservationDoc['_id']>;
   professionalsId: Array<UserDoc['_id']>;
 }

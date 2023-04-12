@@ -5,8 +5,8 @@ export default function Document() {
     <Html lang='en'>
       <Head>
         <link rel='manifest' href='/manifest.json' />
-        <link rel='apple-touch-icon' href='/icon.png'></link>
-        <link rel='icon' href='/icon-192x192.png' />
+        <link rel='apple-touch-icon' href='/aidamLogo4k.svg'></link>
+        <link rel='icon' href='/aidamLogo4k.svg' />
         <link rel='preconnect' href='https://fonts.googleapis.com' />
         <link
           rel='preconnect'
