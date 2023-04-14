@@ -1,8 +1,6 @@
 import mongoose from 'mongoose';
 import { Password } from '../services/password';
 
-// An interface that describes the properties
-// that are requried to create a new User
 export interface UserAttrs {
   firstName: string;
   lastName: string;
@@ -13,14 +11,10 @@ export interface UserAttrs {
   phone: number;
 }
 
-// An interface that describes the properties
-// that a User Model has
 interface UserModel extends mongoose.Model<UserDoc> {
   build(attrs: UserAttrs): UserDoc;
 }
 
-// An interface that describes the properties
-// that a User Document has
 export interface UserDoc extends mongoose.Document {
   firstName: string;
   lastName: string;
@@ -30,8 +24,10 @@ export interface UserDoc extends mongoose.Document {
   profession: string;
   phone: number;
   admin: boolean;
-  observationsId: string[];
-  patientsId: string[];
+  lastThreeTasks: [String];
+  lastLoginDate: Date;
+  observationsId: [];
+  patientsId: [];
   history: [];
 }
 
@@ -68,6 +64,14 @@ const userSchema = new mongoose.Schema({
   admin: {
     type: Boolean,
     default: false,
+  },
+  lastThreeTasks: {
+    type: Array,
+    default: [String],
+  },
+  lastLoginDate: {
+    type: Date,
+    default: new Date(),
   },
   observationsId: [
     { type: mongoose.Schema.Types.ObjectId, ref: 'Observation' },

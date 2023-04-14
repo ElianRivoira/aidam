@@ -24,6 +24,10 @@ async function userLogin(user: LoginAttrs): Promise<LoginResponse | undefined> {
     const match = await Password.compare(loggedUser.password, user.password);
     loggedUser.password = '';
     if (match) {
+      const now = new Date();
+      loggedUser.lastLoginDate = now;
+      await loggedUser.save();
+      
       const tokenPayload = {
         id: loggedUser._id,
         firstName: loggedUser.firstName,
@@ -32,6 +36,7 @@ async function userLogin(user: LoginAttrs): Promise<LoginResponse | undefined> {
         admin: loggedUser.admin,
       };
       const token = generateToken(tokenPayload);
+
       return {
         user: loggedUser,
         token,
