@@ -35,6 +35,7 @@ const httpSignUp = async (req: Request, res: Response) => {
 
 async function httpUserLogin(req: Request, res: Response) {
   const { email, password } = req.body;
+  console.log(req.body)
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
