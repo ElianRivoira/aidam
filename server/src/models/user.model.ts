@@ -65,6 +65,14 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  lastThreeTasks: {
+    type: [String],
+    default: [],
+  },
+  lastLoginDate: {
+    type: Date,
+    default: null,
+  },
   observationsId: [
     { type: mongoose.Schema.Types.ObjectId, ref: 'Observation' },
   ],
