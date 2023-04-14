@@ -6,6 +6,7 @@ import patientService from '../../models/patient-service';
 import { RequestValidationError } from '../../errors/request-validation-error';
 import userService from '../../models/user-service';
 import { validateToken } from '../../utils/tokens';
+import { performTask } from '../../services/taskMetric';
 
 const httpPostObservation = async (req: Request, res: Response) => {
   const { title, observation, date, patientId } = req.body;
@@ -33,6 +34,7 @@ const httpPostObservation = async (req: Request, res: Response) => {
     }
 
     if (loggedUser) {
+      performTask(loggedUser._id, 'Creó observación');
       loggedUser.observationsId.push(obs._id);
       loggedUser.save();
     }
@@ -62,10 +64,15 @@ const httpPutObservation = async (req: Request, res: Response) => {
 
   const obsId = req.params.id;
   const { text } = req.body;
+  if (req.session?.token) {
+    const { user } = validateToken(req.session.token);
+    const loggedUser = await userService.getLoggedUser(user.id);
 
-  const observation = await observationService.putObservation(obsId, text);
+    const obs = await observationService.putObservation(obsId, text);
+    performTask(loggedUser._id, 'Edito observación');
 
-  res.send(observation);
+    res.status(201).send(obs);
+  }
 };
 
 const httpDeleteObservation = async (req: Request, res: Response) => {
@@ -96,6 +103,7 @@ const httpDeleteObservation = async (req: Request, res: Response) => {
       const index = loggedUser.observationsId.indexOf(observationToDelete);
       if (index > -1) {
         loggedUser.observationsId.splice(index, 1);
+        performTask(loggedUser._id, 'Borró observación');
         loggedUser.save();
       }
     }
