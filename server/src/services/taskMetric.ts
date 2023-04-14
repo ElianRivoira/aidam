@@ -7,6 +7,7 @@ export async function performTask(
 ): Promise<void> {
   const user = await User.findById(userId);
   if (user) {
+    taskName = taskName + ' el ' + new Date().toLocaleString();
     user.lastThreeTasks.push(taskName);
     if (user.lastThreeTasks.length > 3) {
       user.lastThreeTasks.shift();

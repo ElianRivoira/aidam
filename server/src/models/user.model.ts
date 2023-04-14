@@ -26,8 +26,8 @@ export interface UserDoc extends mongoose.Document {
   admin: boolean;
   lastThreeTasks: [String];
   lastLoginDate: Date;
-  observationsId: [];
-  patientsId: [];
+  observationsId: string[];
+  patientsId: string[];
   history: [];
 }
 
@@ -64,14 +64,6 @@ const userSchema = new mongoose.Schema({
   admin: {
     type: Boolean,
     default: false,
-  },
-  lastThreeTasks: {
-    type: Array,
-    default: [String],
-  },
-  lastLoginDate: {
-    type: Date,
-    default: new Date(),
   },
   observationsId: [
     { type: mongoose.Schema.Types.ObjectId, ref: 'Observation' },

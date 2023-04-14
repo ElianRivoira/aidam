@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { UserDoc } from './user.model';
+import { ObjectId } from 'mongodb';
 
 // An interface that describes the properties
 // that are requried to create a new Observation
@@ -55,6 +56,9 @@ ObservationSchema.statics.build = (attrs: ObservationAttrs) => {
   return new Observation(attrs);
 };
 
-const Observation = mongoose.model<ObservationDoc, ObservationModel>('Observation', ObservationSchema);
+const Observation = mongoose.model<ObservationDoc, ObservationModel>(
+  'Observation',
+  ObservationSchema
+);
 
 export default Observation;
