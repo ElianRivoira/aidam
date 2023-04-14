@@ -36,7 +36,8 @@ const httpPostPatient = async (
 ): Promise<void> => {
   try {
     const patient = await patientService.postPatient({
-      name: req.body.name,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
       diagnosis: req.body.diagnosis,
       authorizedModule: req.body.authorizedModule,
       socialwork: req.body.socialwork,
@@ -58,7 +59,7 @@ const httpGetOnePatient = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const patient = await patientService.getOnePatient(req.params.id);
+    const patient = await patientService.getOnePatient(req.params.id, true);
     res.status(200).send(patient);
   } catch (e) {
     next(e);

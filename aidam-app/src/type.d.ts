@@ -13,7 +13,8 @@ interface User {
 }
 
 interface PostUser {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: number;
   profession: string;
@@ -34,13 +35,17 @@ interface PostObservation {
   title: string;
   observation: string;
   date: Date;
-  professional: string;
   patientId: string;
 }
 
 interface PutObservation {
   id: string;
   text: string;
+}
+
+interface DeleteObservation {
+  patientId: string;
+  obsId: string;
 }
 
 interface Observation {

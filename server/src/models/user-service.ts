@@ -30,7 +30,8 @@ async function userLogin(user: LoginAttrs): Promise<LoginResponse | undefined> {
       
       const tokenPayload = {
         id: loggedUser._id,
-        username: loggedUser.name,
+        firstName: loggedUser.firstName,
+        lastName: loggedUser.lastName,
         email: loggedUser.email,
         admin: loggedUser.admin,
       };

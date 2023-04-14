@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 import { Password } from '../services/password';
 
 export interface UserAttrs {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   license: string;
@@ -15,7 +16,8 @@ interface UserModel extends mongoose.Model<UserDoc> {
 }
 
 export interface UserDoc extends mongoose.Document {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   license: string;
@@ -30,7 +32,11 @@ export interface UserDoc extends mongoose.Document {
 }
 
 const userSchema = new mongoose.Schema({
-  name: {
+  firstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
     type: String,
     required: true,
   },
@@ -67,13 +73,19 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: new Date(),
   },
-  observationsId: {
-    type: Array,
-    default: [],
-  },
-  patientsId: {
-    type: Array,
-    default: [],
+  observationsId: [
+    { type: mongoose.Schema.Types.ObjectId, ref: 'Observation' },
+  ],
+  patientsId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Patient' }],
+  history: [
+    {
+      type: String,
+      default: [],
+    },
+  ],
+  status: {
+    type: Boolean,
+    default: false,
   },
 });
 

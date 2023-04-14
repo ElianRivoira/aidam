@@ -20,7 +20,8 @@ export const putObservation = async (
   return obs.data;
 };
 
-export const deleteObservation = async (id: string): Promise<void> => {
-  const obs = await api.delete(`/observations/delete/${id}`);
+export const deleteObservation = async (data: DeleteObservation): Promise<void> => {
+  const { patientId, obsId } = data;
+  const obs = await api.delete(`/observations/${patientId}/delete/${obsId}`);
   return obs.data;
 };

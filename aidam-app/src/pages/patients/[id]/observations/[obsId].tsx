@@ -60,9 +60,6 @@ const ObservationId = ({ query }: MyPageProps) => {
     onSuccess: newobs => {
       setType(3);
       setOpen(true);
-      router.push({
-        pathname: `/patients/${patient.data?._id}/observations`,
-      });
     },
     onError: (err: any) => {
       setType(2);
@@ -85,6 +82,14 @@ const ObservationId = ({ query }: MyPageProps) => {
     }
   }, [observation.data]);
 
+  useEffect(() => {
+    if (type === 3 && open === false) {
+      router.push({
+        pathname: `/patients/${patient.data?._id}/observations`,
+      });
+    }
+  }, [open]);
+
   const handleEdit = () => {
     setReadonly(true);
 
@@ -95,7 +100,7 @@ const ObservationId = ({ query }: MyPageProps) => {
   };
 
   const handleDelete = () => {
-    deleteObs.mutate(query.obsId);
+    deleteObs.mutate({ patientId: query.id, obsId: query.obsId });
   };
 
   return (
@@ -152,10 +157,13 @@ const ObservationId = ({ query }: MyPageProps) => {
                   </button>
                 )}
                 <button
-                  onClick={handleDelete}
+                  onClick={() => {
+                    setType(4);
+                    setOpen(true);
+                  }}
                   className='flex items-center text-sm font-normal text-white h-7.5 p-3 rounded-md bg-redLogout hover:bg-redLogout/[0.9]'
                 >
-                  Borrar
+                  Eliminar
                 </button>
               </div>
             </div>
@@ -163,6 +171,7 @@ const ObservationId = ({ query }: MyPageProps) => {
               open={open}
               onClose={() => setOpen(false)}
               type={type}
+              deleteFunc={handleDelete}
               errors={errors}
             >
               <h1>Observación modificada satisfactoriamente</h1>

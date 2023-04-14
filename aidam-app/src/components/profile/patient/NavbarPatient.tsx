@@ -10,7 +10,7 @@ const NavbarPatient = () => {
     <div className='w-full h-7.5 md:rounded-t-3xl flex'>
       <Link
       href={`/patients/${patientId}/profile`}
-        className={`text-center border-black03 ${
+        className={`text-center border-black03 transition-colors ${
           router.asPath.includes('/profile')
             ? 'bg-aidamNav text-white shadow-active'
             : 'active:shadow-active hover:bg-aidamNav hover:text-white'
@@ -20,7 +20,7 @@ const NavbarPatient = () => {
       </Link>
       <Link
       href={`/patients/${patientId}/reports`}
-        className={`text-center border-black03 ${
+        className={`text-center border-black03 transition-colors ${
           router.asPath.includes('/reports')
             ? 'bg-aidamNav text-white shadow-active'
             : 'active:shadow-active hover:bg-aidamNav hover:text-white'
@@ -30,7 +30,7 @@ const NavbarPatient = () => {
       </Link>
       <Link
       href={`/patients/${patientId}/observations`}
-        className={`text-center border-black03 ${
+        className={`text-center border-black03 transition-colors ${
           router.asPath.includes('/observations')
             ? 'bg-aidamNav text-white shadow-active'
             : 'active:shadow-active hover:bg-aidamNav hover:text-white'
@@ -40,7 +40,7 @@ const NavbarPatient = () => {
       </Link>
       <Link
       href={`/patients/${patientId}/medicsocial`}
-        className={`text-center border-black03 ${
+        className={`text-center border-black03 transition-colors ${
           router.asPath.includes('/medicsocial')
             ? 'bg-aidamNav text-white shadow-active'
             : 'active:shadow-active hover:bg-aidamNav hover:text-white'
