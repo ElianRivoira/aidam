@@ -3,7 +3,8 @@ import { UserDoc } from './user.model';
 import { ObservationDoc } from './observations.model';
 
 export interface PatientAttrs {
-  name: string;
+  firstName: string;
+  lastName: string;
   diagnosis: string;
   authorizedModule: string;
   socialwork: string;
@@ -19,7 +20,8 @@ interface PatientModel extends mongoose.Model<PatientDoc> {
 }
 
 export interface PatientDoc extends mongoose.Document {
-  name: string;
+  firstName: string;
+  lastName: string;
   diagnosis: string;
   socialwork: string;
   affiliateNumber: string;
@@ -34,7 +36,11 @@ export interface PatientDoc extends mongoose.Document {
 }
 
 const patientSchema = new mongoose.Schema({
-  name: {
+  firstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
     type: String,
     required: true,
   },

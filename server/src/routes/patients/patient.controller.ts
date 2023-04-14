@@ -36,7 +36,8 @@ const httpPostPatient = async (
 ): Promise<void> => {
   try {
     const patient = await patientService.postPatient({
-      name: req.body.name,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
       diagnosis: req.body.diagnosis,
       authorizedModule: req.body.authorizedModule,
       socialwork: req.body.socialwork,
