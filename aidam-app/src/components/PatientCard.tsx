@@ -25,8 +25,8 @@ const PatientCard = () => {
           <div className='text-center'>Otros terapeutas</div>
           <hr className='w-36 border-black03' />
           <div className='self-start text-therapists text-sm ml-4 mt-1.5'>
-            {otrosTerapeutas.map(terapeuta => (
-              <li>{terapeuta}</li>
+            {otrosTerapeutas.map((terapeuta, index) => (
+              <li key={index}>{terapeuta}</li>
             ))}
           </div>
         </div>
