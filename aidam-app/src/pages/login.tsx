@@ -1,6 +1,7 @@
 import Head from 'next/head';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import aidamTexto from '../assets/icons/aidamTexto.svg';
@@ -59,7 +60,7 @@ const Login = () => {
               >
                 Iniciar Sesión
               </button>
-              <button className='text-aidam text-sm mb-4'>Registrarse</button>
+              <Link href={'/signup'} className='text-aidam text-sm mb-4 self-center'>Registrarse</Link>
             </div>
           </form>
         </div>

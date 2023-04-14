@@ -13,7 +13,8 @@ interface User {
 }
 
 interface PostUser {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: number;
   profession: string;

@@ -4,7 +4,8 @@ import { Password } from '../services/password';
 // An interface that describes the properties
 // that are requried to create a new User
 export interface UserAttrs {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   license: string;
@@ -21,7 +22,8 @@ interface UserModel extends mongoose.Model<UserDoc> {
 // An interface that describes the properties
 // that a User Document has
 export interface UserDoc extends mongoose.Document {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   license: string;
@@ -34,7 +36,11 @@ export interface UserDoc extends mongoose.Document {
 }
 
 const userSchema = new mongoose.Schema({
-  name: {
+  firstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
     type: String,
     required: true,
   },
