@@ -9,21 +9,15 @@ import Navbar from '@/components/navbar/Navbar';
 import NavbarPatient from '@/components/profile/patient/NavbarPatient';
 import ObservationCard from '@/components/profile/patient/ObservationCard';
 import { getOnePatient } from '@/services/patients';
+import { formatStringDate } from '@/utils/formatDate';
+import PickDateModal from '@/components/profile/patient/PickDateModal';
 
 const Observations = ({ query }: MyPageProps) => {
-  const [actualDate, setActualDate] = useState('');
+  const [actualDate, setActualDate] = useState(new Date());
+  const [searchDate, setSearchDate] = useState<Date>();
+  const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    const dateNow = new Date();
-    const monthYear = dateNow
-      .toLocaleString('es-ES', {
-        month: 'long',
-        year: 'numeric',
-      })
-      .split('de');
-    const stringDate = monthYear.join('/');
-    setActualDate(stringDate.toUpperCase());
-  }, []);
+  useEffect(() => {}, []);
 
   const patient = useQuery({
     queryKey: ['patient', query.id],
@@ -47,7 +41,7 @@ const Observations = ({ query }: MyPageProps) => {
                 OBSERVACIONES
               </h1>
               <h3 className='self-end mb-2 text-sm font-medium'>
-                {actualDate}
+                {searchDate ? formatStringDate(searchDate) : formatStringDate(actualDate)}
               </h3>
               <hr className='border-black03' />
             </div>
@@ -59,26 +53,39 @@ const Observations = ({ query }: MyPageProps) => {
                 >
                   Crear observación
                 </Link>
-                <Link
-                  href={`/patients/${query.id}/observations/find`}
+                <button
+                  onClick={() => setOpen(true)}
                   className='flex items-center text-sm font-normal text-white h-7.5 px-2.5 rounded-md bg-aidam80 hover:bg-aidam70'
                 >
                   Buscar observaciones
-                </Link>
+                </button>
               </div>
               {patient.data?.observationsId.map(obs => {
-                const date = new Date(obs.date);
-                if (date.getMonth() === new Date().getMonth()) {
-                  return (
-                    <ObservationCard
-                      obs={obs}
-                      key={obs._id}
-                      patient={patient.data}
-                    />
-                  );
+                const obsDate = new Date(obs.date);
+                if (searchDate) {
+                  if (obsDate.getMonth() === searchDate.getMonth()) {
+                    return (
+                      <ObservationCard
+                        obs={obs}
+                        key={obs._id}
+                        patient={patient.data}
+                      />
+                    );
+                  }
+                } else {
+                  if (obsDate.getMonth() === actualDate.getMonth()) {
+                    return (
+                      <ObservationCard
+                        obs={obs}
+                        key={obs._id}
+                        patient={patient.data}
+                      />
+                    );
+                  }
                 }
               })}
             </div>
+            <PickDateModal open={open} onClose={() => setOpen(false)} date={searchDate ? searchDate : actualDate} setDate={setSearchDate} />
           </div>
         </div>
       </main>

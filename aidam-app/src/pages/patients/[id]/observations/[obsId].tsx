@@ -88,7 +88,7 @@ const ObservationId = ({ query }: MyPageProps) => {
         pathname: `/patients/${patient.data?._id}/observations`,
       });
     }
-  }, [open])
+  }, [open]);
 
   const handleEdit = () => {
     setReadonly(true);
@@ -100,7 +100,7 @@ const ObservationId = ({ query }: MyPageProps) => {
   };
 
   const handleDelete = () => {
-    deleteObs.mutate({patientId:query.id, obsId:query.obsId});
+    deleteObs.mutate({ patientId: query.id, obsId: query.obsId });
   };
 
   return (
@@ -157,10 +157,13 @@ const ObservationId = ({ query }: MyPageProps) => {
                   </button>
                 )}
                 <button
-                  onClick={handleDelete}
+                  onClick={() => {
+                    setType(4);
+                    setOpen(true);
+                  }}
                   className='flex items-center text-sm font-normal text-white h-7.5 p-3 rounded-md bg-redLogout hover:bg-redLogout/[0.9]'
                 >
-                  Borrar
+                  Eliminar
                 </button>
               </div>
             </div>
@@ -168,6 +171,7 @@ const ObservationId = ({ query }: MyPageProps) => {
               open={open}
               onClose={() => setOpen(false)}
               type={type}
+              deleteFunc={handleDelete}
               errors={errors}
             >
               <h1>Observación modificada satisfactoriamente</h1>

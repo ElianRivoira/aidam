@@ -10,7 +10,7 @@ router.post('/', validateLoggedUser, validateObs, observationController.httpPost
 
 router.get('/:id', validateLoggedUser, observationController.httpGetObservation);
 
-router.put('/edit/:id', validateLoggedUser, observationController.httpPutObservation);
+router.put('/edit/:id', validateLoggedUser, validateObs, observationController.httpPutObservation);
 
 router.delete('/:patientId/delete/:id', validateLoggedUser, observationController.httpDeleteObservation);
 

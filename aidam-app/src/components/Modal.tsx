@@ -9,6 +9,7 @@ interface ModalProps {
   onClose: () => void;
   children?: React.ReactNode;
   errors?: CustomError[];
+  deleteFunc?: () => void;
   type: number;
 }
 
@@ -17,6 +18,7 @@ const Modal: React.FC<ModalProps> = ({
   onClose,
   children,
   errors,
+  deleteFunc,
   type,
 }) => {
   if (!open) return null;
@@ -26,7 +28,11 @@ const Modal: React.FC<ModalProps> = ({
       <div className='text-center fixed top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 bg-white p-8 z-50 rounded-md font-semibold text-ln flex flex-col items-center'>
         {type === 1 ? (
           <>
-            <Image src={rightCheckbox} alt='success' className='w-12 h-12 mb-7' />
+            <Image
+              src={rightCheckbox}
+              alt='success'
+              className='w-12 h-12 mb-7'
+            />
             {children}
           </>
         ) : type === 2 ? (
@@ -45,16 +51,42 @@ const Modal: React.FC<ModalProps> = ({
           </>
         ) : type === 3 ? (
           <>
-            <Image src={rightCheckbox} alt='success' className='w-12 h-12 mb-7' />
+            <Image
+              src={rightCheckbox}
+              alt='success'
+              className='w-12 h-12 mb-7'
+            />
             <h1>Observación eliminada correctamente</h1>
           </>
+        ) : type === 4 ? (
+          <>
+            <p className='text-lb font-normal mt-1'>
+              ¿Está seguro que desea eliminar la observación?
+            </p>
+            <div className='flex gap-5 justify-center mt-6'>
+              <button
+                className='border flex items-center text-lb p-4 rounded-md w-fit bg-aidam80 text-white h-10 hover:bg-aidam70 active:shadow-active'
+                onClick={onClose}
+              >
+                Cancelar
+              </button>
+              <button
+                className='border flex items-center text-lb p-4 rounded-md w-fit bg-redLogout text-white h-10 hover:bg-redLogout/[.9] active:shadow-active'
+                onClick={deleteFunc}
+              >
+                Eliminar
+              </button>
+            </div>
+          </>
         ) : null}
-        <button
-          className='mt-6 border rounded-md w-full bg-aidam80 text-white h-10 hover:bg-aidam70 active:shadow-active'
-          onClick={onClose}
-        >
-          Cerrar
-        </button>
+        {type !== 4 ? (
+          <button
+            className='mt-6 border rounded-md w-full bg-aidam80 text-white h-10 hover:bg-aidam70 active:shadow-active'
+            onClick={onClose}
+          >
+            Cerrar
+          </button>
+        ) : null}
       </div>
     </>
   );
