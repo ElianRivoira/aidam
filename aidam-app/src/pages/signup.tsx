@@ -1,6 +1,8 @@
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 import aidamTexto from '@/assets/icons/aidamTexto.svg';
 import Input from '@/components/form/Input';
@@ -8,7 +10,8 @@ import { postUser } from '@/services/users';
 import Modal from '@/components/Modal';
 
 const Signup = () => {
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState(0);
   const [profession, setProfession] = useState('');
@@ -20,6 +23,7 @@ const Signup = () => {
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     if (password && repeatPassword) {
@@ -33,7 +37,8 @@ const Signup = () => {
     try {
       if (password === repeatPassword) {
         const user = await postUser({
-          name,
+          firstName,
+          lastName,
           email,
           phone,
           profession,
@@ -59,24 +64,40 @@ const Signup = () => {
     }
   };
 
+  useEffect(() => {
+    if(!open && type === 1) {
+      router.push({
+        pathname: '/login'
+      })
+    }
+  }, [open])
+
   return (
     <>
       <Head>
         <title>AIDAM - Registro</title>
       </Head>
-      <div className='h-screen flex flex-col justify-center items-center'>
-        <div className='w-full shadow-xg rounded-3xl p-3.5 pb-5 max-w-md flex flex-col items-center'>
+      <div className='h-screen flex justify-center items-center'>
+        <div className='w-full shadow-xg rounded-3xl p-3.5 pb-5 mx-5 max-w-md flex flex-col items-center'>
           <Image src={aidamTexto} alt='aidam' className='mb-8' />
           <form
             className='w-full px-4 flex flex-col items-center'
             onSubmit={handleSubmit}
           >
-            <Input
-              label='Nombre y Apellido'
-              type='text'
-              onChange={e => setName(e.target.value)}
-              value={name}
-            />
+            <div className='flex gap-1.5'>
+              <Input
+                label='Nombre'
+                type='text'
+                onChange={e => setFirstName(e.target.value)}
+                value={firstName}
+              />
+              <Input
+                label='Apellido'
+                type='text'
+                onChange={e => setLastName(e.target.value)}
+                value={lastName}
+              />
+            </div>
             <Input
               label='Correo electrónico'
               type='text'
@@ -130,9 +151,9 @@ const Signup = () => {
             >
               Registrarse
             </button>
-            <button className='font-normal text-sm text-aidam mt-4 hover:text-aidam70'>
+            <Link href={'/login'} className='font-normal text-sm text-aidam mt-4 hover:text-aidam70'>
               ¿Ya tenés cuenta? Iniciá sesión
-            </button>
+            </Link>
           </form>
           <Modal
             open={open}

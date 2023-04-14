@@ -3,7 +3,8 @@ import { Request, Response, NextFunction } from 'express';
 import { RequestValidationError } from '../errors/request-validation-error';
 
 const validateSignUp = [
-  body('name').notEmpty().withMessage('El nombre es requerido'),
+  body('firstName').notEmpty().withMessage('El nombre es requerido'),
+  body('lastName').notEmpty().withMessage('El apellido es requerido'),
   body('email')
     .isEmail()
     .withMessage('Debe ingresar un correo electrónico válido'),
