@@ -6,7 +6,7 @@ import x from '@/assets/icons/x.svg';
 import MenuOption from './MenuOption';
 import profileLogo from '@/assets/icons/profileLogo.svg';
 import pacientesLogo from '@/assets/icons/pacientesLogo.svg';
-import logout from '@/assets/icons/logout.svg';
+import logout from '@/assets/icons/logout-white.svg';
 import { useQuery } from '@tanstack/react-query';
 import { getLoggedUser } from '@/services/users';
 import { hasCookie } from 'cookies-next';
@@ -67,7 +67,7 @@ const Menu: React.FC<MenuProps> = ({ isOpen, setIsOpen, handleLogout }) => {
           <button className='flex bg-redLogout hover:bg-redLogout/[0.9] w-full text-white h-8 items-center justify-center rounded-[3px] text-sm'
             onClick={handleLogout}
           >
-            <Image src={logout} alt='logout' />
+            <Image src={logout} alt='logout' className='mr-1' />
             Cerrar Sesión
           </button>
         </div>

@@ -1,6 +1,7 @@
 interface User {
   _id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: number;
   password: string;
   license: number;
@@ -70,4 +71,17 @@ interface Patient {
   schedulesId: [];
   observationsId: Observation[];
   professionalsId: []
+}
+
+interface PostPatient {
+  firstName: string;
+  lastName: string;
+  dni: number;
+  birth: Date;
+  socialwork: string;
+  affiliateNumber: string;
+  authorizedModule: string;
+  diagnosis: string;
+  email: string;
+  phone: number;
 }

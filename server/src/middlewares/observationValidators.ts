@@ -9,4 +9,10 @@ const validateObs = [
     .withMessage('El detalle de la observación es requerido'),
 ];
 
-export { validateObs };
+const validateEditObs = [
+  body('text')
+    .notEmpty()
+    .withMessage('El detalle de la observación es requerido'),
+];
+
+export { validateObs, validateEditObs };
