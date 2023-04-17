@@ -17,8 +17,6 @@ const Observations = ({ query }: MyPageProps) => {
   const [searchDate, setSearchDate] = useState<Date>();
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {}, []);
-
   const patient = useQuery({
     queryKey: ['patient', query.id],
     keepPreviousData: true,

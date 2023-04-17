@@ -4,8 +4,6 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        aidam: '#0C0992',
-        aidam80: 'rgba(12, 9, 146, 0.8)',
         grey1: '#F5F5F5',
         grey2: '#F0F0F0',
         grey3: '#E1E1E1',
@@ -25,6 +23,7 @@ module.exports = {
         aidamNav: 'rgba(31, 27, 183, 0.64)',
         therapists: '#0B7EBE',
         redLogout: '#B81212',
+        background: '#FFFCFC',
       },
       fontSize: {
         sl: ['7px', '10px'],
@@ -40,6 +39,7 @@ module.exports = {
         xg: ['20px', '20px'],
         xl1: ['24px', '20px'],
         xl2: ['24px', '30px'],
+        xl4: ['32px', '20px'],
         '4.5xl': ['40px', '47px'],
       },
       boxShadow: {

@@ -31,7 +31,7 @@ const index = () => {
     return <h1>{(error as any)?.response.data.errors[0].message}</h1>;
   }
   if (isSuccess) {
-    if (user?.admin) router.push('/admin');
+    if (user?.admin) router.push('/admin/professionals');
     else router.push('/patients');
   }
 

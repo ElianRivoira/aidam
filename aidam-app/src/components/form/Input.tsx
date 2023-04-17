@@ -7,10 +7,11 @@ interface inputProps {
   label: string;
   type: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  value: string | number;
+  value?: string | number;
   isEqual?: boolean;
   validate?: boolean;
   pattern?: string;
+  name?: string;
 }
 
 const Input: React.FC<inputProps> = ({
@@ -21,12 +22,13 @@ const Input: React.FC<inputProps> = ({
   isEqual,
   validate,
   pattern,
+  name,
 }) => {
   const [visible, setVisible] = useState(false);
 
   return (
     <div className='w-full'>
-      <label htmlFor={label} className='text-sm font-normal mb-1 block'>
+      <label htmlFor={name ? name : label} className='text-sm font-normal mb-1 block'>
         {label}
       </label>
       {type === 'password' ? (
@@ -58,10 +60,18 @@ const Input: React.FC<inputProps> = ({
             </button>
           </div>
         </div>
+      ) : type === 'file' ? (
+        <input
+          id={label}
+          name={name ? name : label}
+          type={type}
+          className='w-full h-10 border-black02 mb-2.5 outline-none focus:border-aidam hover:border-aidam80'
+          onChange={onChange}
+        />
       ) : (
         <input
           id={label}
-          name={label}
+          name={name ? name : label}
           type={type}
           className='w-full h-10 rounded-md border border-black02 mb-2.5 p-1.5 outline-none focus:border-aidam hover:border-aidam80'
           onChange={onChange}

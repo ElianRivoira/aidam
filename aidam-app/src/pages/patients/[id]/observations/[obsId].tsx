@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { NextPageContext } from 'next';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { hasCookie } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 import Navbar from '@/components/navbar/Navbar';
 import NavbarPatient from '@/components/profile/patient/NavbarPatient';
@@ -13,7 +14,7 @@ import {
   putObservation,
 } from '@/services/observations';
 import Modal from '@/components/Modal';
-import { useRouter } from 'next/router';
+import ArrowBack from '@/components/ArrowBack';
 
 interface Fecha {
   fecha: string;
@@ -113,8 +114,9 @@ const ObservationId = ({ query }: MyPageProps) => {
         <div className='w-full max-w-md md:border md:shadow-xg md:rounded-3xl md:mt-5'>
           <NavbarPatient />
           <div className='flex flex-col px-3.5 pb-10 items-center'>
-            <div className='w-full flex flex-col items-center'>
-              <h1 className='my-6 text-xl2 font-medium text-center'>
+            <div className='w-full flex flex-col pt-2'>
+              <ArrowBack width={25} />
+              <h1 className='w-full my-6 text-xl2 font-medium text-center'>
                 {observation.data?.title}
               </h1>
               <hr className='border-black03 w-full' />
@@ -123,7 +125,7 @@ const ObservationId = ({ query }: MyPageProps) => {
               <div className='my-6 ml-2.5 self-start'>
                 <h1 className='text-xb font-medium'>
                   {typeof observation.data?.professional === 'object'
-                    ? observation.data?.professional.name
+                    ? `${observation.data.professional.firstName} ${observation.data.professional.lastName}`
                     : null}
                 </h1>
                 {date ? (

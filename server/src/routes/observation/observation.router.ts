@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { validateObs } from '../../middlewares/observationValidators';
+import { validateEditObs, validateObs } from '../../middlewares/observationValidators';
 import observationController from './observation.controller';
 import { validateLoggedUser } from '../../middlewares/userValidators';
 
@@ -10,7 +10,7 @@ router.post('/', validateLoggedUser, validateObs, observationController.httpPost
 
 router.get('/:id', validateLoggedUser, observationController.httpGetObservation);
 
-router.put('/edit/:id', validateLoggedUser, validateObs, observationController.httpPutObservation);
+router.put('/edit/:id', validateLoggedUser, validateEditObs, observationController.httpPutObservation);
 
 router.delete('/:patientId/delete/:id', validateLoggedUser, observationController.httpDeleteObservation);
 

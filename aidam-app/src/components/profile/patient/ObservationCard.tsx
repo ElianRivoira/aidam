@@ -13,7 +13,6 @@ const ObservationCard: React.FC<ObsProps> = ({ obs, patient }) => {
   let [fecha, hora] = new Date(obs.date).toLocaleString().split(',');
   let minutos;
   [hora, minutos] = hora.split(':');
-  console.log(obs)
 
   return (
     <div className='flex w-full rounded-2xl p-3 pr-5 shadow-card max-w-md mb-[26px]'>
@@ -28,7 +27,7 @@ const ObservationCard: React.FC<ObsProps> = ({ obs, patient }) => {
             width={50}
             height={50}
           />
-          <p className='ml-1.5'>{typeof obs.professional === 'object' ? obs.professional.name : null}</p>
+          <p className='ml-1.5'>{typeof obs.professional === 'object' ? `${obs.professional.firstName} ${obs.professional.lastName}` : null}</p>
         </div>
         <p className='text-end text-sm'>{`${fecha}, ${hora}:${minutos} hs`}</p>
       </Link>
