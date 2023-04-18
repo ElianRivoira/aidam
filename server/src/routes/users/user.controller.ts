@@ -6,6 +6,7 @@ import { BadRequestError } from '../../errors/bad-request-error';
 import { RequestValidationError } from '../../errors/request-validation-error';
 import { validateToken } from '../../utils/tokens';
 
+
 const httpRegisterUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -46,6 +47,7 @@ const httpGetAllUsers = async (req: Request, res: Response) => {
     res.status(200).json(users);
   }
 };
+
 
 const httpSignUp = async (req: Request, res: Response) => {
   const { body } = req;
@@ -97,13 +99,24 @@ const httpGetUser = async (req: Request, res: Response) => {
   if (!req.session) {
     throw new RequestValidationError(errors.array());
   }
-
+  
   if (req.session?.token) {
     const { user } = validateToken(req.session.token);
     const loggedUser = await userService.getLoggedUser(user.id);
     res.send(loggedUser);
   }
 };
+
+const httpSearchUser = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!req.session) {
+    throw new RequestValidationError(errors.array());
+  }
+
+  const findedUsers = await userService.searchUser(req.params.name);
+  res.send(findedUsers);
+}
+
 
 export default {
   httpSignUp,
@@ -112,4 +125,9 @@ export default {
   httpGetAllUsers,
   httpRegisterUser,
   httpDeleteUser,
+  httpSearchUser
 };
+
+
+
+

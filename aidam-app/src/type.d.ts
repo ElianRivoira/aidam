@@ -87,3 +87,19 @@ interface PostPatient {
   email: string;
   phone: number;
 }
+
+
+interface FormPatient {
+  firstName: string;
+  lastName: string;
+  dni: string;
+  birth: string;
+  socialwork: string;
+  affiliateNumber: string;
+  authorizedModule: string;
+  diagnosis: string;
+  email: string;
+  phone: string;
+  [key: string]: string
+}
+

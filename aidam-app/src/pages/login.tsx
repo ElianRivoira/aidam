@@ -1,25 +1,48 @@
 import Head from 'next/head';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useMutation } from '@tanstack/react-query';
 
-import aidamTexto from '../assets/icons/aidamTexto.svg';
+import aidamTexto from '@/assets/icons/aidamTexto.svg';
 import Input from '@/components/form/Input';
 import { login } from '@/services/users';
+import Modal from '@/components/Modal';
 
 const Login = () => {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState<User>();
-  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [type, setType] = useState(0);
+  const [errors, setErrors] = useState<CustomError[]>([]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const user = await login(email, password);
-    setUser(user);
-    router.push('/patients');
+    loginUser.mutate({ email, password });
   };
+
+  const loginUser = useMutation({
+    mutationFn: login,
+    onSuccess: user => {
+      setType(1);
+      setOpen(true);
+    },
+    onError: (err: any) => {
+      setType(2);
+      setErrors(err.response.data.errors);
+      setOpen(true);
+    },
+  });
+
+  useEffect(() => {
+    if (type === 1 && open === false) {
+      loginUser.data?.admin
+        ? router.push('/admin/professionals')
+        : router.push('/patients');
+    }
+  }, [open]);
 
   return (
     <>
@@ -39,14 +62,14 @@ const Login = () => {
               <Input
                 label='Correo electrónico'
                 type='email'
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
                 value={email}
                 pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$'
               />
               <Input
                 label='Contraseña'
                 type='password'
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
                 value={password}
               />
             </div>
@@ -60,9 +83,22 @@ const Login = () => {
               >
                 Iniciar Sesión
               </button>
-              <Link href={'/signup'} className='text-aidam text-sm mb-4 self-center'>Registrarse</Link>
+              <Link
+                href={'/signup'}
+                className='text-aidam text-sm mb-4 self-center'
+              >
+                Registrarse
+              </Link>
             </div>
           </form>
+          <Modal
+            open={open}
+            onClose={() => setOpen(false)}
+            type={type}
+            errors={errors}
+          >
+            <h1>Inicio de sesión satisfactorio</h1>
+          </Modal>
         </div>
       </div>
     </>

@@ -48,7 +48,7 @@ const getOnePatient = async (
 
 const putPatient = async (
   id: string,
-  data: object,
+  data?: object,
   therapistId?: string
 ): Promise<PatientDoc | null> => {
   const patient = await Patient.findByIdAndUpdate(
@@ -64,8 +64,13 @@ const putPatient = async (
   return patient;
 };
 
-const deletePatient = async (id: string): Promise<void> => {
-  await Patient.findByIdAndDelete(id);
+const deletePatient = async (id: string): Promise<PatientDoc | null> => {
+  const patient = await Patient.findByIdAndUpdate(
+    id,
+    { active: false },
+    { new: true }
+  );
+  return patient;
 };
 
 export default {

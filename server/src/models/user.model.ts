@@ -1,5 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 import { Password } from '../services/password';
+import { ObservationDoc } from './observations.model';
+import { PatientDoc } from './patient.model';
 
 export interface UserAttrs {
   firstName: string;
@@ -26,9 +28,8 @@ export interface UserDoc extends mongoose.Document {
   admin: boolean;
   lastThreeTasks: [String];
   lastLoginDate: Date;
-  observationsId: string[];
-  patientsId: string[];
-  history: [];
+  observationsId: Array<ObservationDoc['_id']>;
+  patientsId: Array<PatientDoc['_id']>;
 }
 
 const userSchema = new mongoose.Schema({
@@ -77,12 +78,6 @@ const userSchema = new mongoose.Schema({
     { type: mongoose.Schema.Types.ObjectId, ref: 'Observation' },
   ],
   patientsId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Patient' }],
-  history: [
-    {
-      type: String,
-      default: [],
-    },
-  ],
   status: {
     type: Boolean,
     default: false,
