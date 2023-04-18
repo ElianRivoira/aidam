@@ -1,7 +1,8 @@
 const express = require('express');
 const patientController = require('./patient.controller');
 import { uploadCertificate } from '../../middlewares/multer';
-import { validateLoggedUser } from '../../middlewares/userValidators';
+import { validatePatient } from '../../middlewares/patientValidators';
+import { validateLoggedAdmin, validateLoggedUser } from '../../middlewares/userValidators';
 
 const patientRouter = express.Router();
 
@@ -12,12 +13,12 @@ patientRouter.get(
   patientController.httpGetAllPatientsFromTherapist
 );
 
-patientRouter.post('/', validateLoggedUser, uploadCertificate.single('certificate'), patientController.httpPostPatient);
+patientRouter.post('/', [validateLoggedAdmin, uploadCertificate.single('certificate'), validatePatient], patientController.httpPostPatient);
 
 patientRouter.get('/:id', validateLoggedUser, patientController.httpGetOnePatient);
 
-patientRouter.put('/:id', validateLoggedUser, patientController.httpEditPatient);
+patientRouter.put('/:id', validateLoggedAdmin, patientController.httpEditPatient);
 
-patientRouter.delete('/:id', validateLoggedUser, patientController.httpDeletePatient);
+patientRouter.delete('/:id', validateLoggedAdmin, patientController.httpDeletePatient);
 
 export default patientRouter;

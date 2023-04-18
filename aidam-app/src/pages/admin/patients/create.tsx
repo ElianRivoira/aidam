@@ -101,28 +101,31 @@ const create = () => {
                   type='text'
                   onChange={e => handleChange(e)}
                   value={patientInfo.firstName}
-                />
+                  placeholder='Ejemplo'
+                  />
                 <Input
                   label='Nombre'
                   name='lastName'
                   type='text'
                   onChange={e => handleChange(e)}
                   value={patientInfo.lastName}
-                />
+                  placeholder='Ejemplo'
+                  />
                 <Input
                   label='DNI'
                   name='dni'
                   type='tel'
                   onChange={e => handleChange(e)}
                   value={patientInfo.dni}
-                />
+                  placeholder='12345678'
+                  />
                 <Input
                   label='Fecha de Nacimiento'
                   name='birth'
                   type='date'
                   onChange={e => handleChange(e)}
                   value={patientInfo.birth}
-                />
+                  />
               </div>
               <div className='flex flex-col w-1/4 gap-9 items-center'>
                 <Input
@@ -131,28 +134,32 @@ const create = () => {
                   type='text'
                   onChange={e => handleChange(e)}
                   value={patientInfo.socialWork}
-                />
+                  placeholder='EJEMPLO'
+                  />
                 <Input
                   label='N° de Afiliado'
                   name='affiliateNumber'
                   type='text'
                   onChange={e => handleChange(e)}
                   value={patientInfo.affiliateNumber}
-                />
+                  placeholder='03/18688242/06'
+                  />
                 <Input
                   label='Módulo Autorizado'
                   name='authorizedModule'
                   type='text'
                   onChange={e => handleChange(e)}
                   value={patientInfo.authorizedModule}
-                />
+                  placeholder='18688242'
+                  />
                 <Input
                   label='Diagnóstico'
                   name='diagnosis'
                   type='text'
                   onChange={e => handleChange(e)}
                   value={patientInfo.diagnosis}
-                />
+                  placeholder='Trastorno ...'
+                  />
               </div>
               <div className='flex flex-col w-1/4 gap-9 items-center'>
                 <Input
@@ -161,13 +168,15 @@ const create = () => {
                   type='text'
                   onChange={e => handleChange(e)}
                   value={patientInfo.email}
-                />
+                  placeholder='ejemplo@ejemplo.com'
+                  />
                 <Input
                   label='N° de Teléfono'
                   name='phone'
                   type='text'
                   onChange={e => handleChange(e)}
                   value={patientInfo.phone}
+                  placeholder='+5491234567890'
                 />
                 <Input
                   label='Subir certificado'

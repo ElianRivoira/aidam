@@ -13,6 +13,7 @@ interface inputProps {
   validate?: boolean;
   pattern?: string;
   name: string;
+  placeholder?: string;
 }
 
 const Input: React.FC<inputProps> = ({
@@ -24,6 +25,7 @@ const Input: React.FC<inputProps> = ({
   validate,
   pattern,
   name,
+  placeholder,
 }) => {
   const [visible, setVisible] = useState(false);
 
@@ -93,6 +95,7 @@ const Input: React.FC<inputProps> = ({
           value={value}
           required
           pattern={pattern}
+          placeholder={placeholder}
         />
       )}
     </div>

@@ -18,6 +18,6 @@ export const uploadCertificate = multer({
   }),
   fileFilter: (req, file, cb) => {
     if (MIMETYPES.includes(file.mimetype)) cb(null, true);
-    else cb(new BadRequestError(`Only ${MIMETYPES} mimetypes are allowed`))
+    else cb(new BadRequestError(`Solo se permiten archivos de tipo "PDF"`))
   },
 });

@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
+import { validationResult } from 'express-validator';
+
 import patientService from '../../models/patient-service';
 import userService from '../../models/user-service';
+import { RequestValidationError } from '../../errors/request-validation-error';
 import { BadRequestError } from '../../errors/bad-request-error';
 
 const httpGetAllPatientsFromTherapist = async (
@@ -8,6 +11,11 @@ const httpGetAllPatientsFromTherapist = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
   try {
     const patients = await patientService.getAllPatientsFromTherapist(
       req.params.id
@@ -23,6 +31,11 @@ const httpGetAllPatients = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
   try {
     const patients = await patientService.getAllPatients();
     res.status(200).send(patients);
@@ -32,6 +45,11 @@ const httpGetAllPatients = async (
 };
 
 const httpPostPatient = async (req: Request, res: Response): Promise<void> => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
   try {
     const { professionals } = req.body;
     const professionalsArray = JSON.parse(professionals);
@@ -70,6 +88,11 @@ const httpGetOnePatient = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
   try {
     const patient = await patientService.getOnePatient(req.params.id, true);
     res.status(200).send(patient);
@@ -83,6 +106,11 @@ const httpEditPatient = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
   try {
     const {
       name,
@@ -120,6 +148,11 @@ const httpDeletePatient = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
   try {
     const patient = await patientService.deletePatient(req.params.id);
     res.status(200).send(patient);
