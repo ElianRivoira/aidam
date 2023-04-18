@@ -33,6 +33,7 @@ export interface PatientDoc extends mongoose.Document {
   schedulesId: Array<string>;
   observationsId: Array<ObservationDoc['_id']>;
   professionalsId: Array<UserDoc['_id']>;
+  active: boolean;
 }
 
 const patientSchema = new mongoose.Schema({
@@ -81,6 +82,10 @@ const patientSchema = new mongoose.Schema({
   },
   observationsId: [{ type: Schema.Types.ObjectId, ref: 'Observation' }],
   professionalsId: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  active: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 patientSchema.statics.build = (attrs: PatientAttrs) => {

@@ -31,14 +31,11 @@ const httpGetAllPatients = async (
   }
 };
 
-const httpPostPatient = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
+const httpPostPatient = async (req: Request, res: Response): Promise<void> => {
   try {
     const { professionals } = req.body;
-    const professionalsArray = JSON.parse(professionals)
-    
+    const professionalsArray = JSON.parse(professionals);
+
     const patient = await patientService.postPatient({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -54,12 +51,16 @@ const httpPostPatient = async (
 
     professionalsArray.forEach(async (prof: string) => {
       const findedProf = await userService.searchUser(prof);
-      await patientService.putPatient(patient._id, undefined, findedProf[0]._id)
-    })
+      await patientService.putPatient(
+        patient._id,
+        undefined,
+        findedProf[0]._id
+      );
+    });
 
     res.status(201).send(patient);
   } catch (e) {
-    console.error(e)
+    console.error(e);
     // throw new BadRequestError('error')
   }
 };
@@ -120,8 +121,8 @@ const httpDeletePatient = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    await patientService.deletePatient(req.params.id);
-    res.sendStatus(204);
+    const patient = await patientService.deletePatient(req.params.id);
+    res.status(200).send(patient);
   } catch (e) {
     next(e);
   }
