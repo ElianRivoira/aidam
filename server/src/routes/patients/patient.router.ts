@@ -1,5 +1,6 @@
 const express = require('express');
 const patientController = require('./patient.controller');
+import { uploadCertificate } from '../../middlewares/multer';
 import { validateLoggedUser } from '../../middlewares/userValidators';
 
 const patientRouter = express.Router();
@@ -11,7 +12,7 @@ patientRouter.get(
   patientController.httpGetAllPatientsFromTherapist
 );
 
-patientRouter.post('/', validateLoggedUser, patientController.httpPostPatient);
+patientRouter.post('/', validateLoggedUser, uploadCertificate.single('certificate'), patientController.httpPostPatient);
 
 patientRouter.get('/:id', validateLoggedUser, patientController.httpGetOnePatient);
 

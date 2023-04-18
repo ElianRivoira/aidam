@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import patientService from '../../models/patient-service';
+import userService from '../../models/user-service';
+import { BadRequestError } from '../../errors/bad-request-error';
 
 const httpGetAllPatientsFromTherapist = async (
   req: Request,
@@ -32,9 +34,11 @@ const httpGetAllPatients = async (
 const httpPostPatient = async (
   req: Request,
   res: Response,
-  next: NextFunction
 ): Promise<void> => {
   try {
+    const { professionals } = req.body;
+    const professionalsArray = JSON.parse(professionals)
+    
     const patient = await patientService.postPatient({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -47,9 +51,16 @@ const httpPostPatient = async (
       email: req.body.email,
       phone: req.body.phone,
     });
+
+    professionalsArray.forEach(async (prof: string) => {
+      const findedProf = await userService.searchUser(prof);
+      await patientService.putPatient(patient._id, undefined, findedProf[0]._id)
+    })
+
     res.status(201).send(patient);
   } catch (e) {
-    next(e);
+    console.error(e)
+    // throw new BadRequestError('error')
   }
 };
 

@@ -48,7 +48,7 @@ const getOnePatient = async (
 
 const putPatient = async (
   id: string,
-  data: object,
+  data?: object,
   therapistId?: string
 ): Promise<PatientDoc | null> => {
   const patient = await Patient.findByIdAndUpdate(

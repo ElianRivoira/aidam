@@ -59,4 +59,25 @@ const exists = async (email: string): Promise<UserDoc | null> => {
   return user;
 };
 
-export default { signUp, exists, userLogin, getLoggedUser };
+const searchUser = async (name: string): Promise<UserDoc[]> => {
+  let findedUsers: UserDoc[];
+  if (name.includes(' ')) {
+    const [firstName, lastName] = name.split(' ');
+    findedUsers = await User.find({
+      $or: [
+        { firstName: { $regex: `.*${firstName}.*`, $options: 'i' } },
+        { lastName: { $regex: `.*${lastName}.*`, $options: 'i' } },
+      ],
+    });
+  } else {
+    findedUsers = await User.find({
+      $or: [
+        { firstName: { $regex: `.*${name}.*`, $options: 'i' } },
+        { lastName: { $regex: `.*${name}.*`, $options: 'i' } },
+      ],
+    });
+  }
+  return findedUsers;
+};
+
+export default { signUp, exists, userLogin, getLoggedUser, searchUser };
