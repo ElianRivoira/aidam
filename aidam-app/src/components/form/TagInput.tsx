@@ -48,7 +48,7 @@ const TagInput: React.FC<TagInputProps> = ({ taggedProfs, setTaggedProfs }) => {
   };
 
   return (
-    <div className='w-full relative mb-2.5'>
+    <div className='w-full relative'>
       <label htmlFor='profs' className='text-sm font-normal mb-1 block'>
         Profesionales a cargo
       </label>
@@ -74,7 +74,7 @@ const TagInput: React.FC<TagInputProps> = ({ taggedProfs, setTaggedProfs }) => {
           ))}
         </div>
       )}
-      <div className='flex flex-wrap gap-2 mt-2.5 absolute z-10'>
+      <div className='flex flex-wrap gap-2 mt-2.5'>
         {taggedProfs.map((prof, index) => {
           return (
             <div
