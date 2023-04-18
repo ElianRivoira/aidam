@@ -38,7 +38,7 @@ const create = () => {
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
     files && setCertificate(files[0]);
-    console.log(files)
+    console.log(files);
   };
 
   const postObs = useMutation({
@@ -169,16 +169,16 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.phone}
                 />
-                <TagInput
-                  taggedProfs={professionals}
-                  setTaggedProfs={setProfessionals}
-                />
                 <Input
                   label='Subir certificado'
                   name='certificate'
                   type='file'
                   value={certificate?.name}
                   onChange={e => handleFile(e)}
+                />
+                <TagInput
+                  taggedProfs={professionals}
+                  setTaggedProfs={setProfessionals}
                 />
               </div>
             </div>

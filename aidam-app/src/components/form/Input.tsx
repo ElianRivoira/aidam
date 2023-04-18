@@ -65,7 +65,7 @@ const Input: React.FC<inputProps> = ({
         <>
           <label
             htmlFor={name}
-            className='w-full flex h-10 rounded-md justify-center items-center border border-black02 hover:border-aidam80 transition-colors cursor-pointer'
+            className='w-full flex h-10 rounded-md mb-2.5 justify-center items-center border border-black02 hover:border-aidam80 transition-colors cursor-pointer'
           >
             {value ? (
               value
