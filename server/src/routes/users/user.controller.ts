@@ -22,7 +22,6 @@ const httpRegisterUser = async (req: Request, res: Response) => {
 };
 
 const httpDeleteUser = async (req: Request, res: Response) => {
-  console.log(req.params.id);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new RequestValidationError(errors.array());
