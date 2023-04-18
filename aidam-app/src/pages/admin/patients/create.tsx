@@ -38,6 +38,7 @@ const create = () => {
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
     files && setCertificate(files[0]);
+    console.log(files)
   };
 
   const postObs = useMutation({
@@ -168,15 +169,16 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.phone}
                 />
-                <Input
-                  label='Certificado'
-                  name='certificate'
-                  type='file'
-                  onChange={e => handleFile(e)}
-                />
                 <TagInput
                   taggedProfs={professionals}
                   setTaggedProfs={setProfessionals}
+                />
+                <Input
+                  label='Subir certificado'
+                  name='certificate'
+                  type='file'
+                  value={certificate?.name}
+                  onChange={e => handleFile(e)}
                 />
               </div>
             </div>
@@ -186,7 +188,7 @@ const create = () => {
               <div className='w-1/4 flex justify-end'>
                 <button
                   type='submit'
-                  className='border  px-10 py-2 rounded-md bg-aidam80 hover:bg-aidam70 transition-colors text-white w-fit self-end'
+                  className='border px-10 py-2 rounded-md bg-aidam80 hover:bg-aidam70 transition-colors text-white w-fit self-end'
                 >
                   Confirmar
                 </button>

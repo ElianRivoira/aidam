@@ -86,54 +86,62 @@ const Signup = () => {
           >
             <div className='flex gap-1.5'>
               <Input
-                label='Nombre'
-                type='text'
-                onChange={e => setFirstName(e.target.value)}
-                value={firstName}
+              name='nombre'
+              label='Nombre'
+              type='text'
+              onChange={e => setFirstName(e.target.value)}
+              value={firstName}
               />
               <Input
-                label='Apellido'
-                type='text'
-                onChange={e => setLastName(e.target.value)}
-                value={lastName}
+              name='apellido'
+              label='Apellido'
+              type='text'
+              onChange={e => setLastName(e.target.value)}
+              value={lastName}
               />
             </div>
             <Input
+              name='email'
               label='Correo electrónico'
               type='text'
               onChange={e => setEmail(e.target.value)}
               value={email}
-            />
+              />
             <Input
+              name='phone'
               label='Teléfono'
               type='tel'
               onChange={e => setPhone(Number(e.target.value))}
               value={phone}
-            />
+              />
             <div className='flex gap-1.5'>
               <Input
-                label='Profesión'
-                type='text'
-                onChange={e => setProfession(e.target.value)}
-                value={profession}
+              name='profession'
+              label='Profesión'
+              type='text'
+              onChange={e => setProfession(e.target.value)}
+              value={profession}
               />
               <Input
+              name='license'
                 label='Matrícula'
                 type='text'
                 onChange={e => setLicense(e.target.value)}
                 value={license}
-              />
+                />
             </div>
             <div className='flex gap-1.5'>
               <Input
+                name='password1'
                 label='Contraseña'
                 type='password'
                 onChange={e => setPassword(e.target.value)}
                 value={password}
                 isEqual={isEqual}
                 validate={validate}
-              />
+                />
               <Input
+                name='password2'
                 label='Repetir contraseña'
                 type='password'
                 onChange={e => {

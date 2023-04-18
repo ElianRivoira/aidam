@@ -48,7 +48,7 @@ const TagInput: React.FC<TagInputProps> = ({ taggedProfs, setTaggedProfs }) => {
   };
 
   return (
-    <div className='w-full relative'>
+    <div className='w-full relative mb-2.5'>
       <label htmlFor='profs' className='text-sm font-normal mb-1 block'>
         Profesionales a cargo
       </label>
@@ -60,7 +60,7 @@ const TagInput: React.FC<TagInputProps> = ({ taggedProfs, setTaggedProfs }) => {
         className='w-full h-10 rounded-md border border-black02 p-1.5 outline-none focus:border-aidam hover:border-aidam80'
       />
       {searchText && (
-        <div className='absolute border bg-white rounded-md flex flex-col gap-2 w-full'>
+        <div className='absolute z-20 border bg-white rounded-md flex flex-col gap-2 w-full'>
           {professionals.data?.map((prof, index) => (
             <div
               key={index}
@@ -74,7 +74,7 @@ const TagInput: React.FC<TagInputProps> = ({ taggedProfs, setTaggedProfs }) => {
           ))}
         </div>
       )}
-      <div className='flex flex-wrap gap-2 mt-2.5'>
+      <div className='flex flex-wrap gap-2 mt-2.5 absolute z-10'>
         {taggedProfs.map((prof, index) => {
           return (
             <div
