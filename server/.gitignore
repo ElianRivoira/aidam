@@ -19,6 +19,8 @@
 .env.test.local
 .env.production.local
 .eslintcache
+/certificates/**
+!.gitkeep
 
 npm-debug.log*
 yarn-debug.log*

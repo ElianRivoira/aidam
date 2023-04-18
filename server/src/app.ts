@@ -3,12 +3,13 @@ import 'express-async-errors';
 import cors from 'cors';
 import morgan from 'morgan';
 import path from 'path';
+import cookieSession from 'cookie-session';
+import dotenv from 'dotenv';
+import bodyParser from 'body-parser';
 
 import apiRouter from './routes/api';
 import { errorHandler } from './middlewares/error-handler';
 import { NotFoundError } from './errors/not-found-error';
-import cookieSession from 'cookie-session';
-import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(bodyParser.json());
 app.use(
   cookieSession({
     name: 'session',

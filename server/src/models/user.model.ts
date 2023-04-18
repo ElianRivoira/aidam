@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 import { Password } from '../services/password';
 
 export interface UserAttrs {

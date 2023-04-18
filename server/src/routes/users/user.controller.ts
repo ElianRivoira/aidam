@@ -1,4 +1,3 @@
-import { NextFunction } from 'connect';
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 
@@ -6,7 +5,6 @@ import userService from '../../models/user-service';
 import { BadRequestError } from '../../errors/bad-request-error';
 import { RequestValidationError } from '../../errors/request-validation-error';
 import { validateToken } from '../../utils/tokens';
-import { UserDoc } from '../../models/user.model';
 
 const httpSignUp = async (req: Request, res: Response) => {
   const { body } = req;
@@ -56,7 +54,7 @@ const httpGetUser = async (req: Request, res: Response) => {
   if (!req.session) {
     throw new RequestValidationError(errors.array());
   }
-
+  
   if (req.session?.token) {
     const { user } = validateToken(req.session.token);
     const loggedUser = await userService.getLoggedUser(user.id);
@@ -64,4 +62,14 @@ const httpGetUser = async (req: Request, res: Response) => {
   }
 };
 
-export default { httpSignUp, httpUserLogin, httpGetUser };
+const httpSearchUser = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!req.session) {
+    throw new RequestValidationError(errors.array());
+  }
+
+  const findedUsers = await userService.searchUser(req.params.name);
+  res.send(findedUsers);
+}
+
+export default { httpSignUp, httpUserLogin, httpGetUser, httpSearchUser };
