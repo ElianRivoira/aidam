@@ -58,6 +58,7 @@ const TagInput: React.FC<TagInputProps> = ({ taggedProfs, setTaggedProfs }) => {
         value={searchText}
         onChange={handleInputChange}
         className='w-full h-10 rounded-md border border-black02 p-1.5 outline-none focus:border-aidam hover:border-aidam80'
+        placeholder='Ejemplo Ejemplo'
       />
       {searchText && (
         <div className='absolute z-20 border bg-white rounded-md flex flex-col gap-2 w-full'>

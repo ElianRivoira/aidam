@@ -38,9 +38,9 @@ const Modal: React.FC<ModalProps> = ({
         ) : type === 2 ? (
           <>
             <Image src={wrongCheckbox} alt='error' className='w-12 h-12 mb-7' />
-            <ul>
-              {errors?.map(err => (
-                <li key={err.message}>
+            <ul className='text-start list-disc ml-4'>
+              {errors?.map((err, index) => (
+                <li key={index}>
                   <h1>{err.message.split('.')[0]}</h1>
                   <p className='text-sm font-normal mt-1'>
                     {err.message.split('.')[1]}

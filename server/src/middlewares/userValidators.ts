@@ -1,6 +1,7 @@
 import { body, cookie, validationResult } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
 import { RequestValidationError } from '../errors/request-validation-error';
+import { validateToken } from '../utils/tokens';
 
 const validateSignUp = [
   body('firstName').notEmpty().withMessage('El nombre es requerido'),
@@ -23,7 +24,7 @@ const validateLogin = [
 const validateLoggedUser = [
   cookie('session').custom((value, { req }) => {
     if (!req.session.token) {
-    throw new Error('Debe estar logueado en la aplicación');
+      throw new Error('Debe estar logueado en la aplicación');
     }
     return true;
   }),
@@ -33,7 +34,27 @@ const validateLoggedUser = [
       throw new RequestValidationError(errors.array());
     }
     next();
-  }
+  },
 ];
 
-export { validateSignUp, validateLogin, validateLoggedUser };
+const validateLoggedAdmin = [
+  cookie('session').custom((value, { req }) => {
+    if (!req.session.token) {
+      throw new Error('Debe estar logueado en la aplicación');
+    } else {
+      const { user } = validateToken(req.session.token);
+      if (!user.admin) {
+        throw new Error('Debe tener permisos de administrador');
+      } else return true;
+    }
+  }),
+  (req: Request, res: Response, next: NextFunction) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw new RequestValidationError(errors.array());
+    }
+    next();
+  },
+];
+
+export { validateSignUp, validateLogin, validateLoggedUser, validateLoggedAdmin };
