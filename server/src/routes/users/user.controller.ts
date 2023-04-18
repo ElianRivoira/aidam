@@ -6,6 +6,49 @@ import { BadRequestError } from '../../errors/bad-request-error';
 import { RequestValidationError } from '../../errors/request-validation-error';
 import { validateToken } from '../../utils/tokens';
 
+
+const httpRegisterUser = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+  const userId = req.params.id;
+  const result = await userService.registerUser(userId);
+  if (result.success) {
+    res.status(200).json({ message: result.message });
+  } else {
+    res.status(400).json({ message: result.message });
+  }
+};
+
+const httpDeleteUser = async (req: Request, res: Response) => {
+  console.log(req.params.id);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+  const userId = req.params.id;
+  const result = await userService.deleteUser(userId);
+  if (result.success) {
+    res.status(200).json({ message: result.message });
+  } else {
+    res.status(400).json({ message: result.message });
+  }
+};
+
+const httpGetAllUsers = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+  if (req.session?.token) {
+    const { user } = validateToken(req.session.token);
+    const users = await userService.getAllUsers(user.id);
+    res.status(200).json(users);
+  }
+};
+
+
 const httpSignUp = async (req: Request, res: Response) => {
   const { body } = req;
   const errors = validationResult(req);
@@ -16,7 +59,9 @@ const httpSignUp = async (req: Request, res: Response) => {
 
   const userExists = await userService.exists(body.email);
   if (userExists)
-    throw new BadRequestError('Ya existe una cuenta con este email. Por favor intente nuevamente con un correo distinto');
+    throw new BadRequestError(
+      'Ya existe una cuenta con este email. Por favor intente nuevamente con un correo distinto'
+    );
 
   const user = await userService.signUp({
     firstName: body.firstName,
@@ -33,7 +78,7 @@ const httpSignUp = async (req: Request, res: Response) => {
 
 async function httpUserLogin(req: Request, res: Response) {
   const { email, password } = req.body;
-  console.log(req.body)
+  console.log(req.body);
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -72,4 +117,17 @@ const httpSearchUser = async (req: Request, res: Response) => {
   res.send(findedUsers);
 }
 
-export default { httpSignUp, httpUserLogin, httpGetUser, httpSearchUser };
+
+export default {
+  httpSignUp,
+  httpUserLogin,
+  httpGetUser,
+  httpGetAllUsers,
+  httpRegisterUser,
+  httpDeleteUser,
+  httpSearchUser
+};
+
+
+
+

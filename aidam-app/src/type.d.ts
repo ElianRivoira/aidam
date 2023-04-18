@@ -10,7 +10,9 @@ interface User {
   admin: false;
   observationsId: [];
   patientsId: [];
-  history: [];
+  lastThreeTasks: [];
+  status: boolean;
+  lastLoginDate: Date;
 }
 
 interface PostUser {
@@ -70,7 +72,7 @@ interface Patient {
   phone: number;
   schedulesId: [];
   observationsId: Observation[];
-  professionalsId: []
+  professionalsId: [];
 }
 
 interface PostPatient {
@@ -86,6 +88,7 @@ interface PostPatient {
   phone: number;
 }
 
+
 interface FormPatient {
   firstName: string;
   lastName: string;
@@ -99,3 +102,4 @@ interface FormPatient {
   phone: string;
   [key: string]: string
 }
+

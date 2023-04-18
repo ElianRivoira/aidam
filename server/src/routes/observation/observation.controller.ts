@@ -69,7 +69,7 @@ const httpPutObservation = async (req: Request, res: Response) => {
     const loggedUser = await userService.getLoggedUser(user.id);
 
     const obs = await observationService.putObservation(obsId, text);
-    performTask(loggedUser._id, 'Edito observación');
+    performTask(loggedUser._id, 'Editó observación');
 
     res.status(201).send(obs);
   }
@@ -118,3 +118,5 @@ export default {
   httpPutObservation,
   httpDeleteObservation,
 };
+
+

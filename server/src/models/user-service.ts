@@ -54,10 +54,48 @@ const getLoggedUser = async (id: String) => {
   return user;
 };
 
+const getAllUsers = async (id: String) => {
+  const users = await User.find({ userId: { $ne: id } });
+  return users;
+};
+
 const exists = async (email: string): Promise<UserDoc | null> => {
   const user = await User.findOne({ email });
   return user;
 };
+
+const registerUser = async (id: string) => {
+  try {
+    const result = await User.findOneAndUpdate(
+      { _id: id },
+      { status: true },
+      { new: true }
+    );
+    if (!result) {
+      return { success: false, message: 'User not found' };
+    }
+    return { success: true, message: 'User status updated' };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: 'Error updating user status' };
+  }
+};
+
+const deleteUser = async (id: string) => {
+  try {
+    const result = await User.findOneAndDelete({ _id: id }, { new: true });
+
+    if (!result) {
+      return { success: false, message: 'User not found' };
+    }
+
+    return { success: true, message: 'User deleted successfully' };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: 'Error deleting user' };
+  }
+};
+
 
 const searchUser = async (name: string): Promise<UserDoc[]> => {
   let findedUsers: UserDoc[];
@@ -80,4 +118,14 @@ const searchUser = async (name: string): Promise<UserDoc[]> => {
   return findedUsers;
 };
 
-export default { signUp, exists, userLogin, getLoggedUser, searchUser };
+export default {
+  signUp,
+  exists,
+  userLogin,
+  getLoggedUser,
+  getAllUsers,
+  registerUser,
+  deleteUser,
+  searchUser
+};
+
