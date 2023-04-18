@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import React, { useState } from 'react';
 
-import openEye from '../../assets/icons/openEye.svg';
+import openEye from '@/assets/icons/openEye.svg';
+import upload from '@/assets/icons/upload.svg';
 
 interface inputProps {
   label: string;
@@ -11,7 +12,7 @@ interface inputProps {
   isEqual?: boolean;
   validate?: boolean;
   pattern?: string;
-  name?: string;
+  name: string;
 }
 
 const Input: React.FC<inputProps> = ({
@@ -28,7 +29,7 @@ const Input: React.FC<inputProps> = ({
 
   return (
     <div className='w-full'>
-      <label htmlFor={name ? name : label} className='text-sm font-normal mb-1 block'>
+      <label htmlFor={name} className='text-sm font-normal mb-1 block'>
         {label}
       </label>
       {type === 'password' ? (
@@ -37,7 +38,7 @@ const Input: React.FC<inputProps> = ({
           <input
             onChange={onChange}
             type={visible ? 'text' : 'password'}
-            id={label}
+            id={name}
             name={label}
             value={value}
             className={`w-full h-10 rounded-md border ${
@@ -61,19 +62,33 @@ const Input: React.FC<inputProps> = ({
           </div>
         </div>
       ) : type === 'file' ? (
-        <input
-          id={label}
-          name={name ? name : label}
-          type={type}
-          className='w-full h-10 border-black02 mb-2.5 outline-none focus:border-aidam hover:border-aidam80'
-          onChange={onChange}
-        />
+        <>
+          <label
+            htmlFor={name}
+            className='w-full flex h-10 rounded-md justify-center items-center border border-black02 hover:border-aidam80 transition-colors cursor-pointer'
+          >
+            {value ? (
+              value
+            ) : (
+              <>
+                <Image src={upload} alt='upload'></Image>
+              </>
+            )}
+          </label>
+          <input
+            id={name}
+            name={name}
+            type={type}
+            className='hidden'
+            onChange={onChange}
+          />
+        </>
       ) : (
         <input
-          id={label}
-          name={name ? name : label}
+          id={name}
+          name={name}
           type={type}
-          className='w-full h-10 rounded-md border border-black02 mb-2.5 p-1.5 outline-none focus:border-aidam hover:border-aidam80'
+          className='w-full h-10 rounded-md border border-black02 mb-2.5 p-1.5 outline-none focus:border-aidam hover:border-aidam80 transition-colors'
           onChange={onChange}
           value={value}
           required
