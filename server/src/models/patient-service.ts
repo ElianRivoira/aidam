@@ -1,7 +1,12 @@
 import Patient, { PatientDoc, PatientAttrs } from './patient.model';
 
 const getAllPatients = async (): Promise<PatientDoc[]> => {
-  const patients = Patient.find();
+  const patients = Patient.find()
+    .populate({
+      path: 'observationsId',
+      options: { populate: { path: 'professional' } },
+    })
+    .populate({ path: 'professionalsId' });
   return patients;
 };
 

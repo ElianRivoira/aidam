@@ -6,7 +6,6 @@ import { BadRequestError } from '../../errors/bad-request-error';
 import { RequestValidationError } from '../../errors/request-validation-error';
 import { validateToken } from '../../utils/tokens';
 
-
 const httpRegisterUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -47,7 +46,6 @@ const httpGetAllUsers = async (req: Request, res: Response) => {
   }
 };
 
-
 const httpSignUp = async (req: Request, res: Response) => {
   const { body } = req;
   const errors = validationResult(req);
@@ -77,7 +75,6 @@ const httpSignUp = async (req: Request, res: Response) => {
 
 async function httpUserLogin(req: Request, res: Response) {
   const { email, password } = req.body;
-  console.log(req.body);
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -95,10 +92,10 @@ async function httpUserLogin(req: Request, res: Response) {
 
 const httpGetUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
-  if (!req.session) {
+  if (!errors.isEmpty()) {
     throw new RequestValidationError(errors.array());
   }
-  
+
   if (req.session?.token) {
     const { user } = validateToken(req.session.token);
     const loggedUser = await userService.getLoggedUser(user.id);
@@ -108,14 +105,30 @@ const httpGetUser = async (req: Request, res: Response) => {
 
 const httpSearchUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
-  if (!req.session) {
+  if (!errors.isEmpty()) {
     throw new RequestValidationError(errors.array());
   }
 
   const findedUsers = await userService.searchUser(req.params.name);
   res.send(findedUsers);
-}
+};
 
+const httpPutUser = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+  try {
+    const { email, phone } = req.body;
+    if (req.session?.token) {
+      const { user } = validateToken(req.session.token);
+      const updatedUser = await userService.putUser(user.id, {email, phone});
+      res.send(updatedUser);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
 
 export default {
   httpSignUp,
@@ -124,9 +137,6 @@ export default {
   httpGetAllUsers,
   httpRegisterUser,
   httpDeleteUser,
-  httpSearchUser
+  httpSearchUser,
+  httpPutUser,
 };
-
-
-
-
