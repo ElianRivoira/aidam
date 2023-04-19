@@ -4,7 +4,10 @@ import {
   validateLogin,
   validateSignUp,
 } from '../../middlewares/userValidators';
-import { validateLoggedUser, validateLoggedAdmin } from '../../middlewares/userValidators';
+import {
+  validateLoggedUser,
+  validateLoggedAdmin,
+} from '../../middlewares/userValidators';
 
 const router = express.Router();
 
@@ -25,5 +28,7 @@ router.put(
 router.delete('/:id', validateLoggedAdmin, userController.httpDeleteUser);
 
 router.get('/search/:name', validateLoggedUser, userController.httpSearchUser);
+
+router.put('/', validateLoggedUser, userController.httpPutUser);
 
 export default router;

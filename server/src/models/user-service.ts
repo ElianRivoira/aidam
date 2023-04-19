@@ -49,7 +49,10 @@ async function userLogin(user: LoginAttrs): Promise<LoginResponse | undefined> {
 }
 
 const getLoggedUser = async (id: String) => {
-  const user = await User.findById(id, { password: 0, __v: 0 });
+  const user = await User.findById(id, { password: 0, __v: 0 }).populate({
+    path: 'patientsId',
+    options: { populate: { path: 'professionalsId' } },
+  });
   if (!user) throw new BadRequestError('El usuario no existe');
   return user;
 };
@@ -96,7 +99,6 @@ const deleteUser = async (id: string) => {
   }
 };
 
-
 const searchUser = async (name: string): Promise<UserDoc[]> => {
   let findedUsers: UserDoc[];
   if (name.includes(' ')) {
@@ -118,6 +120,20 @@ const searchUser = async (name: string): Promise<UserDoc[]> => {
   return findedUsers;
 };
 
+const putUser = async (id: string, data?: object, patientId?: string) => {
+  const user = await User.findByIdAndUpdate(
+    id,
+    {
+      ...data,
+      $addToSet: { patientsId: patientId },
+    },
+    {
+      new: true,
+    }
+  );
+  return user;
+};
+
 export default {
   signUp,
   exists,
@@ -126,6 +142,6 @@ export default {
   getAllUsers,
   registerUser,
   deleteUser,
-  searchUser
+  searchUser,
+  putUser,
 };
-

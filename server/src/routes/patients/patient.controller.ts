@@ -69,6 +69,11 @@ const httpPostPatient = async (req: Request, res: Response): Promise<void> => {
 
     professionalsArray.forEach(async (prof: string) => {
       const findedProf = await userService.searchUser(prof);
+      await userService.putUser(
+        findedProf[0]._id,
+        undefined,
+        patient._id
+      )
       await patientService.putPatient(
         patient._id,
         undefined,
