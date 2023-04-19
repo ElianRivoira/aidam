@@ -21,7 +21,7 @@ const NavbarDesktop = () => {
       <div className='w-full flex justify-between items-center pl-14 pr-[30px]'>
         <Image src={aidamTexto} alt='logo' className='w-44 h-16' />
         <div className='w-[40%] 2xl:w-1/3 flex justify-between items-center'>
-          <Link href={'/professionals'} className={`${styles.navbarButton} font-medium text-xb transition-colors ${router.asPath.includes('/professionals') ? styles.activeSite : ''}`}>PROFESIONALES</Link>
+          <Link href={'/admin/professionals'} className={`${styles.navbarButton} font-medium text-xb transition-colors ${router.asPath.includes('/professionals') ? styles.activeSite : ''}`}>PROFESIONALES</Link>
           <Link href={'/patients'} className={`${styles.navbarButton} font-medium text-xb transition-colors ${router.asPath.includes('/patients') ? styles.activeSite : ''}`}>PACIENTES</Link>
           <button onClick={handleLogout}>
             <Image src={logout} alt='logout' width={35} />

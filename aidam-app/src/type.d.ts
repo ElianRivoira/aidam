@@ -61,7 +61,8 @@ interface Observation {
 
 interface Patient {
   _id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   diagnosis: string;
   socialwork: string;
   affiliateNumber: string;
@@ -72,7 +73,7 @@ interface Patient {
   phone: number;
   schedulesId: [];
   observationsId: Observation[];
-  professionalsId: [];
+  professionalsId: User[];
 }
 
 interface PostPatient {
