@@ -5,11 +5,13 @@ import { useQuery } from '@tanstack/react-query';
 import { hasCookie } from 'cookies-next';
 
 import Navbar from '@/components/navbar/Navbar';
-import PatientCard from '@/components/PatientCard';
+import MobileCard from '@/components/MobileCard';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import SearchBar from '@/components/SearchBar';
 import { getLoggedUser } from '@/services/users';
+import { getPatients } from '@/services/patients';
+import DesktopCard from '@/components/DesktopCard';
 
 const patients = () => {
   const user = useQuery({
@@ -18,6 +20,12 @@ const patients = () => {
     queryFn: getLoggedUser,
   });
 
+  const patients = useQuery({
+    queryKey: ['patients'],
+    enabled: user.data?.admin,
+    queryFn: getPatients,
+  });
+  console.log(patients.data);
   return (
     <>
       <Head>
@@ -30,7 +38,13 @@ const patients = () => {
             <SearchBar />
           </div>
           <div className='m-3.5 flex flex-col items-center'>
-            <PatientCard />
+            {user.data?.admin
+              ? user.data.patientsId.map((patient, index) => (
+                  <MobileCard key={index} patient={patient} />
+                ))
+              : patients.data?.map((patient, index) => (
+                  <MobileCard key={index} patient={patient} />
+                ))}
           </div>
         </>
       ) : (
@@ -49,6 +63,15 @@ const patients = () => {
                   </Link>
                 )}
               </div>
+            </div>
+            <div className='mx-12 mt-14'>
+              {user.data?.admin
+                ? user.data.patientsId.map((patient, index) => (
+                    <DesktopCard key={index} patient={patient} />
+                  ))
+                : patients.data?.map((patient, index) => (
+                    <DesktopCard key={index} patient={patient} />
+                  ))}
             </div>
           </main>
         </>

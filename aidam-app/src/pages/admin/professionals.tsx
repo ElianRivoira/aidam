@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import SearchBar from '@/components/SearchBar';
-import ProfessionalsAdminCard from '@/components/admin/ProfessionalsAdminCard';
+import DesktopCard from '@/components/DesktopCard';
 import Head from 'next/head';
-import { getAllUsers, registerUser } from '@/services/users';
+import { getAllUsers } from '@/services/users';
 import ProfessionalsModal from '@/components/admin/ProfessionalsModal';
 
 const professionals = () => {
@@ -18,8 +18,8 @@ const professionals = () => {
     const users = await getAllUsers();
     let activeUsers;
     let inactiveUsers;
-    activeUsers = users.filter((user) => user.status === true);
-    inactiveUsers = users.filter((user) => user.status === false);
+    activeUsers = users.filter(user => user.status === true);
+    inactiveUsers = users.filter(user => user.status === false);
     setActiveUsers(activeUsers);
     setInactiveUsers(inactiveUsers);
   }
@@ -45,18 +45,10 @@ const professionals = () => {
             </button>
           </div>
         </div>
-        <div className='mx-14'>
-          {activeUsers
-            ? activeUsers.map((user) => (
-                <ProfessionalsAdminCard
-                  firstName={user.firstName}
-                  lastName={user.lastName}
-                  profession={user.profession}
-                  lastConnection={user.lastLoginDate}
-                  lastActions={user.lastThreeTasks}
-                />
-              ))
-            : ''}
+        <div className='mx-12'>
+          {activeUsers?.map(user => (
+            <DesktopCard user={user} />
+          ))}
         </div>
         {openModal && (
           <ProfessionalsModal

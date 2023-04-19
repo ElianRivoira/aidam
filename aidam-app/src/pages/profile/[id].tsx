@@ -52,7 +52,7 @@ const Profile = () => {
           </div>
           <div className='flex flex-col items-center'>
             <Image src={profileImage} alt='imagen' className='' />
-            <p className='font-semibold text-lb'>{user?.name.toUpperCase()}</p>
+            <p className='font-semibold text-lb'>{user?.firstName.toUpperCase()} {user?.lastName.toUpperCase()}</p>
           </div>
           <div className='mt-12 px-2.5'>
             <h1 className='font-semibold text-lb mb-5.5'>DATOS PERSONALES</h1>
