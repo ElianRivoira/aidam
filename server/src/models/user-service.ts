@@ -84,6 +84,19 @@ const registerUser = async (id: string) => {
   }
 };
 
+const getUserById = async (id: string) => {
+  try {
+    const result = await User.findById(id).populate('patientsId');
+    if (!result) {
+      return { success: false, message: 'User not found' };
+    }
+    return { success: true, data: result };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: 'Error finding User' };
+  }
+};
+
 const deleteUser = async (id: string) => {
   try {
     const result = await User.findOneAndDelete({ _id: id }, { new: true });
@@ -99,21 +112,33 @@ const deleteUser = async (id: string) => {
   }
 };
 
-const searchUser = async (name: string): Promise<UserDoc[]> => {
+const searchUser = async (name: string | null): Promise<UserDoc[]> => {
   let findedUsers: UserDoc[];
-  if (name.includes(' ')) {
+  if (name === '*') {
+    findedUsers = await User.find({ status: true });
+  } else if (name?.includes(' ')) {
     const [firstName, lastName] = name.split(' ');
     findedUsers = await User.find({
-      $or: [
-        { firstName: { $regex: `.*${firstName}.*`, $options: 'i' } },
-        { lastName: { $regex: `.*${lastName}.*`, $options: 'i' } },
+      $and: [
+        {
+          $or: [
+            { firstName: { $regex: `.*${firstName}.*`, $options: 'i' } },
+            { lastName: { $regex: `.*${lastName}.*`, $options: 'i' } },
+          ],
+        },
+        { status: true },
       ],
     });
   } else {
     findedUsers = await User.find({
-      $or: [
-        { firstName: { $regex: `.*${name}.*`, $options: 'i' } },
-        { lastName: { $regex: `.*${name}.*`, $options: 'i' } },
+      $and: [
+        {
+          $or: [
+            { firstName: { $regex: `.*${name}.*`, $options: 'i' } },
+            { lastName: { $regex: `.*${name}.*`, $options: 'i' } },
+          ],
+        },
+        { status: true },
       ],
     });
   }
@@ -144,4 +169,5 @@ export default {
   deleteUser,
   searchUser,
   putUser,
+  getUserById,
 };

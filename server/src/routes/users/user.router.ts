@@ -19,16 +19,18 @@ router.get('/me', validateLoggedUser, userController.httpGetUser);
 
 router.get('/', validateLoggedUser, userController.httpGetAllUsers);
 
+router.get('/search/:name', validateLoggedUser, userController.httpSearchUser);
+
+router.get("/:id", validateLoggedAdmin, userController.httpGetUserById)
+
 router.put(
   '/register/:id',
   validateLoggedAdmin,
   userController.httpRegisterUser
 );
 
-router.delete('/:id', validateLoggedAdmin, userController.httpDeleteUser);
-
-router.get('/search/:name', validateLoggedUser, userController.httpSearchUser);
-
 router.put('/', validateLoggedUser, userController.httpPutUser);
+
+router.delete('/:id', validateLoggedAdmin, userController.httpDeleteUser);
 
 export default router;
