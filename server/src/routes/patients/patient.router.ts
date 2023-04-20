@@ -17,7 +17,9 @@ patientRouter.post('/', [validateLoggedAdmin, uploadCertificate.single('certific
 
 patientRouter.get('/:id', validateLoggedUser, patientController.httpGetOnePatient);
 
-patientRouter.put('/:id', validateLoggedAdmin, patientController.httpEditPatient);
+patientRouter.put('/:id', [validateLoggedAdmin, uploadCertificate.single('certificate'), validatePatient], patientController.httpEditPatient);
+
+patientRouter.put('/unassign/:id', validateLoggedAdmin, patientController.httpUnassignProf);
 
 patientRouter.delete('/:id', validateLoggedAdmin, patientController.httpDeletePatient);
 

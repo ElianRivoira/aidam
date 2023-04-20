@@ -1,4 +1,4 @@
-import mongoose, { ObjectId } from 'mongoose';
+import mongoose from 'mongoose';
 import { Password } from '../services/password';
 import { ObservationDoc } from './observations.model';
 import { PatientDoc } from './patient.model';

@@ -33,7 +33,7 @@ const professionals = () => {
         <title>AIDAM Admin - Profesionales</title>
       </Head>
       <NavbarDesktop />
-      <main className='min-h-screen'>
+      <main className='min-h-screen bg-background'>
         <div className='flex justify-end mt-7 w-full mb-14'>
           <div className='w-[70%] flex justify-between items-center mr-12'>
             <SearchBar />
@@ -46,8 +46,8 @@ const professionals = () => {
           </div>
         </div>
         <div className='mx-12'>
-          {activeUsers?.map(user => (
-            <DesktopCard user={user} />
+          {activeUsers?.map((user, index) => (
+            <DesktopCard user={user} key={index} />
           ))}
         </div>
         {openModal && (

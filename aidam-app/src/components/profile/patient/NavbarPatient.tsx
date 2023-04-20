@@ -7,14 +7,14 @@ const NavbarPatient = () => {
   const patientId = router.query.id;
 
   return (
-    <div className='w-full h-7.5 md:rounded-t-3xl flex'>
+    <div className='w-full h-7.5 flex lg:shadow-xm'>
       <Link
       href={`/patients/${patientId}/profile`}
         className={`text-center border-black03 transition-colors ${
           router.asPath.includes('/profile')
             ? 'bg-aidamNav text-white shadow-active'
             : 'active:shadow-active hover:bg-aidamNav hover:text-white'
-        } md:border-[#e5e7eb] w-1/4 text-ls font-medium flex items-center justify-center border md:rounded-tl-3xl h-full`}
+        } w-1/4 text-lh font-medium flex items-center justify-center border h-full`}
       >
         PERFIL
       </Link>
@@ -24,7 +24,7 @@ const NavbarPatient = () => {
           router.asPath.includes('/reports')
             ? 'bg-aidamNav text-white shadow-active'
             : 'active:shadow-active hover:bg-aidamNav hover:text-white'
-        } md:border-[#e5e7eb] w-1/4 text-ls font-medium flex items-center justify-center border h-full`}
+        } w-1/4 text-lh font-medium flex items-center justify-center border h-full`}
       >
         INFORMES
       </Link>
@@ -34,7 +34,7 @@ const NavbarPatient = () => {
           router.asPath.includes('/observations')
             ? 'bg-aidamNav text-white shadow-active'
             : 'active:shadow-active hover:bg-aidamNav hover:text-white'
-        } md:border-[#e5e7eb] w-1/4 text-ls font-medium flex items-center justify-center border h-full`}
+        } w-1/4 text-lh font-medium flex items-center justify-center border h-full`}
       >
         OBSERVACIONES
       </Link>
@@ -44,7 +44,7 @@ const NavbarPatient = () => {
           router.asPath.includes('/medicsocial')
             ? 'bg-aidamNav text-white shadow-active'
             : 'active:shadow-active hover:bg-aidamNav hover:text-white'
-        } md:border-[#e5e7eb] w-1/4 text-ls font-medium flex items-center justify-center border md:rounded-tr-3xl h-full`}
+        } w-1/4 text-lh font-medium flex items-center justify-center border h-full`}
       >
         MEDICO/SOCIAL
       </Link>

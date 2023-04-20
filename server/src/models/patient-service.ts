@@ -37,13 +37,14 @@ const getOnePatient = async (
   populate?: boolean
 ): Promise<PatientDoc | null> => {
   if (populate) {
-    const patient = await Patient.findOne(
-      { _id: id },
-      { __v: 0, userId: 0 }
-    ).populate({
-      path: 'observationsId',
-      options: { populate: { path: 'professional' } },
-    });
+    const patient = await Patient.findOne({ _id: id }, { __v: 0, userId: 0 })
+      .populate({
+        path: 'observationsId',
+        options: { populate: { path: 'professional' } },
+      })
+      .populate({
+        path: 'professionalsId',
+      });
     return patient;
   } else {
     const patient = await Patient.findOne({ _id: id }, { __v: 0, userId: 0 });
@@ -54,18 +55,35 @@ const getOnePatient = async (
 const putPatient = async (
   id: string,
   data?: object,
-  therapistId?: string
+  professionalId?: string,
+  pull?: boolean
 ): Promise<PatientDoc | null> => {
-  const patient = await Patient.findByIdAndUpdate(
-    id,
-    {
-      ...data,
-      $addToSet: { professionalsId: therapistId },
-    },
-    {
-      new: true,
+  const findAndUpdate = () => {
+    if (pull) {
+      return Patient.findByIdAndUpdate(
+        id,
+        {
+          ...data,
+          $pull: { professionalsId: professionalId },
+        },
+        {
+          new: true,
+        }
+      );
+    } else {
+      return Patient.findByIdAndUpdate(
+        id,
+        {
+          ...data,
+          $addToSet: { professionalsId: professionalId },
+        },
+        {
+          new: true,
+        }
+      );
     }
-  );
+  };
+  const patient = await findAndUpdate();
   return patient;
 };
 

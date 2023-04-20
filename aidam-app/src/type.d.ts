@@ -8,8 +8,8 @@ interface User {
   profession: string;
   phone?: string;
   admin: false;
-  observationsId: [];
-  patientsId: [];
+  observationsId: Observation[];
+  patientsId: Patient[];
   lastThreeTasks: [];
   status: boolean;
   lastLoginDate: Date;
@@ -74,6 +74,7 @@ interface Patient {
   schedulesId: [];
   observationsId: Observation[];
   professionalsId: User[];
+  active: boolean;
 }
 
 interface PostPatient {
@@ -101,6 +102,6 @@ interface FormPatient {
   diagnosis: string;
   email: string;
   phone: string;
-  [key: string]: string
+  [key: string]: string;
 }
 
