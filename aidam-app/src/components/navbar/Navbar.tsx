@@ -17,7 +17,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={`h-17.5 w-full ${router.asPath.includes('/patients/') ? '' : 'shadow-xm'} md:shadow-xm flex justify-between px-3`}>
+    <nav className={`h-17.5 w-full ${router.asPath.includes('/patients/') ? '' : 'shadow-xm'} lg:shadow-xm flex justify-between px-3`}>
       <button onClick={() => setIsOpen(true)}>
         <Image src={hamburMenu} alt='menu' />
       </button>

@@ -5,13 +5,15 @@ import { useQuery } from '@tanstack/react-query';
 
 import x from '@/assets/icons/x-white.svg';
 import { searchUser } from '@/services/users';
+import { unassignProf } from '@/services/patients';
 
 interface TagInputProps {
   taggedProfs: string[];
   setTaggedProfs: React.Dispatch<React.SetStateAction<string[]>>;
+  patient?: Patient | undefined;
 }
 
-const TagInput: React.FC<TagInputProps> = ({ taggedProfs, setTaggedProfs }) => {
+const TagInput: React.FC<TagInputProps> = ({ taggedProfs, setTaggedProfs, patient }) => {
   const [searchText, setSearchText] = useState('');
 
   const professionals = useQuery({
@@ -41,10 +43,11 @@ const TagInput: React.FC<TagInputProps> = ({ taggedProfs, setTaggedProfs }) => {
     setTags(name);
   };
 
-  const handleTagRemove = (prof: string) => {
+  const handleTagRemove = async (profToDelete: string) => {
     // Eliminar el usuario etiquetado de la lista
-    const filteredProfs = taggedProfs.filter(proff => proff !== prof);
+    const filteredProfs = taggedProfs.filter(prof => prof !== profToDelete);
     setTaggedProfs(filteredProfs);
+    patient && await unassignProf(patient._id, profToDelete)
   };
 
   return (
@@ -85,6 +88,7 @@ const TagInput: React.FC<TagInputProps> = ({ taggedProfs, setTaggedProfs }) => {
               <button
                 onClick={() => handleTagRemove(prof)}
                 className='flex items-center mr-1'
+                type='button'
               >
                 <Image src={x} alt='x' width={20} />
               </button>

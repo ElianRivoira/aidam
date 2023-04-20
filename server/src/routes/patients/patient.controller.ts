@@ -4,7 +4,6 @@ import { validationResult } from 'express-validator';
 import patientService from '../../models/patient-service';
 import userService from '../../models/user-service';
 import { RequestValidationError } from '../../errors/request-validation-error';
-import { BadRequestError } from '../../errors/bad-request-error';
 
 const httpGetAllPatientsFromTherapist = async (
   req: Request,
@@ -69,11 +68,7 @@ const httpPostPatient = async (req: Request, res: Response): Promise<void> => {
 
     professionalsArray.forEach(async (prof: string) => {
       const findedProf = await userService.searchUser(prof);
-      await userService.putUser(
-        findedProf[0]._id,
-        undefined,
-        patient._id
-      )
+      await userService.putUser(findedProf[0]._id, undefined, patient._id);
       await patientService.putPatient(
         patient._id,
         undefined,
@@ -118,30 +113,50 @@ const httpEditPatient = async (
   }
   try {
     const {
-      name,
+      firstName,
+      lastName,
       diagnosis,
       socialwork,
       affiliateNumber,
+      authorizedModule,
       dni,
       birth,
       email,
       phone,
-      therapistId,
+      professionals,
     } = req.body;
-    const editedPatient = await patientService.putPatient(
-      req.params.id,
-      {
-        name,
-        diagnosis,
-        socialwork,
-        affiliateNumber,
-        dni,
-        birth,
-        email,
-        phone,
-      },
-      therapistId
-    );
+
+    const editedPatient = await patientService.putPatient(req.params.id, {
+      firstName,
+      lastName,
+      diagnosis,
+      socialwork,
+      affiliateNumber,
+      authorizedModule,
+      dni,
+      birth,
+      email,
+      phone,
+    });
+
+    const professionalsArray = JSON.parse(professionals);
+
+    if (editedPatient) {
+      professionalsArray.forEach(async (prof: string) => {
+        const findedProf = await userService.searchUser(prof);
+        await userService.putUser(
+          findedProf[0]._id,
+          undefined,
+          editedPatient._id
+        );
+        await patientService.putPatient(
+          editedPatient._id,
+          undefined,
+          findedProf[0]._id
+        );
+      });
+    }
+
     res.send(editedPatient);
   } catch (e) {
     next(e);
@@ -162,7 +177,40 @@ const httpDeletePatient = async (
     const patient = await patientService.deletePatient(req.params.id);
     res.status(200).send(patient);
   } catch (e) {
-    next(e);
+    console.error(e);
+  }
+};
+
+const httpUnassignProf = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+  try {
+    const { profName } = req.body;
+
+    const patient = await patientService.getOnePatient(req.params.id);
+
+    if (patient) {
+      const findedProf = await userService.searchUser(profName);
+      await userService.putUser(
+        findedProf[0]._id,
+        undefined,
+        patient._id,
+        true
+      );
+      await patientService.putPatient(
+        patient._id,
+        undefined,
+        findedProf[0]._id,
+        true
+      );
+    }
+
+    res.send(patient);
+  } catch (e) {
+    console.error(e);
   }
 };
 
@@ -173,4 +221,5 @@ export {
   httpGetOnePatient,
   httpEditPatient,
   httpDeletePatient,
+  httpUnassignProf,
 };

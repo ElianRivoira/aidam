@@ -107,7 +107,7 @@ const ObservationId = ({ query }: MyPageProps) => {
   return (
     <>
       <Head>
-        <title>{`AIDAM - Observación de ${patient.data?.name}`}</title>
+        <title>{`AIDAM - Observación de ${patient.data?.firstName} ${patient.data?.lastName}`}</title>
       </Head>
       <main className='flex flex-col items-center min-h-screen'>
         <Navbar />

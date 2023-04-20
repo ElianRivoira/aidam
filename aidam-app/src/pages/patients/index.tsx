@@ -25,14 +25,14 @@ const patients = () => {
     enabled: user.data?.admin,
     queryFn: getPatients,
   });
-  console.log(patients.data);
+
   return (
     <>
       <Head>
         <title>AIDAM - Pacientes</title>
       </Head>
       {useMediaQuery(1024) ? (
-        <>
+        <main className='bg-background'>
           <Navbar />
           <div className='mt-7 mb-10 flex justify-center'>
             <SearchBar />
@@ -46,11 +46,11 @@ const patients = () => {
                   <MobileCard key={index} patient={patient} />
                 ))}
           </div>
-        </>
+        </main>
       ) : (
         <>
           <NavbarDesktop />
-          <main className='min-h-screen'>
+          <main className='min-h-screen bg-background'>
             <div className='flex justify-end mt-7 w-full'>
               <div className='w-[70%] flex justify-between items-center mr-12'>
                 <SearchBar />
@@ -66,12 +66,16 @@ const patients = () => {
             </div>
             <div className='mx-12 mt-14'>
               {user.data?.admin
-                ? user.data.patientsId.map((patient, index) => (
-                    <DesktopCard key={index} patient={patient} />
-                  ))
-                : patients.data?.map((patient, index) => (
-                    <DesktopCard key={index} patient={patient} />
-                  ))}
+                ? patients.data?.map((patient, index) => {
+                  if(patient.active){
+                    return <DesktopCard key={index} patient={patient} />
+                  }
+                })
+                : user.data?.patientsId.map((patient, index) => {
+                  if(patient.active){
+                    return <DesktopCard key={index} patient={patient} />
+                  }
+                })}
             </div>
           </main>
         </>

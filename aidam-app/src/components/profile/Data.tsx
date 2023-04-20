@@ -14,8 +14,8 @@ const Data: React.FC<DataProps> = ({icon, title, info}) => {
         <Image src={icon} alt='icon' />
       </div>
       <div className='flex flex-col'>
-        <h2 className='text-sm font-semibold mb-2'>{title}</h2>
-        <p className='text-sm font-normal'>{info}</p>
+        <h2 className='text-sm lg:text-lb font-semibold mb-2'>{title}</h2>
+        <p className='text-sm lg:text-lb font-normal'>{info}</p>
       </div>
     </div>
   )

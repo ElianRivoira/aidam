@@ -145,17 +145,34 @@ const searchUser = async (name: string | null): Promise<UserDoc[]> => {
   return findedUsers;
 };
 
-const putUser = async (id: string, data?: object, patientId?: string) => {
-  const user = await User.findByIdAndUpdate(
-    id,
-    {
-      ...data,
-      $addToSet: { patientsId: patientId },
-    },
-    {
-      new: true,
+const putUser = async (id: string, data?: object, patientId?: string, pull?: boolean) => {
+  
+  const findAndUpdate = () => {
+    if(pull) {
+      return User.findByIdAndUpdate(
+        id,
+        {
+          ...data,
+          $pull: { patientsId: patientId },
+        },
+        {
+          new: true,
+        }
+      );
+    } else {
+      return User.findByIdAndUpdate(
+        id,
+        {
+          ...data,
+          $addToSet: { patientsId: patientId },
+        },
+        {
+          new: true,
+        }
+      );
     }
-  );
+  }
+  const user = await findAndUpdate()
   return user;
 };
 

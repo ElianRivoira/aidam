@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import Head from 'next/head';
-import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
+import { NextPageContext } from 'next';
+import { hasCookie } from 'cookies-next';
 
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import Input from '@/components/form/Input';
 import ArrowBack from '@/components/ArrowBack';
-import TagInput from '@/components/form/TagInput';
-import { postPatient } from '@/services/patients';
+import { getOnePatient, putPatient } from '@/services/patients';
 import Modal from '@/components/Modal';
+import TagInput from '@/components/form/TagInput';
 
-const create = () => {
+const editPatient = ({ query }: MyPageProps) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(0);
@@ -40,9 +42,15 @@ const create = () => {
     files && setCertificate(files[0]);
   };
 
-  const postObs = useMutation({
-    mutationFn: postPatient,
-    onSuccess: newPatient => {
+  const patient = useQuery({
+    queryKey: ['patient', query.id],
+    enabled: hasCookie('session'),
+    queryFn: () => getOnePatient(query.id),
+  });
+
+  const editPatient = useMutation({
+    mutationFn: putPatient,
+    onSuccess: editedPatient => {
       setType(1);
       setOpen(true);
     },
@@ -64,7 +72,10 @@ const create = () => {
     formData.append('professionals', JSON.stringify(professionals));
     certificate && formData.append('certificate', certificate as Blob);
 
-    postObs.mutate(formData);
+    if (patient.data) {
+      formData.append('_id', patient.data?._id);
+      editPatient.mutate({id: patient.data._id, form: formData});
+    }
   };
 
   useEffect(() => {
@@ -73,16 +84,36 @@ const create = () => {
     }
   }, [open]);
 
+  useEffect(() => {
+    if(patient.isSuccess){
+      setPatientInfo({
+        firstName: patient.data.firstName,
+        lastName: patient.data.lastName,
+        dni: patient.data.dni.toString(),
+        birth: patient.data.birth.toString().split('T')[0],
+        socialwork: patient.data.socialwork,
+        affiliateNumber: patient.data.affiliateNumber,
+        authorizedModule: patient.data.authorizedModule,
+        diagnosis: patient.data.diagnosis,
+        email: patient.data.email,
+        phone: patient.data.phone.toString(),
+      });
+      setProfessionals(patient.data.professionalsId.map(prof => `${prof.firstName} ${prof.lastName}`));
+    }
+  }, [patient.isSuccess]);
+
   return (
     <>
       <Head>
-        <title>AIDAM Admin - Nuevo paciente</title>
+        <title>AIDAM Admin - Editar paciente</title>
       </Head>
       <main className='min-h-screen bg-background'>
         <NavbarDesktop />
         <div className='w-full mt-12 px-12'>
           <ArrowBack />
-          <h1 className='text-center text-xl4 font-semibold'>NUEVO PACIENTE</h1>
+          <h1 className='text-center text-xl4 font-semibold'>
+            EDITAR PACIENTE
+          </h1>
           <form
             encType='multipart/form-data'
             onSubmit={handleSubmit}
@@ -97,7 +128,7 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.firstName}
                   placeholder='Ejemplo'
-                  />
+                />
                 <Input
                   label='Nombre'
                   name='lastName'
@@ -105,7 +136,7 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.lastName}
                   placeholder='Ejemplo'
-                  />
+                />
                 <Input
                   label='DNI'
                   name='dni'
@@ -113,14 +144,14 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.dni}
                   placeholder='12345678'
-                  />
+                />
                 <Input
                   label='Fecha de Nacimiento'
                   name='birth'
                   type='date'
                   onChange={e => handleChange(e)}
                   value={patientInfo.birth}
-                  />
+                />
               </div>
               <div className='flex flex-col w-1/4 gap-9 items-center'>
                 <Input
@@ -128,9 +159,9 @@ const create = () => {
                   name='socialwork'
                   type='text'
                   onChange={e => handleChange(e)}
-                  value={patientInfo.socialWork}
+                  value={patientInfo.socialwork}
                   placeholder='EJEMPLO'
-                  />
+                />
                 <Input
                   label='N° de Afiliado'
                   name='affiliateNumber'
@@ -138,7 +169,7 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.affiliateNumber}
                   placeholder='03/18688242/06'
-                  />
+                />
                 <Input
                   label='Módulo Autorizado'
                   name='authorizedModule'
@@ -146,7 +177,7 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.authorizedModule}
                   placeholder='18688242'
-                  />
+                />
                 <Input
                   label='Diagnóstico'
                   name='diagnosis'
@@ -154,7 +185,7 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.diagnosis}
                   placeholder='Trastorno ...'
-                  />
+                />
               </div>
               <div className='flex flex-col w-1/4 gap-9 items-center'>
                 <Input
@@ -164,7 +195,7 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.email}
                   placeholder='ejemplo@ejemplo.com'
-                  />
+                />
                 <Input
                   label='N° de Teléfono'
                   name='phone'
@@ -183,6 +214,7 @@ const create = () => {
                 <TagInput
                   taggedProfs={professionals}
                   setTaggedProfs={setProfessionals}
+                  patient={patient.data}
                 />
               </div>
             </div>
@@ -205,7 +237,7 @@ const create = () => {
             type={type}
             errors={errors}
           >
-            <h1>Paciente creado satisfactoriamente</h1>
+            <h1>Paciente editado satisfactoriamente</h1>
           </Modal>
         </div>
       </main>
@@ -213,4 +245,17 @@ const create = () => {
   );
 };
 
-export default create;
+export default editPatient;
+
+interface MyPageProps {
+  query: {
+    [key: string]: string;
+  };
+}
+
+editPatient.getInitialProps = async ({
+  query,
+}: NextPageContext): Promise<MyPageProps> => {
+  const castedQuery = query as unknown as MyPageProps['query'];
+  return { query: castedQuery };
+};
