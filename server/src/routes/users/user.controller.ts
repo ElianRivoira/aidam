@@ -20,6 +20,23 @@ const httpRegisterUser = async (req: Request, res: Response) => {
   }
 };
 
+const httpGetUserById = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+
+  const userId = req.params.id;
+  const result = await userService.getUserById(userId);
+
+  if (result.success) {
+    res.status(200).json(result.data);
+  } else {
+    const status = result.message === 'User not found' ? 404 : 500;
+    res.status(status).json({ message: result.message });
+  }
+};
+
 const httpDeleteUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -122,7 +139,7 @@ const httpPutUser = async (req: Request, res: Response) => {
     const { email, phone } = req.body;
     if (req.session?.token) {
       const { user } = validateToken(req.session.token);
-      const updatedUser = await userService.putUser(user.id, {email, phone});
+      const updatedUser = await userService.putUser(user.id, { email, phone });
       res.send(updatedUser);
     }
   } catch (e) {
@@ -139,4 +156,5 @@ export default {
   httpDeleteUser,
   httpSearchUser,
   httpPutUser,
+  httpGetUserById,
 };

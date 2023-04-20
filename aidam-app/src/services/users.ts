@@ -5,7 +5,10 @@ export const postUser = async (data: PostUser): Promise<User> => {
   return res.data;
 };
 
-export async function login(data: {email: string, password: string}): Promise<User> {
+export async function login(data: {
+  email: string;
+  password: string;
+}): Promise<User> {
   const res = await api.post('/users/login', data);
   return res.data;
 }
@@ -32,5 +35,10 @@ export async function deleteUser(id: string): Promise<User> {
 
 export async function searchUser(name: string): Promise<User[]> {
   const res = await api.get(`/users/search/${name}`);
+  return res.data;
+}
+
+export async function findUserById(id: string): Promise<User> {
+  const res = await api.get(`/users/${id}`);
   return res.data;
 }
