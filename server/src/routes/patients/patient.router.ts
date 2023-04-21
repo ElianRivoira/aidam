@@ -32,6 +32,12 @@ patientRouter.get(
   patientController.httpSearchPatient
 );
 
+patientRouter.get(
+  '/download/certificate/:id',
+  validateLoggedUser,
+  patientController.httpDownloadCertificate
+);
+
 patientRouter.post(
   '/',
   [

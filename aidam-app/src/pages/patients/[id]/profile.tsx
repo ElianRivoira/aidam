@@ -17,7 +17,7 @@ import cardIcon from '@/assets/icons/cardIcon.svg';
 import scheduleIcon from '@/assets/icons/scheduleIcon.svg';
 import Navbar from '@/components/navbar/Navbar';
 import NavbarPatient from '@/components/profile/patient/NavbarPatient';
-import { getOnePatient } from '@/services/patients';
+import { downloadCertificate, getOnePatient } from '@/services/patients';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import ArrowBack from '@/components/ArrowBack';
@@ -51,11 +51,15 @@ const Profile = ({ query }: MyPageProps) => {
     },
   });
 
+  const handleDownload = async () => {
+    const pathCertificate = await downloadCertificate(query.id);
+    window.open(pathCertificate);
+  }
+
   useEffect(() => {
     if (patient.data) {
       const date = new Date(patient.data.birth).toLocaleString().split(',')[0];
       setBirthDate(date);
-      console.log(patient.data);
     }
   }, [patient.isSuccess]);
 
@@ -77,7 +81,7 @@ const Profile = ({ query }: MyPageProps) => {
               <div className='flex justify-between items-center mt-8'>
                 <ArrowBack />
                 <div className='flex gap-12 relative z-0'>
-                  <button className='text-lm font-medium text-white px-4 py-2.5 h-fit rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'>
+                  <button onClick={handleDownload} className='text-lm font-medium text-white px-4 py-2.5 h-fit rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'>
                     Certificado
                   </button>
                   {patient.data && (

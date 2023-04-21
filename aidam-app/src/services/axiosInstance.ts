@@ -15,3 +15,11 @@ export const apiForm = axios.create({
   },
   withCredentials: true,
 });
+
+export const apiFile = axios.create({
+  baseURL: 'http://localhost:8000/api',
+  headers: {
+    'Content-Type': 'application/pdf',
+  },
+  withCredentials: true,
+});

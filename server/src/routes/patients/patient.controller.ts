@@ -1,9 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
+import path from 'path';
+import fs from 'fs'
 
 import patientService from '../../models/patient-service';
 import userService from '../../models/user-service';
 import { RequestValidationError } from '../../errors/request-validation-error';
+import getFile from '../../utils/getFile';
 
 const httpGetAllPatientsFromTherapist = async (
   req: Request,
@@ -224,6 +227,29 @@ const httpSearchPatient = async (req: Request, res: Response) => {
   res.send(findedPatients);
 };
 
+const httpDownloadCertificate = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+  try {
+    const patient = await patientService.getOnePatient(req.params.id);
+    
+    const responseFileName = `Certificado-de-${patient?.firstName}-${patient?.lastName}`;
+    
+    const fileName = getFile([`${patient?.firstName}`, `${patient?.lastName}`, `${patient?.dni}`]);
+    // const filePath = path.join(__dirname, `../../../certificates/${fileName}`);
+
+    // res.setHeader('Content-Type', 'application/pdf');
+    // res.setHeader('Content-Disposition', `attachment; filename=${responseFileName}`);
+
+    // res.sendFile(filePath);
+    res.send(`http://localhost:8000/download/certificate/${fileName}`)
+  } catch (e) {
+    console.error(e)
+  }
+};
+
 export {
   httpGetAllPatientsFromTherapist,
   httpGetAllPatients,
@@ -233,4 +259,5 @@ export {
   httpDeletePatient,
   httpUnassignProf,
   httpSearchPatient,
+  httpDownloadCertificate,
 };
