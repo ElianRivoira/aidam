@@ -8,7 +8,6 @@ interface CardProps {
 }
 
 const MobileCard: React.FC<CardProps> = ({ patient }) => {
-  console.log(patient)
   return (
     <div className='flex w-full h-[168px] rounded-2xl px-3 py-2 shadow-card max-w-md'>
       <Link href={`/patients/${patient._id}/profile`} className='flex w-full'>

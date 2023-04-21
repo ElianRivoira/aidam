@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import x from '../../assets/icons/x.svg';
 import ok from '../../assets/icons/ok.svg';
 import Image from 'next/image';
