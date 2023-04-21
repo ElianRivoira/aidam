@@ -96,6 +96,54 @@ const deletePatient = async (id: string): Promise<PatientDoc | null> => {
   return patient;
 };
 
+const searchPatient = async (name: string | null): Promise<PatientDoc[]> => {
+  let findedPatients: PatientDoc[];
+  if (name === '*') {
+    findedPatients = await Patient.find({ active: true })
+      .populate({
+        path: 'observationsId',
+        options: { populate: { path: 'professional' } },
+      })
+      .populate({ path: 'professionalsId' });
+  } else if (name?.includes(' ')) {
+    const [firstName, lastName] = name.split(' ');
+    findedPatients = await Patient.find({
+      $and: [
+        {
+          $or: [
+            { firstName: { $regex: `.*${firstName}.*`, $options: 'i' } },
+            { lastName: { $regex: `.*${lastName}.*`, $options: 'i' } },
+          ],
+        },
+        { active: true },
+      ],
+    })
+      .populate({
+        path: 'observationsId',
+        options: { populate: { path: 'professional' } },
+      })
+      .populate({ path: 'professionalsId' });
+  } else {
+    findedPatients = await Patient.find({
+      $and: [
+        {
+          $or: [
+            { firstName: { $regex: `.*${name}.*`, $options: 'i' } },
+            { lastName: { $regex: `.*${name}.*`, $options: 'i' } },
+          ],
+        },
+        { active: true },
+      ],
+    })
+      .populate({
+        path: 'observationsId',
+        options: { populate: { path: 'professional' } },
+      })
+      .populate({ path: 'professionalsId' });
+  }
+  return findedPatients;
+};
+
 export default {
   getAllPatientsFromTherapist,
   getAllPatients,
@@ -103,4 +151,5 @@ export default {
   getOnePatient,
   putPatient,
   deletePatient,
+  searchPatient,
 };

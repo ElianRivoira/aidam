@@ -34,3 +34,8 @@ export const putPatient = async ({
 export const unassignProf = async (id: string, prof: string): Promise<void> => {
   await api.put(`/patients/unassign/${id}`, { profName: prof });
 };
+
+export const searchPatients = async (name: string): Promise<Patient[]> => {
+  const res = await api.get(`/patients/search/${name}`);
+  return res.data;
+}

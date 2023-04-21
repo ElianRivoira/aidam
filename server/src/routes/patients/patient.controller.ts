@@ -214,6 +214,16 @@ const httpUnassignProf = async (req: Request, res: Response) => {
   }
 };
 
+const httpSearchPatient = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+
+  const findedPatients = await patientService.searchPatient(req.params.name);
+  res.send(findedPatients);
+};
+
 export {
   httpGetAllPatientsFromTherapist,
   httpGetAllPatients,
@@ -222,4 +232,5 @@ export {
   httpEditPatient,
   httpDeletePatient,
   httpUnassignProf,
+  httpSearchPatient,
 };

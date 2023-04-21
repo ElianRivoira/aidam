@@ -17,7 +17,6 @@ const professionals = () => {
   }
 
   async function getUsers() {
-    console.log('activeusersAntes', activeUsers);
     const users = await getAllUsers();
     let activeUsrs;
     let inactiveUsrs;
@@ -25,16 +24,10 @@ const professionals = () => {
     inactiveUsrs = users.filter((user) => user.status === false);
     setActiveUsers(activeUsrs);
     setInactiveUsers(inactiveUsrs);
-    
   }
-
-  useEffect(()=>{
-    console.log('activeusersDespues', activeUsers);
-  }, [activeUsers])
 
   useEffect(() => {
     getUsers();
-    
   }, []);
 
   return (

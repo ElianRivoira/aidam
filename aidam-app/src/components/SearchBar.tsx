@@ -1,38 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { getAllUsers, searchUser } from '@/services/users';
+import { searchUser } from '@/services/users';
 
 interface Props {
   search: string;
   setSearch: (e: string) => void;
-  setActiveUsers: React.Dispatch<React.SetStateAction<User[] | undefined>>;
+  setActiveUsers?: React.Dispatch<React.SetStateAction<User[] | undefined>>;
 }
 
 const SearchBar: React.FC<Props> = ({ search, setSearch, setActiveUsers }) => {
-  const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState<string | null>(null);
-
-  async function getAll() {
-    try {
-      let users = await getAllUsers();
-      setUsers(users);
-      let activeUsers = users.filter((user) => user.status === true);
-      setActiveUsers(activeUsers);
-    } catch (error) {
-      console.error(error);
-      setError('Something went wrong. Please try again.');
-    }
-  }
 
   async function fetchSearchedUsers(search: string) {
     try {
       if (search === '') {
-        setUsers(await searchUser('*'));
+        const users = await searchUser('*');
+        return users
       } else {
-        setUsers(await searchUser(search));
+        const users = await searchUser(search);
+        return users
       }
-      setActiveUsers(users);
     } catch (error) {
-      console.error(error);
       setError('Something went wrong. Please try again.');
     }
   }
@@ -40,10 +27,14 @@ const SearchBar: React.FC<Props> = ({ search, setSearch, setActiveUsers }) => {
   useEffect(() => {
     let isMounted = true;
     if (!search) {
-      getAll();
+      fetchSearchedUsers('*').then((users) => {
+        if (isMounted && setActiveUsers) {
+          setActiveUsers(users);
+        }
+      });
     } else {
-      fetchSearchedUsers(search).then(() => {
-        if (isMounted) {
+      fetchSearchedUsers(search).then((users) => {
+        if (isMounted && setActiveUsers) {
           setActiveUsers(users);
         }
       });
