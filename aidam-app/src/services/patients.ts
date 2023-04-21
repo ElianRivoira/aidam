@@ -1,4 +1,4 @@
-import { api, apiForm } from './axiosInstance';
+import { api, apiForm, apiFile } from './axiosInstance';
 
 export const getOnePatient = async (id: string): Promise<Patient> => {
   const response = await api.get(`/patients/${id}`);
@@ -37,5 +37,10 @@ export const unassignProf = async (id: string, prof: string): Promise<void> => {
 
 export const searchPatients = async (name: string): Promise<Patient[]> => {
   const res = await api.get(`/patients/search/${name}`);
+  return res.data;
+}
+
+export const downloadCertificate = async (id: string) => {
+  const res = await apiFile.get(`/patients/download/certificate/${id}`);
   return res.data;
 }

@@ -37,6 +37,8 @@ app.use(morgan('dev'));
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+app.use('/download/certificate', express.static(path.join(__dirname, '../certificates')))
+
 app.use('/api', apiRouter);
 
 app.all('*', async (req, res) => {
