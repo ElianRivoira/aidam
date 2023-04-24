@@ -18,7 +18,10 @@ const DesktopCard: React.FC<DesktopCardProps> = ({ user, patient }) => {
   return (
     <>
       {user ? (
-        <Link href={`/profile/${user._id}`} className='flex py-5 px-7 rounded-xl border border-[#F0F0F0] mb-4'>
+        <Link
+          href={`/profile/${user._id}`}
+          className='flex py-5 px-7 rounded-xl border border-[#F0F0F0] mb-4'
+        >
           <div className='w-[20%]'>
             <div className='mb-4 text-sm text-[#505050]'>Nombre y Apellido</div>
             <div className='font-semibold'>
@@ -36,14 +39,21 @@ const DesktopCard: React.FC<DesktopCardProps> = ({ user, patient }) => {
           <div className='w-[40%]'>
             <div className='mb-4 text-sm text-[#505050]'>Últimas Acciones</div>
             <div className='font-semibold'>
-              {user.lastThreeTasks.map((action, index) => (
-                <li key={index}>{action}</li>
-              ))}
+              {user.lastThreeTasks.length > 0 ? (
+                user.lastThreeTasks.map((action, index) => (
+                  <li key={index}>{action}</li>
+                ))
+              ) : (
+                <p>Este usuario no ha realizado acciones</p>
+              )}
             </div>
           </div>
         </Link>
       ) : patient ? (
-        <Link href={`/patients/${patient._id}/profile`} className='flex py-5 px-7 rounded-xl border border-[#F0F0F0] mb-4'>
+        <Link
+          href={`/patients/${patient._id}/profile`}
+          className='flex py-5 px-7 rounded-xl border border-[#F0F0F0] mb-4'
+        >
           <div className='w-1/4'>
             <div className='mb-4 text-sm text-[#505050]'>Nombre y Apellido</div>
             <div className='font-semibold'>
