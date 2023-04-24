@@ -7,13 +7,14 @@ import upload from '@/assets/icons/upload.svg';
 interface inputProps {
   label: string;
   type: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   value?: string | number;
   isEqual?: boolean;
   validate?: boolean;
   pattern?: string;
   name: string;
   placeholder?: string;
+  valuesArray?: string[];
 }
 
 const Input: React.FC<inputProps> = ({
@@ -26,6 +27,7 @@ const Input: React.FC<inputProps> = ({
   pattern,
   name,
   placeholder,
+  valuesArray,
 }) => {
   const [visible, setVisible] = useState(false);
 
@@ -85,6 +87,19 @@ const Input: React.FC<inputProps> = ({
             onChange={onChange}
           />
         </>
+      ) : type === 'select' ? (
+        <select
+          name='profession'
+          id='profession'
+          onChange={onChange}
+          className='w-full h-10 rounded-md border border-black02 mb-2.5 p-1.5 outline-none focus:border-aidam hover:border-aidam80 transition-colors'
+        >
+          {valuesArray?.map((profession, index) => (
+            <option value={profession} key={index}>
+              {profession}
+            </option>
+          ))}
+        </select>
       ) : (
         <input
           id={name}

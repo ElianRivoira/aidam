@@ -8,6 +8,7 @@ import aidamTexto from '@/assets/icons/aidamTexto.svg';
 import Input from '@/components/form/Input';
 import { postUser } from '@/services/users';
 import Modal from '@/components/Modal';
+import professions from '@/utils/professions';
 
 const Signup = () => {
   const [firstName, setFirstName] = useState('');
@@ -65,12 +66,12 @@ const Signup = () => {
   };
 
   useEffect(() => {
-    if(!open && type === 1) {
+    if (!open && type === 1) {
       router.push({
-        pathname: '/login'
-      })
+        pathname: '/login',
+      });
     }
-  }, [open])
+  }, [open]);
 
   return (
     <>
@@ -86,18 +87,18 @@ const Signup = () => {
           >
             <div className='flex gap-1.5'>
               <Input
-              name='nombre'
-              label='Nombre'
-              type='text'
-              onChange={e => setFirstName(e.target.value)}
-              value={firstName}
+                name='nombre'
+                label='Nombre'
+                type='text'
+                onChange={e => setFirstName(e.target.value)}
+                value={firstName}
               />
               <Input
-              name='apellido'
-              label='Apellido'
-              type='text'
-              onChange={e => setLastName(e.target.value)}
-              value={lastName}
+                name='apellido'
+                label='Apellido'
+                type='text'
+                onChange={e => setLastName(e.target.value)}
+                value={lastName}
               />
             </div>
             <Input
@@ -106,29 +107,29 @@ const Signup = () => {
               type='text'
               onChange={e => setEmail(e.target.value)}
               value={email}
-              />
+            />
             <Input
               name='phone'
               label='Teléfono'
               type='tel'
               onChange={e => setPhone(Number(e.target.value))}
               value={phone}
-              />
+            />
             <div className='flex gap-1.5'>
               <Input
-              name='profession'
-              label='Profesión'
-              type='text'
-              onChange={e => setProfession(e.target.value)}
-              value={profession}
+                name='profession'
+                label='Profesión'
+                type='select'
+                onChange={e => setProfession(e.target.value)}
+                valuesArray={professions}
               />
               <Input
-              name='license'
+                name='license'
                 label='Matrícula'
                 type='text'
                 onChange={e => setLicense(e.target.value)}
                 value={license}
-                />
+              />
             </div>
             <div className='flex gap-1.5'>
               <Input
@@ -139,7 +140,7 @@ const Signup = () => {
                 value={password}
                 isEqual={isEqual}
                 validate={validate}
-                />
+              />
               <Input
                 name='password2'
                 label='Repetir contraseña'
@@ -159,7 +160,10 @@ const Signup = () => {
             >
               Registrarse
             </button>
-            <Link href={'/login'} className='font-normal text-sm text-aidam mt-4 hover:text-aidam70'>
+            <Link
+              href={'/login'}
+              className='font-normal text-sm text-aidam mt-4 hover:text-aidam70'
+            >
               ¿Ya tenés cuenta? Iniciá sesión
             </Link>
           </form>
