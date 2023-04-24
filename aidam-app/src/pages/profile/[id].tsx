@@ -16,13 +16,9 @@ import { getLoggedUser, findUserById } from '@/services/users';
 import { hasCookie } from 'cookies-next';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import { useRouter } from 'next/router';
+import { NextPageContext } from 'next';
 
-const Profile = () => {
-  const router = useRouter();
-  const id = Array.isArray(router.query.id)
-    ? router.query.id[0]
-    : router.query.id || '';
-
+const Profile = ({ query }: MyPageProps) => {
   const {
     isLoading,
     data: user,
@@ -32,7 +28,7 @@ const Profile = () => {
   } = useQuery({
     queryKey: ['user'],
     enabled: hasCookie('session'),
-    queryFn: () => findUserById(id),
+    queryFn: () => findUserById(query.id),
   });
 
   return (
@@ -88,3 +84,16 @@ const Profile = () => {
 };
 
 export default Profile;
+
+interface MyPageProps {
+  query: {
+    [key: string]: string;
+  };
+}
+
+Profile.getInitialProps = async ({
+  query,
+}: NextPageContext): Promise<MyPageProps> => {
+  const castedQuery = query as unknown as MyPageProps['query'];
+  return { query: castedQuery };
+};
