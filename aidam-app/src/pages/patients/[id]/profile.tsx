@@ -105,7 +105,7 @@ const Profile = ({ query }: MyPageProps) => {
                   <div className='flex flex-col px-2.5 mb-4 lg:w-1/3'>
                     <div className='flex justify-between mb-4'>
                       <p className='font-semibold'>DIAGNÓSTICO</p>
-                      <button className='text-xs font-normal text-white px-4 py-2.5 rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'>
+                      <button onClick={handleDownload} className='text-xs font-normal text-white px-4 py-2.5 rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'>
                         Certificado
                       </button>
                     </div>
@@ -145,12 +145,11 @@ const Profile = ({ query }: MyPageProps) => {
               {useMediaQuery(1024) && (
                 <hr className='w-full border-black03 mb-5' />
               )}
-              {!useMediaQuery(1024) && (
-                <div className='flex flex-col px-2.5 mb-4 lg:w-1/3 items-center border-x border-black03'>
-                  <h1 className='font-semibold mb-12 text-center text-xg'>
+                <div className='flex flex-col px-2.5 mb-4 lg:w-1/3 items-center lgMax:items-start lg:border-x border-black03'>
+                  <h1 className='font-semibold mb-12 lgMax:mb-6 text-center lg:text-xg'>
                     PROFESIONALES
                   </h1>
-                  <ul className='list-disc text-lg font-normal'>
+                  <ul className='list-disc text-lg lgMax:text-lb font-normal lgMax:ml-4 '>
                     {patient.data?.professionalsId.map((prof, index) => (
                       <li key={index} className='mb-4'>
                         <Link
@@ -163,7 +162,6 @@ const Profile = ({ query }: MyPageProps) => {
                     ))}
                   </ul>
                 </div>
-              )}
               <div className='flex flex-col px-2.5 mb-4 lg:w-1/3 lg:items-center'>
                 <div className='w-fit'>
                   {!useMediaQuery(1024) && (
