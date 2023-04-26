@@ -5,6 +5,7 @@ import userService from '../../models/user-service';
 import { BadRequestError } from '../../errors/bad-request-error';
 import { RequestValidationError } from '../../errors/request-validation-error';
 import { validateToken } from '../../utils/tokens';
+import { ServerError } from '../../errors/server-error';
 
 const httpRegisterUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
@@ -97,14 +98,18 @@ async function httpUserLogin(req: Request, res: Response) {
   if (!errors.isEmpty()) {
     throw new RequestValidationError(errors.array());
   }
+  try {
+    const response = await userService.userLogin({ email, password });
 
-  const response = await userService.userLogin({ email, password });
-
-  if (req.session) {
-    req.session.token = response?.token;
+    if (req.session) {
+      req.session.token = response?.token;
+    }
+  
+    res.send(response?.user);
+  } catch (e) {
+    console.error(e)
+    throw new ServerError(e)
   }
-
-  res.send(response?.user);
 }
 
 const httpGetUser = async (req: Request, res: Response) => {

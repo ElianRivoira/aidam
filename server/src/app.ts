@@ -42,7 +42,7 @@ app.use('/download/certificate', express.static(path.join(__dirname, '../certifi
 app.use('/api', apiRouter);
 
 app.all('*', async (req, res) => {
-  throw new NotFoundError();
+  throw new NotFoundError('');
 });
 
 app.use(errorHandler);
