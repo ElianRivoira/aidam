@@ -25,11 +25,6 @@ interface PostUser {
   password: string;
 }
 
-interface UserState {
-  user: User | null;
-  loading: boolean;
-}
-
 interface CustomError {
   message: string;
 }
@@ -90,7 +85,6 @@ interface PostPatient {
   phone: number;
 }
 
-
 interface FormPatient {
   firstName: string;
   lastName: string;
@@ -105,3 +99,9 @@ interface FormPatient {
   [key: string]: string;
 }
 
+interface ProfessionalNames {
+  firstName1: string;
+  firstName2?: string;
+  lastName1: string;
+  lastName2?: string;
+}

@@ -7,6 +7,7 @@ import patientService from '../../models/patient-service';
 import userService from '../../models/user-service';
 import { RequestValidationError } from '../../errors/request-validation-error';
 import getFile from '../../utils/getFile';
+import ProfessionalNames from '../../interfaces/ProfessionalNames';
 
 const httpGetAllPatientsFromTherapist = async (
   req: Request,
@@ -145,7 +146,7 @@ const httpEditPatient = async (
     const professionalsArray = JSON.parse(professionals);
 
     if (editedPatient) {
-      professionalsArray.forEach(async (prof: string) => {
+      professionalsArray.forEach(async (prof: ProfessionalNames) => {
         const findedProf = await userService.searchUser(prof);
         await userService.putUser(
           findedProf[0]._id,

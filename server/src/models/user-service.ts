@@ -3,6 +3,7 @@ import { Password } from '../services/password';
 import { generateToken } from '../utils/tokens';
 import { BadRequestError } from '../errors/bad-request-error';
 import { NotFoundError } from '../errors/not-found-error';
+import ProfessionalNames from '../interfaces/ProfessionalNames';
 
 const signUp = async (data: UserAttrs): Promise<UserDoc> => {
   const user = User.build(data);
@@ -115,18 +116,19 @@ const deleteUser = async (id: string) => {
   }
 };
 
-const searchUser = async (name: string | null): Promise<UserDoc[]> => {
+const searchUser = async (name: string | ProfessionalNames): Promise<UserDoc[]> => {
   let findedUsers: UserDoc[];
+  
   if (name === '*') {
     findedUsers = await User.find({ status: true });
-  } else if (name?.includes(' ')) {
-    const [firstName, lastName] = name.split(' ');
+  } else if (typeof name === 'object') {
+    const { firstName1, firstName2, lastName1, lastName2 } = name;
     findedUsers = await User.find({
       $and: [
         {
           $and: [
-            { firstName: { $regex: `.*${firstName}.*`, $options: 'i' } },
-            { lastName: { $regex: `.*${lastName}.*`, $options: 'i' } },
+            { firstName: { $regex: `.*${firstName1}${firstName2 ? ` ${firstName2}` : ''}.*`, $options: 'i' } },
+            { lastName: { $regex: `.*${lastName1}${lastName2 ? ` ${lastName2}` : ''}.*`, $options: 'i' } },
           ],
         },
         { status: true },

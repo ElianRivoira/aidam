@@ -18,7 +18,7 @@ const editPatient = ({ query }: MyPageProps) => {
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [certificate, setCertificate] = useState<File | null>(null);
-  const [professionals, setProfessionals] = useState<string[]>([]);
+  const [professionals, setProfessionals] = useState<ProfessionalNames[]>([]);
   const [patientInfo, setPatientInfo] = useState<FormPatient>({
     firstName: '',
     lastName: '',
@@ -74,7 +74,7 @@ const editPatient = ({ query }: MyPageProps) => {
 
     if (patient.data) {
       formData.append('_id', patient.data?._id);
-      editPatient.mutate({id: patient.data._id, form: formData});
+      editPatient.mutate({ id: patient.data._id, form: formData });
     }
   };
 
@@ -85,7 +85,7 @@ const editPatient = ({ query }: MyPageProps) => {
   }, [open]);
 
   useEffect(() => {
-    if(patient.isSuccess){
+    if (patient.isSuccess) {
       setPatientInfo({
         firstName: patient.data.firstName,
         lastName: patient.data.lastName,
@@ -98,7 +98,16 @@ const editPatient = ({ query }: MyPageProps) => {
         email: patient.data.email,
         phone: patient.data.phone.toString(),
       });
-      setProfessionals(patient.data.professionalsId.map(prof => `${prof.firstName} ${prof.lastName}`));
+      setProfessionals(
+        patient.data.professionalsId.map(prof => {
+          return {
+            firstName1: prof.firstName.split(' ')[0],
+            firstName2: prof.firstName.split(' ')[1],
+            lastName1: prof.lastName.split(' ')[0],
+            lastName2: prof.lastName.split(' ')[1],
+          };
+        })
+      );
     }
   }, [patient.isSuccess]);
 

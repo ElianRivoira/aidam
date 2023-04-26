@@ -120,7 +120,7 @@ const Signup = () => {
                 name='profession'
                 label='Profesión'
                 type='select'
-                onChange={e => setProfession(e.target.value)}
+                onChangeSelect={e => setProfession(e.target.value)}
                 valuesArray={professions}
               />
               <Input
