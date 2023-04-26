@@ -16,7 +16,7 @@ const create = () => {
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [certificate, setCertificate] = useState<File | null>(null);
-  const [professionals, setProfessionals] = useState<string[]>([]);
+  const [professionals, setProfessionals] = useState<ProfessionalNames[]>([]);
   const [patientInfo, setPatientInfo] = useState<FormPatient>({
     firstName: '',
     lastName: '',

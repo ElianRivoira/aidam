@@ -154,7 +154,7 @@ const Profile = ({ query }: MyPageProps) => {
                       <li key={index} className='mb-4'>
                         <Link
                           href={`/profile/${prof._id}`}
-                          className='hover:text-aidam70 transition-colors'
+                          className='hover:text-aidam70 transition-colors font-semibold'
                         >
                           {prof.firstName} {prof.lastName}
                         </Link>

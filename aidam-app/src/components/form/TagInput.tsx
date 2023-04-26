@@ -8,12 +8,16 @@ import { searchUser } from '@/services/users';
 import { unassignProf } from '@/services/patients';
 
 interface TagInputProps {
-  taggedProfs: string[];
-  setTaggedProfs: React.Dispatch<React.SetStateAction<string[]>>;
+  taggedProfs: ProfessionalNames[];
+  setTaggedProfs: React.Dispatch<React.SetStateAction<ProfessionalNames[]>>;
   patient?: Patient | undefined;
 }
 
-const TagInput: React.FC<TagInputProps> = ({ taggedProfs, setTaggedProfs, patient }) => {
+const TagInput: React.FC<TagInputProps> = ({
+  taggedProfs,
+  setTaggedProfs,
+  patient,
+}) => {
   const [searchText, setSearchText] = useState('');
 
   const professionals = useQuery({
@@ -31,23 +35,36 @@ const TagInput: React.FC<TagInputProps> = ({ taggedProfs, setTaggedProfs, patien
     setSearchText(value);
   };
 
-  const setTags = (name?: string) => {
+  const handleClickOnProf = (name: ProfessionalNames) => {
     setTaggedProfs(prevState => {
-      if (prevState[0]) return [...taggedProfs, name ? name : searchText];
-      else return [name ? name : searchText];
+      if (prevState[0])
+        return [
+          ...taggedProfs,
+          {
+            firstName1: name.firstName1,
+            firstName2: name.firstName2,
+            lastName1: name.lastName1,
+            lastName2: name.lastName2,
+          },
+        ];
+      else
+        return [
+          {
+            firstName1: name.firstName1,
+            firstName2: name.firstName2,
+            lastName1: name.lastName1,
+            lastName2: name.lastName2,
+          },
+        ];
     });
     setSearchText('');
   };
 
-  const handleClickOnProf = (name: string) => {
-    setTags(name);
-  };
-
-  const handleTagRemove = async (profToDelete: string) => {
+  const handleTagRemove = async (profToDelete: ProfessionalNames) => {
     // Eliminar el usuario etiquetado de la lista
     const filteredProfs = taggedProfs.filter(prof => prof !== profToDelete);
     setTaggedProfs(filteredProfs);
-    patient && await unassignProf(patient._id, profToDelete)
+    patient && (await unassignProf(patient._id, profToDelete));
   };
 
   return (
@@ -68,9 +85,27 @@ const TagInput: React.FC<TagInputProps> = ({ taggedProfs, setTaggedProfs, patien
           {professionals.data?.map((prof, index) => (
             <div
               key={index}
-              onClick={() =>
-                handleClickOnProf(`${prof.firstName} ${prof.lastName}`)
-              }
+              onClick={() => {
+                let firstName1: string = '';
+                let firstName2: string = '';
+                let lastName1: string = '';
+                let lastName2: string = '';
+
+                if (prof.firstName.includes(' ')) {
+                  [firstName1, firstName2] = prof.firstName.split(' ');
+                } else firstName1 = prof.firstName;
+
+                if (prof.lastName.includes(' ')) {
+                  [lastName1, lastName2] = prof.lastName.split(' ');
+                } else lastName1 = prof.lastName;
+
+                handleClickOnProf({
+                  firstName1,
+                  firstName2,
+                  lastName1,
+                  lastName2,
+                });
+              }}
               className='hover:bg-aidamNav hover:text-white rounded-md p-3 cursor-pointer w-full transition-colors'
             >
               {`${prof.firstName} ${prof.lastName}`}
@@ -92,7 +127,7 @@ const TagInput: React.FC<TagInputProps> = ({ taggedProfs, setTaggedProfs, patien
               >
                 <Image src={x} alt='x' width={20} />
               </button>
-              {prof}
+              {prof.firstName1} {prof.firstName2} {prof.lastName1} {prof.lastName2}
             </div>
           );
         })}

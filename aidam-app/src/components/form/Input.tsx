@@ -7,7 +7,8 @@ import upload from '@/assets/icons/upload.svg';
 interface inputProps {
   label: string;
   type: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeSelect?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   value?: string | number;
   isEqual?: boolean;
   validate?: boolean;
@@ -21,6 +22,7 @@ const Input: React.FC<inputProps> = ({
   label,
   type,
   onChange,
+  onChangeSelect,
   value,
   isEqual,
   validate,
@@ -91,7 +93,7 @@ const Input: React.FC<inputProps> = ({
         <select
           name='profession'
           id='profession'
-          onChange={onChange}
+          onChange={onChangeSelect}
           className='w-full h-10 rounded-md border border-black02 mb-2.5 p-1.5 outline-none focus:border-aidam hover:border-aidam80 transition-colors'
         >
           {valuesArray?.map((profession, index) => (
