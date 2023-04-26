@@ -121,7 +121,7 @@ const searchUser = async (name: string | null): Promise<UserDoc[]> => {
     findedUsers = await User.find({
       $and: [
         {
-          $or: [
+          $and: [
             { firstName: { $regex: `.*${firstName}.*`, $options: 'i' } },
             { lastName: { $regex: `.*${lastName}.*`, $options: 'i' } },
           ],

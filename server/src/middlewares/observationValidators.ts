@@ -7,6 +7,9 @@ const validateObs = [
   body('observation')
     .notEmpty()
     .withMessage('El detalle de la observación es requerido'),
+  body('date')
+    .notEmpty()
+    .withMessage('La fecha de la observación es requerida'),
 ];
 
 const validateEditObs = [
