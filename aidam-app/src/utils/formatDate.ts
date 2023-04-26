@@ -5,7 +5,7 @@ export const formatStringDate = (date: Date) => {
       year: 'numeric',
     })
     .split('de');
-  return monthYear.join('/');
+  return monthYear.join('/').toUpperCase();
 }
 
 export const formatStringPickDate = (date: Date) => {

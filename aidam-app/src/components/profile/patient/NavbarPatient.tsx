@@ -14,7 +14,7 @@ const NavbarPatient = () => {
           router.asPath.includes('/profile')
             ? 'bg-aidamNav text-white shadow-active'
             : 'active:shadow-active hover:bg-aidamNav hover:text-white'
-        } w-1/4 text-lh font-medium flex items-center justify-center border h-full`}
+        } w-1/4 text-xm lg:text-lh font-medium flex items-center justify-center border h-full`}
       >
         PERFIL
       </Link>
@@ -24,7 +24,7 @@ const NavbarPatient = () => {
           router.asPath.includes('/reports')
             ? 'bg-aidamNav text-white shadow-active'
             : 'active:shadow-active hover:bg-aidamNav hover:text-white'
-        } w-1/4 text-lh font-medium flex items-center justify-center border h-full`}
+        } w-1/4 text-xm lg:text-lh font-medium flex items-center justify-center border h-full`}
       >
         INFORMES
       </Link>
@@ -34,7 +34,7 @@ const NavbarPatient = () => {
           router.asPath.includes('/observations')
             ? 'bg-aidamNav text-white shadow-active'
             : 'active:shadow-active hover:bg-aidamNav hover:text-white'
-        } w-1/4 text-lh font-medium flex items-center justify-center border h-full`}
+        } w-1/4 text-xm lg:text-lh font-medium flex items-center justify-center border h-full`}
       >
         OBSERVACIONES
       </Link>
@@ -44,7 +44,7 @@ const NavbarPatient = () => {
           router.asPath.includes('/medicsocial')
             ? 'bg-aidamNav text-white shadow-active'
             : 'active:shadow-active hover:bg-aidamNav hover:text-white'
-        } w-1/4 text-lh font-medium flex items-center justify-center border h-full`}
+        } w-1/4 text-xm lg:text-lh font-medium flex items-center justify-center border h-full`}
       >
         MEDICO/SOCIAL
       </Link>

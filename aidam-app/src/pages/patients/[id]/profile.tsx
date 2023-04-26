@@ -70,9 +70,9 @@ const Profile = ({ query }: MyPageProps) => {
   return (
     <>
       <Head>
-        <title>{`AIDAM - Perfil de ${patient.data?.firstName}`}</title>
+        <title>{`AIDAM - Perfil de ${patient.data?.firstName} ${patient.data?.lastName}`}</title>
       </Head>
-      <div className='flex flex-col items-center min-h-screen bg-background'>
+      <main className='flex flex-col items-center min-h-screen bg-background'>
         {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
         <div className='w-full lg:px-12 lg:mt-2.5'>
           <NavbarPatient />
@@ -198,7 +198,7 @@ const Profile = ({ query }: MyPageProps) => {
         >
           <h1>Paciente eliminado correctamente</h1>
         </Modal>
-      </div>
+      </main>
     </>
   );
 };

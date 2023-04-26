@@ -56,7 +56,7 @@ interface Observation {
   title: string;
   observation: string;
   date: Date;
-  professional: string | User;
+  professional: User;
 }
 
 interface Patient {

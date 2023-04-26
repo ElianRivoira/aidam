@@ -1,19 +1,35 @@
+import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+
+import profileImage from '@/assets/icons/profileImage.svg';
 
 interface DesktopCardProps {
   user?: User;
   patient?: Patient;
+  observation?: Observation;
+  patientId?: string;
+  onClick?: () => void;
 }
 
-const DesktopCard: React.FC<DesktopCardProps> = ({ user, patient }) => {
-  let lastConnectionString: string = '';
-  if (user) {
-    if (!user.lastLoginDate) {
-      lastConnectionString = 'No se ha conectado aún';
+const DesktopCard: React.FC<DesktopCardProps> = ({
+  user,
+  patient,
+  observation,
+  patientId,
+  onClick,
+}) => {
+  const [lastConnectionString, setLastConnectionString] = useState('');
+  const [obsDate, setObsDate] = useState('');
+
+  useEffect(() => {
+    if (!user?.lastLoginDate) {
+      setLastConnectionString('No se ha conectado aún');
     } else {
-      lastConnectionString = new Date(user.lastLoginDate).toLocaleString();
+      setLastConnectionString(new Date(user.lastLoginDate).toLocaleString());
     }
-  }
+    if(observation) setObsDate(new Date(observation.date).toLocaleString().split(',')[0])
+  }, []);
 
   return (
     <>
@@ -75,6 +91,35 @@ const DesktopCard: React.FC<DesktopCardProps> = ({ user, patient }) => {
             <div className='font-semibold'>{patient.affiliateNumber}</div>
           </div>
         </Link>
+      ) : observation ? (
+        <button
+          // href={`/patients/${patientId}/observations/${observation._id}`}
+          onClick={onClick}
+          className='flex w-3/4 py-5 pr-7 rounded-xl border border-[#F0F0F0] mb-4'
+        >
+          <div className='w-1/4 flex justify-center'>
+            <Image src={profileImage} alt='profile image' />
+          </div>
+          <div className='w-1/4'>
+            <div className='mb-4 text-sm text-[#505050]'>Nombre y Apellido</div>
+            <div className='font-semibold'>
+              {observation.professional.firstName}{' '}
+              {observation.professional.lastName}
+            </div>
+          </div>
+          <div className='w-1/4'>
+            <div className='mb-4 text-sm text-[#505050]'>Descripción</div>
+            <div className='font-semibold'>{observation.title}</div>
+          </div>
+          <div className='w-1/4'>
+            <div className='mb-4 text-sm text-[#505050]'>
+              Fecha de observación
+            </div>
+            <div className='font-semibold'>
+              {obsDate}
+            </div>
+          </div>
+        </button>
       ) : null}
     </>
   );
