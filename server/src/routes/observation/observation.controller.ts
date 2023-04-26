@@ -7,12 +7,11 @@ import { RequestValidationError } from '../../errors/request-validation-error';
 import userService from '../../models/user-service';
 import { validateToken } from '../../utils/tokens';
 import { performTask } from '../../services/taskMetric';
-import { BadRequestError } from '../../errors/bad-request-error';
+import { ServerError } from '../../errors/server-error';
 
 const httpPostObservation = async (req: Request, res: Response) => {
   const { title, observation, date, patientId } = req.body;
   const errors = validationResult(req);
-
   if (!errors.isEmpty()) {
     throw new RequestValidationError(errors.array());
   }
@@ -44,8 +43,7 @@ const httpPostObservation = async (req: Request, res: Response) => {
       res.status(201).send(obs);
     }
   } catch (e) {
-    console.error(e)
-    // crear nueva clase de error
+    throw new ServerError(e)
   }
 };
 

@@ -2,6 +2,7 @@ import User, { UserAttrs, UserDoc } from './user.model';
 import { Password } from '../services/password';
 import { generateToken } from '../utils/tokens';
 import { BadRequestError } from '../errors/bad-request-error';
+import { NotFoundError } from '../errors/not-found-error';
 
 const signUp = async (data: UserAttrs): Promise<UserDoc> => {
   const user = User.build(data);
@@ -18,7 +19,7 @@ interface LoginAttrs {
   password: string;
 }
 
-async function userLogin(user: LoginAttrs): Promise<LoginResponse | undefined> {
+async function userLogin(user: LoginAttrs): Promise<LoginResponse> {
   const loggedUser = await User.findOne({ email: user.email }, { __v: 0 });
   if (loggedUser) {
     const match = await Password.compare(loggedUser.password, user.password);
@@ -42,9 +43,11 @@ async function userLogin(user: LoginAttrs): Promise<LoginResponse | undefined> {
         user: loggedUser,
         token,
       };
+    } else {
+      throw new BadRequestError('El usuario o la contraseña son incorrectos')
     }
   } else {
-    throw new BadRequestError('El usuario no existe');
+    throw new BadRequestError('El usuario o la contraseña son incorrectos');
   }
 }
 
@@ -53,7 +56,7 @@ const getLoggedUser = async (id: String) => {
     path: 'patientsId',
     options: { populate: { path: 'professionalsId' } },
   });
-  if (!user) throw new BadRequestError('El usuario no existe');
+  if (!user) throw new NotFoundError('El usuario no existe');
   return user;
 };
 
@@ -75,7 +78,7 @@ const registerUser = async (id: string) => {
       { new: true }
     );
     if (!result) {
-      return { success: false, message: 'User not found' };
+      throw new NotFoundError('El usuario no existe');
     }
     return { success: true, message: 'User status updated' };
   } catch (error) {
@@ -102,7 +105,7 @@ const deleteUser = async (id: string) => {
     const result = await User.findOneAndDelete({ _id: id }, { new: true });
 
     if (!result) {
-      return { success: false, message: 'User not found' };
+      throw new NotFoundError('El usuario no existe');
     }
 
     return { success: true, message: 'User deleted successfully' };
@@ -173,6 +176,7 @@ const putUser = async (id: string, data?: object, patientId?: string, pull?: boo
     }
   }
   const user = await findAndUpdate()
+  if(!user) throw new NotFoundError('El usuario no existe');
   return user;
 };
 
