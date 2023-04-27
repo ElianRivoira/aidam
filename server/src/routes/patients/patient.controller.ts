@@ -1,13 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
-import path from 'path';
-import fs from 'fs'
 
 import patientService from '../../models/patient-service';
 import userService from '../../models/user-service';
 import { RequestValidationError } from '../../errors/request-validation-error';
 import getFile from '../../utils/getFile';
-import ProfessionalNames from '../../interfaces/ProfessionalNames';
+import INames from '../../interfaces/INames';
 
 const httpGetAllPatientsFromTherapist = async (
   req: Request,
@@ -146,7 +144,7 @@ const httpEditPatient = async (
     const professionalsArray = JSON.parse(professionals);
 
     if (editedPatient) {
-      professionalsArray.forEach(async (prof: ProfessionalNames) => {
+      professionalsArray.forEach(async (prof: INames) => {
         const findedProf = await userService.searchUser(prof);
         await userService.putUser(
           findedProf[0]._id,
@@ -235,19 +233,23 @@ const httpDownloadCertificate = async (req: Request, res: Response) => {
   }
   try {
     const patient = await patientService.getOnePatient(req.params.id);
-    
+
     const responseFileName = `Certificado-de-${patient?.firstName}-${patient?.lastName}`;
-    
-    const fileName = getFile([`${patient?.firstName}`, `${patient?.lastName}`, `${patient?.dni}`]);
+
+    const fileName = getFile([
+      `${patient?.firstName}`,
+      `${patient?.lastName}`,
+      `${patient?.dni}`,
+    ]);
     // const filePath = path.join(__dirname, `../../../certificates/${fileName}`);
 
     // res.setHeader('Content-Type', 'application/pdf');
     // res.setHeader('Content-Disposition', `attachment; filename=${responseFileName}`);
 
     // res.sendFile(filePath);
-    res.send(`http://localhost:8000/download/certificate/${fileName}`)
+    res.send(`http://localhost:8000/download/certificate/${fileName}`);
   } catch (e) {
-    console.error(e)
+    console.error(e);
   }
 };
 
