@@ -1,3 +1,4 @@
+import INames from '../interfaces/INames';
 import Patient, { PatientDoc, PatientAttrs } from './patient.model';
 
 const getAllPatients = async (): Promise<PatientDoc[]> => {
@@ -96,7 +97,7 @@ const deletePatient = async (id: string): Promise<PatientDoc | null> => {
   return patient;
 };
 
-const searchPatient = async (name: string | null): Promise<PatientDoc[]> => {
+const searchPatient = async (name: string | INames): Promise<PatientDoc[]> => {
   let findedPatients: PatientDoc[];
   if (name === '*') {
     findedPatients = await Patient.find({ active: true })
@@ -105,14 +106,26 @@ const searchPatient = async (name: string | null): Promise<PatientDoc[]> => {
         options: { populate: { path: 'professional' } },
       })
       .populate({ path: 'professionalsId' });
-  } else if (name?.includes(' ')) {
-    const [firstName, lastName] = name.split(' ');
+  } else if (typeof name === 'object') {
+    const { firstName1, firstName2, lastName1, lastName2 } = name;
     findedPatients = await Patient.find({
       $and: [
         {
-          $or: [
-            { firstName: { $regex: `.*${firstName}.*`, $options: 'i' } },
-            { lastName: { $regex: `.*${lastName}.*`, $options: 'i' } },
+          $and: [
+            {
+              firstName: {
+                $regex: `.*${firstName1}${
+                  firstName2 ? ` ${firstName2}` : ''
+                }.*`,
+                $options: 'i',
+              },
+            },
+            {
+              lastName: {
+                $regex: `.*${lastName1}${lastName2 ? ` ${lastName2}` : ''}.*`,
+                $options: 'i',
+              },
+            },
           ],
         },
         { active: true },

@@ -96,7 +96,7 @@ const Profile = ({ query }: MyPageProps) => {
             <div className='lgMax:my-8 mb-8 lg:mb-11 flex flex-col items-center'>
               <Image src={profileImage} alt='perfil' className='lg:w-[90px]' />
               <p className='font-semibold text-lb lg:text-xl1 lg:mt-3'>
-                {patient.data?.firstName}
+                {patient.data?.firstName} {patient.data?.lastName}
               </p>
             </div>
             <div className='flex lgMax:flex-col'>

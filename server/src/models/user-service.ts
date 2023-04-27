@@ -3,7 +3,7 @@ import { Password } from '../services/password';
 import { generateToken } from '../utils/tokens';
 import { BadRequestError } from '../errors/bad-request-error';
 import { NotFoundError } from '../errors/not-found-error';
-import ProfessionalNames from '../interfaces/ProfessionalNames';
+import INames from '../interfaces/INames';
 
 const signUp = async (data: UserAttrs): Promise<UserDoc> => {
   const user = User.build(data);
@@ -45,7 +45,7 @@ async function userLogin(user: LoginAttrs): Promise<LoginResponse> {
         token,
       };
     } else {
-      throw new BadRequestError('El usuario o la contraseña son incorrectos')
+      throw new BadRequestError('El usuario o la contraseña son incorrectos');
     }
   } else {
     throw new BadRequestError('El usuario o la contraseña son incorrectos');
@@ -116,9 +116,9 @@ const deleteUser = async (id: string) => {
   }
 };
 
-const searchUser = async (name: string | ProfessionalNames): Promise<UserDoc[]> => {
+const searchUser = async (name: string | INames): Promise<UserDoc[]> => {
   let findedUsers: UserDoc[];
-  
+
   if (name === '*') {
     findedUsers = await User.find({ status: true });
   } else if (typeof name === 'object') {
@@ -127,8 +127,20 @@ const searchUser = async (name: string | ProfessionalNames): Promise<UserDoc[]> 
       $and: [
         {
           $and: [
-            { firstName: { $regex: `.*${firstName1}${firstName2 ? ` ${firstName2}` : ''}.*`, $options: 'i' } },
-            { lastName: { $regex: `.*${lastName1}${lastName2 ? ` ${lastName2}` : ''}.*`, $options: 'i' } },
+            {
+              firstName: {
+                $regex: `.*${firstName1}${
+                  firstName2 ? ` ${firstName2}` : ''
+                }.*`,
+                $options: 'i',
+              },
+            },
+            {
+              lastName: {
+                $regex: `.*${lastName1}${lastName2 ? ` ${lastName2}` : ''}.*`,
+                $options: 'i',
+              },
+            },
           ],
         },
         { status: true },
@@ -150,10 +162,14 @@ const searchUser = async (name: string | ProfessionalNames): Promise<UserDoc[]> 
   return findedUsers;
 };
 
-const putUser = async (id: string, data?: object, patientId?: string, pull?: boolean) => {
-  
+const putUser = async (
+  id: string,
+  data?: object,
+  patientId?: string,
+  pull?: boolean
+) => {
   const findAndUpdate = () => {
-    if(pull) {
+    if (pull) {
       return User.findByIdAndUpdate(
         id,
         {
@@ -176,9 +192,9 @@ const putUser = async (id: string, data?: object, patientId?: string, pull?: boo
         }
       );
     }
-  }
-  const user = await findAndUpdate()
-  if(!user) throw new NotFoundError('El usuario no existe');
+  };
+  const user = await findAndUpdate();
+  if (!user) throw new NotFoundError('El usuario no existe');
   return user;
 };
 

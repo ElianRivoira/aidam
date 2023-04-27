@@ -10,6 +10,7 @@ interface inputProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeSelect?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   value?: string | number;
+  defaultValue?: string;
   isEqual?: boolean;
   validate?: boolean;
   pattern?: string;
@@ -24,6 +25,7 @@ const Input: React.FC<inputProps> = ({
   onChange,
   onChangeSelect,
   value,
+  defaultValue,
   isEqual,
   validate,
   pattern,
@@ -95,6 +97,7 @@ const Input: React.FC<inputProps> = ({
           id='profession'
           onChange={onChangeSelect}
           className='w-full h-10 rounded-md border border-black02 mb-2.5 p-1.5 outline-none focus:border-aidam hover:border-aidam80 transition-colors'
+          value={value}
         >
           {valuesArray?.map((profession, index) => (
             <option value={profession} key={index}>

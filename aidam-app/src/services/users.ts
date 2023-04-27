@@ -1,4 +1,4 @@
-import { api } from './axiosInstance';
+import { api, apiForm } from './axiosInstance';
 
 export const postUser = async (data: PostUser): Promise<User> => {
   const res = await api.post('/users', data);
@@ -41,4 +41,16 @@ export async function searchUser(name: string): Promise<User[]> {
 export async function findUserById(id: string): Promise<User> {
   const res = await api.get(`/users/${id}`);
   return res.data;
+}
+
+export async function putUser(data: FormData): Promise<User> {
+  const res = await apiForm.put(`/users`, data);
+  return res.data;
+}
+
+export async function unassignPatient(
+  id: string,
+  patient: INames
+): Promise<void> {
+  await api.put(`/users/unassign/${id}`, { patientName: patient });
 }

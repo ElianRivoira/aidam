@@ -8,6 +8,7 @@ import {
   validateLoggedUser,
   validateLoggedAdmin,
 } from '../../middlewares/userValidators';
+import { uploadProfileImage } from '../../middlewares/multer';
 
 const router = express.Router();
 
@@ -21,7 +22,7 @@ router.get('/', validateLoggedUser, userController.httpGetAllUsers);
 
 router.get('/search/:name', validateLoggedUser, userController.httpSearchUser);
 
-router.get("/:id", validateLoggedAdmin, userController.httpGetUserById)
+router.get('/:id', validateLoggedUser, userController.httpGetUserById);
 
 router.put(
   '/register/:id',
@@ -29,7 +30,18 @@ router.put(
   userController.httpRegisterUser
 );
 
-router.put('/', validateLoggedUser, userController.httpPutUser);
+router.put(
+  '/',
+  validateLoggedUser,
+  uploadProfileImage.single('profileImage'),
+  userController.httpPutUser
+);
+
+router.put(
+  '/unassign/:id',
+  validateLoggedAdmin,
+  userController.httpUnassignPatient
+);
 
 router.delete('/:id', validateLoggedAdmin, userController.httpDeleteUser);
 
