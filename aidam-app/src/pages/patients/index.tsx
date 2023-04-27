@@ -50,17 +50,17 @@ const patients = () => {
             {user.data?.admin
               ? // si es admin
                 searchedPatients.data?.map((patient, index) => (
-                  <MobileCard key={index} patient={patient} />
+                  <MobileCard key={index} patient={patient} user={user.data} />
                 ))
               : // si no es admin
               search.length > 0
               ? // si hay texto a buscar
                 searchedPatients.data?.map((patient, index) => (
-                  <MobileCard key={index} patient={patient} />
+                  user.data && <MobileCard key={index} patient={patient} user={user.data} />
                 ))
               : // si no hay texto a buscar traigo los pacientes asignados al usuario
                 user.data?.patientsId.map((patient, index) => (
-                  <MobileCard key={index} patient={patient} />
+                  <MobileCard key={index} patient={patient} user={user.data} />
                 ))}
           </div>
         </main>
