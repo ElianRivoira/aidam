@@ -68,12 +68,13 @@ const Profile = ({ query }: MyPageProps) => {
       <Head>
         <title>AIDAM {user.data?.admin ? 'Admin' : ''} - Perfil</title>
       </Head>
-      <div className='h-screen flex flex-col items-center'>
+      <div className='min-h-screen flex flex-col items-center'>
         {useMediaQuery(1024) ? (
           <>
             <Navbar />
             <div className='px-3.5 w-full max-w-md md:border md:shadow-xg md:rounded-3xl md:mt-5'>
-              <div className='flex justify-end mt-3'>
+              <div className='flex justify-between mt-3'>
+                <ArrowBack />
                 <Link href={`/profile/edit/${user.data?._id}`} className='font-light text-xm flex flex-col items-center'>
                   <Image
                     src={profileEdit}
