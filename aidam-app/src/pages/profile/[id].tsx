@@ -74,7 +74,7 @@ const Profile = ({ query }: MyPageProps) => {
             <Navbar />
             <div className='px-3.5 w-full max-w-md md:border md:shadow-xg md:rounded-3xl md:mt-5'>
               <div className='flex justify-end mt-3'>
-                <button className='font-light text-xm flex flex-col items-center'>
+                <Link href={`/profile/edit/${user.data?._id}`} className='font-light text-xm flex flex-col items-center'>
                   <Image
                     src={profileEdit}
                     alt='editar perfil'
@@ -84,7 +84,7 @@ const Profile = ({ query }: MyPageProps) => {
                   />
                   <br />
                   Editar perfil
-                </button>
+                </Link>
               </div>
               <div className='flex flex-col items-center'>
                 <Image src={profileImage} alt='imagen' className='' />
@@ -108,6 +108,27 @@ const Profile = ({ query }: MyPageProps) => {
                   info={user.data?.license}
                 />
               </div>
+              <hr className='w-full border-black03' />
+              <div className='flex flex-col font-semibold text-lb mt-8 px-2.5 w-full'>
+                  <h1 className='mb-5.5'>PACIENTES</h1>
+                  <div className='self-start flex-1 w-full'>
+                    <input
+                      placeholder='Buscar paciente'
+                      className='max-w-[250px] outline-none border border-black03 rounded-md px-2 py-1 hover:border-aidam focus:border-aidam mb-4 transition-colors font-normal'
+                      onChange={e => setbrowserPatients(e.target.value)}
+                      value={browserPatients}
+                    />
+                    <div className='mb-8 overflow-y-auto'>
+                      {filteredPatients?.map((patient, index) => (
+                        <li key={index}>
+                          <Link href={`/patients/${patient._id}/profile`}>
+                            {patient.firstName} {patient.lastName}
+                          </Link>
+                        </li>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               <hr className='w-full border-black03' />
               <div className='mt-8 px-2.5'>
                 <h1 className='font-semibold text-lb mb-5.5'>CONTACTO</h1>
