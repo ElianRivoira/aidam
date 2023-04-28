@@ -20,8 +20,8 @@ const professionals = () => {
     const users = await getAllUsers();
     let activeUsrs;
     let inactiveUsrs;
-    activeUsrs = users.filter((user) => user.status === true);
-    inactiveUsrs = users.filter((user) => user.status === false);
+    activeUsrs = users.filter(user => user.status === true);
+    inactiveUsrs = users.filter(user => user.status === false);
     setActiveUsers(activeUsrs);
     setInactiveUsers(inactiveUsrs);
   }
@@ -54,9 +54,10 @@ const professionals = () => {
         </div>
 
         <div className='mx-12'>
-          {activeUsers?.map((user, index) => (
-            <DesktopCard user={user} key={index} />
-          ))}
+          {activeUsers?.map((user, index) => {
+            if (user.admin) return null;
+            else return <DesktopCard user={user} key={index} />;
+          })}
         </div>
 
         {openModal && (

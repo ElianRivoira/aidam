@@ -12,6 +12,8 @@ import Modal from '@/components/Modal';
 import { findUserById, getLoggedUser, putUser } from '@/services/users';
 import TagInputPatients from '@/components/form/TagInputPatients';
 import professions from '@/utils/professions';
+import useMediaQuery from '@/hooks/useMediaQuery';
+import Navbar from '@/components/navbar/Navbar';
 
 const editUser = ({ query }: MyPageProps) => {
   const router = useRouter();
@@ -29,7 +31,9 @@ const editUser = ({ query }: MyPageProps) => {
     phone: '',
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setUserInfo({ ...userInfo, [name]: value });
   };
@@ -92,13 +96,14 @@ const editUser = ({ query }: MyPageProps) => {
       });
       setPatients(
         user.data.patientsId.map(patient => {
-        return {
-          firstName1: patient.firstName.split(' ')[0],
-          firstName2: patient.firstName.split(' ')[1],
-          lastName1: patient.lastName.split(' ')[0],
-          lastName2: patient.lastName.split(' ')[1],
-        };
-      }))
+          return {
+            firstName1: patient.firstName.split(' ')[0],
+            firstName2: patient.firstName.split(' ')[1],
+            lastName1: patient.lastName.split(' ')[0],
+            lastName2: patient.lastName.split(' ')[1],
+          };
+        })
+      );
     }
   }, [user.isSuccess]);
 
@@ -108,19 +113,17 @@ const editUser = ({ query }: MyPageProps) => {
         <title>AIDAM {user.data?.admin ? 'Admin' : ''} - Editar usuario</title>
       </Head>
       <main className='min-h-screen bg-background'>
-        <NavbarDesktop />
-        <div className='w-full mt-12 px-12'>
+        {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
+        <div className='w-full mt-12 lgMax:mt-4 px-12'>
           <ArrowBack />
-          <h1 className='text-center text-xl4 font-semibold'>
-            EDITAR USUARIO
-          </h1>
+          <h1 className='text-center text-xl4 lgMax:text-xl2 font-semibold'>EDITAR USUARIO</h1>
           <form
             encType='multipart/form-data'
             onSubmit={handleSubmit}
-            className='mt-20 flex flex-col'
+            className='mt-20 lgMax:mt-10 flex flex-col'
           >
-            <div className='flex justify-evenly'>
-              <div className='flex flex-col w-1/4 gap-9 items-center'>
+            <div className='flex justify-evenly lgMax:items-center lgMax:flex-col'>
+              <div className='flex flex-col w-1/4 lgMax:w-full lgMax:max-w-[500px] gap-9 lgMax:mb-9 items-center'>
                 <Input
                   label='Nombre'
                   name='firstName'
@@ -146,7 +149,7 @@ const editUser = ({ query }: MyPageProps) => {
                   placeholder='ejemplo@ejemplo.com'
                 />
               </div>
-              <div className='flex flex-col w-1/4 gap-9 items-center'>
+              <div className='flex flex-col w-1/4 lgMax:w-full lgMax:max-w-[500px] lgMax:mb-9 gap-9 items-center'>
                 <Input
                   label='Profesión'
                   name='profession'
@@ -172,7 +175,7 @@ const editUser = ({ query }: MyPageProps) => {
                   placeholder='+5491234567890'
                 />
               </div>
-              <div className='flex flex-col w-1/4 gap-9 items-center'>
+              <div className='flex flex-col w-1/4 lgMax:w-full lgMax:max-w-[500px] lgMax:mb-9 gap-9 items-center'>
                 <Input
                   label='Subir foto de perfil'
                   name='profileImage'
@@ -189,7 +192,7 @@ const editUser = ({ query }: MyPageProps) => {
                 )}
               </div>
             </div>
-            <div className='flex justify-evenly mt-10'>
+            <div className='flex justify-evenly mt-10 lgMax:mt-5'>
               <div className='w-1/4'></div>
               <div className='w-1/4'></div>
               <div className='w-1/4 flex justify-end'>
