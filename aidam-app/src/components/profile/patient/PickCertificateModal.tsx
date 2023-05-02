@@ -124,7 +124,7 @@ const PickCertificateModal: React.FC<PickCertificateModalProps> = ({
         deleteFunc={() =>
           delCert.mutate({ id: patient?._id, fileName: fileNameToDelete })
         }
-        // deleteMessage = {deleteMsg}
+        deleteMessage = {deleteMsg}
       >
         <h1>Certificado eliminado correctamente</h1>
       </Modal>
