@@ -10,7 +10,7 @@ import Input from '@/components/form/Input';
 import ArrowBack from '@/components/ArrowBack';
 import { getOnePatient, putPatient } from '@/services/patients';
 import Modal from '@/components/Modal';
-import TagInput from '@/components/form/TagInput';
+import TagInputProf from '@/components/form/TagInputProfessionals';
 
 const editPatient = ({ query }: MyPageProps) => {
   const router = useRouter();
@@ -18,7 +18,7 @@ const editPatient = ({ query }: MyPageProps) => {
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [certificate, setCertificate] = useState<File | null>(null);
-  const [professionals, setProfessionals] = useState<ProfessionalNames[]>([]);
+  const [professionals, setProfessionals] = useState<INames[]>([]);
   const [patientInfo, setPatientInfo] = useState<FormPatient>({
     firstName: '',
     lastName: '',
@@ -139,7 +139,7 @@ const editPatient = ({ query }: MyPageProps) => {
                   placeholder='Ejemplo'
                 />
                 <Input
-                  label='Nombre'
+                  label='Apellido'
                   name='lastName'
                   type='text'
                   onChange={e => handleChange(e)}
@@ -220,9 +220,9 @@ const editPatient = ({ query }: MyPageProps) => {
                   value={certificate?.name}
                   onChange={e => handleFile(e)}
                 />
-                <TagInput
-                  taggedProfs={professionals}
-                  setTaggedProfs={setProfessionals}
+                <TagInputProf
+                  tagged={professionals}
+                  setTagged={setProfessionals}
                   patient={patient.data}
                 />
               </div>

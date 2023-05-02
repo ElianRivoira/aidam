@@ -21,6 +21,8 @@
 .eslintcache
 /certificates/**
 !.gitkeep
+/profilesImgs/**
+!.gitkeep
 
 npm-debug.log*
 yarn-debug.log*

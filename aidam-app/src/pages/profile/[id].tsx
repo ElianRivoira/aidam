@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
-import useMediaQuery from '@/hooks/useMediaQuery';
+import Link from 'next/link';
+import { NextPageContext } from 'next';
+import { useQuery } from '@tanstack/react-query';
+import { hasCookie } from 'cookies-next';
 
+import useMediaQuery from '@/hooks/useMediaQuery';
 import Navbar from '@/components/navbar/Navbar';
 import Data from '@/components/profile/Data';
 import profileEdit from '@/assets/icons/profileEdit.svg';
@@ -22,14 +26,9 @@ import Modal from '@/components/Modal';
 import { deleteUser } from '@/services/users';
 import { useRouter } from 'next/router';
 
+
 const Profile = ({ query }: MyPageProps) => {
-  const {
-    isLoading,
-    data: user,
-    isError,
-    error,
-    isSuccess,
-  } = useQuery({
+  const user = useQuery({
     queryKey: ['user', query.id],
     enabled: hasCookie('session'),
     queryFn: () => findUserById(query.id),
@@ -43,15 +42,28 @@ const Profile = ({ query }: MyPageProps) => {
   const [successMsg, setSuccessMsg] = useState('');
 
   const filter = (patientsArr: Patient[], letters: string) => {
+    let filteredPatients: Patient[];
     if (letters === '') {
       setFilteredPatients(patientsArr);
       return;
     }
-    const filteredPatients = patientsArr.filter(
-      (patient: Patient) =>
-        patient.firstName.includes(letters) ||
-        patient.lastName.includes(letters)
-    );
+    if (letters.includes(' ')) {
+      const [firstName, lastName] = letters.split(' ');
+      filteredPatients = patientsArr.filter((patient: Patient) => {
+        if (
+          patient.firstName.toLowerCase().includes(firstName.toLowerCase()) &&
+          patient.lastName.toLowerCase().includes(lastName.toLowerCase())
+        )
+          return true;
+        else return false;
+      });
+    } else {
+      filteredPatients = patientsArr.filter(
+        (patient: Patient) =>
+          patient.firstName.toLowerCase().includes(letters.toLowerCase()) ||
+          patient.lastName.toLowerCase().includes(letters.toLowerCase())
+      );
+    }
     setFilteredPatients(filteredPatients);
   };
 
@@ -78,29 +90,26 @@ const Profile = ({ query }: MyPageProps) => {
   }, [open]);
 
   useEffect(() => {
-    if (user?.patientsId) {
-      setFilteredPatients(user?.patientsId);
-    }
-  }, [isSuccess]);
+    setFilteredPatients(user.data?.patientsId);
+  }, [user.isSuccess]);
 
   useEffect(() => {
-    if (user?.patientsId) {
-      filter(user.patientsId, browserPatients);
-    }
+    if (user.data) filter(user.data.patientsId, browserPatients);
   }, [browserPatients]);
 
   return (
     <>
       <Head>
-        <title>AIDAM - Perfil</title>
+        <title>AIDAM {user.data?.admin ? 'Admin' : ''} - Perfil</title>
       </Head>
-      <div className='h-screen flex flex-col items-center'>
+      <div className='min-h-screen flex flex-col items-center'>
         {useMediaQuery(1024) ? (
           <>
             <Navbar />
             <div className='px-3.5 w-full max-w-md md:border md:shadow-xg md:rounded-3xl md:mt-5'>
-              <div className='flex justify-end mt-3'>
-                <button className='font-light text-xm flex flex-col items-center'>
+              <div className='flex justify-between mt-3'>
+                <ArrowBack />
+                <Link href={`/profile/edit/${user.data?._id}`} className='font-light text-xm flex flex-col items-center'>
                   <Image
                     src={profileEdit}
                     alt='editar perfil'
@@ -110,12 +119,13 @@ const Profile = ({ query }: MyPageProps) => {
                   />
                   <br />
                   Editar perfil
-                </button>
+                </Link>
               </div>
               <div className='flex flex-col items-center'>
                 <Image src={profileImage} alt='imagen' className='' />
                 <p className='font-semibold text-lb'>
-                  {user?.firstName.toUpperCase()} {user?.lastName.toUpperCase()}
+                  {user.data?.firstName.toUpperCase()}{' '}
+                  {user.data?.lastName.toUpperCase()}
                 </p>
               </div>
               <div className='mt-12 px-2.5'>
@@ -125,12 +135,12 @@ const Profile = ({ query }: MyPageProps) => {
                 <Data
                   icon={professionLogo}
                   title='Profesión'
-                  info={user?.profession}
+                  info={user.data?.profession}
                 />
                 <Data
                   icon={licenseIcon}
                   title='Matrícula'
-                  info={user?.license}
+                  info={user.data?.license}
                 />
                 <div className='mb-4 overflow-y-auto'>
                   <h1 className='font-semibold text-lb mb-4'>PACIENTES</h1>
@@ -147,14 +157,39 @@ const Profile = ({ query }: MyPageProps) => {
                 </div>
               </div>
               <hr className='w-full border-black03' />
+              <div className='flex flex-col font-semibold text-lb mt-8 px-2.5 w-full'>
+                  <h1 className='mb-5.5'>PACIENTES</h1>
+                  <div className='self-start flex-1 w-full'>
+                    <input
+                      placeholder='Buscar paciente'
+                      className='max-w-[250px] outline-none border border-black03 rounded-md px-2 py-1 hover:border-aidam focus:border-aidam mb-4 transition-colors font-normal'
+                      onChange={e => setbrowserPatients(e.target.value)}
+                      value={browserPatients}
+                    />
+                    <div className='mb-8 overflow-y-auto'>
+                      {filteredPatients?.map((patient, index) => (
+                        <li key={index}>
+                          <Link href={`/patients/${patient._id}/profile`}>
+                            {patient.firstName} {patient.lastName}
+                          </Link>
+                        </li>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              <hr className='w-full border-black03' />
               <div className='mt-8 px-2.5'>
                 <h1 className='font-semibold text-lb mb-5.5'>CONTACTO</h1>
                 <Data
                   icon={emailIcon}
                   title='Correo electrónico'
-                  info={user?.email}
+                  info={user.data?.email}
                 />
-                <Data icon={phoneIcon} title='Teléfono' info={user?.phone} />
+                <Data
+                  icon={phoneIcon}
+                  title='Teléfono'
+                  info={user.data?.phone}
+                />
               </div>
             </div>
           </>
@@ -166,8 +201,15 @@ const Profile = ({ query }: MyPageProps) => {
                 <div>
                   <ArrowBack />
                 </div>
-                <div>
-                  <button
+                <div className='flex gap-4'>
+                  <Link
+                    className='flex items-center text-lb font-semibold text-white px-4 py-2.5 rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
+                    href={`/profile/edit/${user.data?._id}`}
+                  >
+                    Editar
+                  </Link>
+                  {user.data?.admin && (
+                     <button
                     onClick={() => {
                       setOpen(true);
                       setType(4);
@@ -176,30 +218,30 @@ const Profile = ({ query }: MyPageProps) => {
                   >
                     Dar de baja
                   </button>
+                  )}
                 </div>
               </div>
               <div className='flex flex-col items-center'>
                 <Image src={profileImage} alt='perfil' className='w-[90px]' />
                 <p className='font-semibold text-2xl'>
-                  {user?.firstName} {user?.lastName}
+                  {user.data?.firstName.toUpperCase()}{' '}
+                  {user.data?.lastName.toUpperCase()}
                 </p>
               </div>
               <div className='flex mt-14'>
-                <div className='flex flex-col font-semibold text-xl w-1/3 items-center'>
-                  <div className='w-fit'>
-                    <h1 className='mb-10'>DATOS PERSONALES</h1>
-                    <div>
-                      <Data
-                        icon={professionLogo}
-                        title='Profesión'
-                        info={user?.profession}
-                      />
-                      <Data
-                        icon={licenseIcon}
-                        title='Matrícula'
-                        info={user?.license}
-                      />
-                    </div>
+                <div className='flex flex-col font-semibold text-xl pl-20 w-1/3'>
+                  <h1 className='mb-10'>DATOS PERSONALES</h1>
+                  <div>
+                    <Data
+                      icon={professionLogo}
+                      title='Profesión'
+                      info={user.data?.profession}
+                    />
+                    <Data
+                      icon={licenseIcon}
+                      title='Matrícula'
+                      info={user.data?.license}
+                    />
                   </div>
                 </div>
                 <div className='flex flex-col font-semibold border-x-2 text-xl w-1/3 items-center'>
@@ -207,8 +249,9 @@ const Profile = ({ query }: MyPageProps) => {
                   <div className='self-start px-12 flex-1 w-full'>
                     <input
                       placeholder='Buscar paciente'
-                      className='w-full outline-none border font-normal rounded-md px-2 hover:border-aidam focus:border-aidam mb-4'
-                      onChange={(e) => setbrowserPatients(e.target.value)}
+                      className='max-w-[250px] outline-none border border-black03 rounded-md px-2 hover:border-aidam focus:border-aidam mb-4 transition-colors'
+                      onChange={e => setbrowserPatients(e.target.value)}
+
                       value={browserPatients}
                     />
                     <div className='h-48 overflow-y-auto'>
@@ -222,21 +265,19 @@ const Profile = ({ query }: MyPageProps) => {
                     </div>
                   </div>
                 </div>
-                <div className='flex flex-col font-semibold text-xl w-1/3 mx-auto items-center'>
-                  <div className='w-fit'>
-                    <h1 className='mb-10'>CONTACTO</h1>
-                    <div>
-                      <Data
-                        icon={emailIcon}
-                        title='Correo electrónico'
-                        info={user?.email}
-                      />
-                      <Data
-                        icon={phoneIcon}
-                        title='Teléfono'
-                        info={user?.phone}
-                      />
-                    </div>
+                <div className='flex flex-col font-semibold text-xl pl-20 w-1/3'>
+                  <h1 className='mb-10'>CONTACTO</h1>
+                  <div>
+                    <Data
+                      icon={emailIcon}
+                      title='Correo electrónico'
+                      info={user.data?.email}
+                    />
+                    <Data
+                      icon={phoneIcon}
+                      title='Teléfono'
+                      info={user.data?.phone}
+                    />
                   </div>
                 </div>
               </div>

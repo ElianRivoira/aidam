@@ -73,8 +73,9 @@ const Observations = ({ query }: MyPageProps) => {
 
   const deleteObs = useMutation({
     mutationFn: deleteObservation,
-    onSuccess: (newobs) => {
-      setType(3);
+    onSuccess: newobs => {
+      setSuccessMsg('Observación eliminada correctamente');
+      setType(1);
       setOpen(true);
     },
     onError: (err: any) => {
@@ -85,11 +86,8 @@ const Observations = ({ query }: MyPageProps) => {
   });
 
   useEffect(() => {
-    if (type === 3 && open === false) {
-      setOpenObs(false);
-      patient.refetch();
-    }
     if (type === 1 && open === false) {
+      setOpenObs(false);
       setOpenCreateObs(false);
       patient.refetch();
     }

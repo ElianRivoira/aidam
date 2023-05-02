@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import Input from '@/components/form/Input';
 import ArrowBack from '@/components/ArrowBack';
-import TagInput from '@/components/form/TagInput';
+import TagInputProf from '@/components/form/TagInputProfessionals';
 import { postPatient } from '@/services/patients';
 import Modal from '@/components/Modal';
 
@@ -16,7 +16,7 @@ const create = () => {
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [certificate, setCertificate] = useState<File | null>(null);
-  const [professionals, setProfessionals] = useState<ProfessionalNames[]>([]);
+  const [professionals, setProfessionals] = useState<INames[]>([]);
   const [patientInfo, setPatientInfo] = useState<FormPatient>({
     firstName: '',
     lastName: '',
@@ -97,15 +97,15 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.firstName}
                   placeholder='Ejemplo'
-                  />
+                />
                 <Input
-                  label='Nombre'
+                  label='Apellido'
                   name='lastName'
                   type='text'
                   onChange={e => handleChange(e)}
                   value={patientInfo.lastName}
                   placeholder='Ejemplo'
-                  />
+                />
                 <Input
                   label='DNI'
                   name='dni'
@@ -113,14 +113,14 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.dni}
                   placeholder='12345678'
-                  />
+                />
                 <Input
                   label='Fecha de Nacimiento'
                   name='birth'
                   type='date'
                   onChange={e => handleChange(e)}
                   value={patientInfo.birth}
-                  />
+                />
               </div>
               <div className='flex flex-col w-1/4 gap-9 items-center'>
                 <Input
@@ -130,7 +130,7 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.socialWork}
                   placeholder='EJEMPLO'
-                  />
+                />
                 <Input
                   label='N° de Afiliado'
                   name='affiliateNumber'
@@ -138,7 +138,7 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.affiliateNumber}
                   placeholder='03/18688242/06'
-                  />
+                />
                 <Input
                   label='Módulo Autorizado'
                   name='authorizedModule'
@@ -146,7 +146,7 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.authorizedModule}
                   placeholder='18688242'
-                  />
+                />
                 <Input
                   label='Diagnóstico'
                   name='diagnosis'
@@ -154,7 +154,7 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.diagnosis}
                   placeholder='Trastorno ...'
-                  />
+                />
               </div>
               <div className='flex flex-col w-1/4 gap-9 items-center'>
                 <Input
@@ -164,7 +164,7 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.email}
                   placeholder='ejemplo@ejemplo.com'
-                  />
+                />
                 <Input
                   label='N° de Teléfono'
                   name='phone'
@@ -180,9 +180,9 @@ const create = () => {
                   value={certificate?.name}
                   onChange={e => handleFile(e)}
                 />
-                <TagInput
-                  taggedProfs={professionals}
-                  setTaggedProfs={setProfessionals}
+                <TagInputProf
+                  tagged={professionals}
+                  setTagged={setProfessionals}
                 />
               </div>
             </div>

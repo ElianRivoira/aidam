@@ -31,7 +31,7 @@ export const putPatient = async ({
   return response.data;
 };
 
-export const unassignProf = async (id: string, prof: ProfessionalNames): Promise<void> => {
+export const unassignProf = async (id: string, prof: INames): Promise<void> => {
   await api.put(`/patients/unassign/${id}`, { profName: prof });
 };
 

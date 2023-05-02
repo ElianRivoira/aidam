@@ -2,9 +2,9 @@ interface User {
   _id: string;
   firstName: string;
   lastName: string;
-  email: number;
+  email: string;
   password: string;
-  license: number;
+  license: string;
   profession: string;
   phone?: string;
   admin: false;
@@ -13,6 +13,16 @@ interface User {
   lastThreeTasks: [];
   status: boolean;
   lastLoginDate: Date;
+}
+
+interface FormUser {
+  firstName: string;
+  lastName: string;
+  email: string;
+  license: string;
+  profession: string;
+  phone: string;
+  [key: string]: string;
 }
 
 interface PostUser {
@@ -99,7 +109,7 @@ interface FormPatient {
   [key: string]: string;
 }
 
-interface ProfessionalNames {
+interface INames {
   firstName1: string;
   firstName2?: string;
   lastName1: string;

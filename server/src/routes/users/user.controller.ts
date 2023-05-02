@@ -6,6 +6,7 @@ import { BadRequestError } from '../../errors/bad-request-error';
 import { RequestValidationError } from '../../errors/request-validation-error';
 import { validateToken } from '../../utils/tokens';
 import { ServerError } from '../../errors/server-error';
+import patientService from '../../models/patient-service';
 
 const httpRegisterUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
@@ -104,11 +105,11 @@ async function httpUserLogin(req: Request, res: Response) {
     if (req.session) {
       req.session.token = response?.token;
     }
-  
+
     res.send(response?.user);
   } catch (e) {
-    console.error(e)
-    throw new ServerError(e)
+    console.error(e);
+    throw new ServerError(e);
   }
 }
 
@@ -141,14 +142,56 @@ const httpPutUser = async (req: Request, res: Response) => {
     throw new RequestValidationError(errors.array());
   }
   try {
-    const { email, phone } = req.body;
+    const { email, phone, firstName, lastName, license, profession } = req.body;
     if (req.session?.token) {
       const { user } = validateToken(req.session.token);
-      const updatedUser = await userService.putUser(user.id, { email, phone });
+      const updatedUser = await userService.putUser(user.id, {
+        email,
+        phone,
+        firstName,
+        lastName,
+        license,
+        profession,
+      });
       res.send(updatedUser);
     }
   } catch (e) {
     console.error(e);
+    throw new ServerError(e);
+  }
+};
+
+const httpUnassignPatient = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+  try {
+    const { patientName } = req.body;
+
+    const { data } = await userService.getUserById(req.params.id);
+
+    if (data) {
+      const findedPatient = await patientService.searchPatient(patientName);
+      await patientService.putPatient(
+        findedPatient[0]._id,
+        undefined,
+        data._id,
+        true
+      );
+      await userService.putUser(
+        data._id,
+        undefined,
+        findedPatient[0]._id,
+        true
+      );
+    }
+
+    res.send(data);
+  } catch (e) {
+    console.error(e);
+    throw new ServerError(e);
   }
 };
 
@@ -162,4 +205,5 @@ export default {
   httpSearchUser,
   httpPutUser,
   httpGetUserById,
+  httpUnassignPatient,
 };

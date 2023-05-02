@@ -1,7 +1,7 @@
-interface ProfessionalNames {
+interface INames {
   firstName1: string;
   firstName2?: string;
   lastName1: string;
   lastName2?: string;
 }
-export default ProfessionalNames;
+export default INames;

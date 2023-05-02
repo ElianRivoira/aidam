@@ -4,30 +4,30 @@ import { hasCookie } from 'cookies-next';
 import { useQuery } from '@tanstack/react-query';
 
 import x from '@/assets/icons/x-white.svg';
-import { searchUser } from '@/services/users';
-import { unassignProf } from '@/services/patients';
+import { searchPatients } from '@/services/patients';
+import { unassignPatient } from '@/services/users';
 
 interface TagInputProps {
-  taggedProfs: ProfessionalNames[];
-  setTaggedProfs: React.Dispatch<React.SetStateAction<ProfessionalNames[]>>;
-  patient?: Patient | undefined;
+  tagged: INames[];
+  setTagged: React.Dispatch<React.SetStateAction<INames[]>>;
+  user?: User | undefined;
 }
 
-const TagInput: React.FC<TagInputProps> = ({
-  taggedProfs,
-  setTaggedProfs,
-  patient,
+const TagInputPatients: React.FC<TagInputProps> = ({
+  tagged,
+  setTagged,
+  user,
 }) => {
   const [searchText, setSearchText] = useState('');
 
-  const professionals = useQuery({
-    queryKey: ['search professionals in cp'],
+  const patients = useQuery({
+    queryKey: ['search patients in cp'],
     enabled: hasCookie('session') && searchText.length > 0,
-    queryFn: () => searchUser(searchText),
+    queryFn: () => searchPatients(searchText),
   });
 
   useEffect(() => {
-    searchText && professionals.refetch();
+    searchText && patients.refetch();
   }, [searchText]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,11 +35,11 @@ const TagInput: React.FC<TagInputProps> = ({
     setSearchText(value);
   };
 
-  const handleClickOnProf = (name: ProfessionalNames) => {
-    setTaggedProfs(prevState => {
+  const handleClickOnPatient = (name: INames) => {
+    setTagged(prevState => {
       if (prevState[0])
         return [
-          ...taggedProfs,
+          ...tagged,
           {
             firstName1: name.firstName1,
             firstName2: name.firstName2,
@@ -60,21 +60,20 @@ const TagInput: React.FC<TagInputProps> = ({
     setSearchText('');
   };
 
-  const handleTagRemove = async (profToDelete: ProfessionalNames) => {
-    // Eliminar el usuario etiquetado de la lista
-    const filteredProfs = taggedProfs.filter(prof => prof !== profToDelete);
-    setTaggedProfs(filteredProfs);
-    patient && (await unassignProf(patient._id, profToDelete));
+  const handleTagRemove = async (patientToDelete: INames) => {
+    const filteredPatients = tagged.filter(patient => patient !== patientToDelete);
+    setTagged(filteredPatients);
+    user && (await unassignPatient(user._id, patientToDelete));
   };
 
   return (
     <div className='w-full relative'>
-      <label htmlFor='profs' className='text-sm font-normal mb-1 block'>
-        Profesionales a cargo
+      <label htmlFor='patients' className='text-sm font-normal mb-1 block'>
+        Pacientes a cargo
       </label>
       <input
         type='text'
-        name='profs'
+        name='patients'
         value={searchText}
         onChange={handleInputChange}
         className='w-full h-10 rounded-md border border-black02 p-1.5 outline-none focus:border-aidam hover:border-aidam80'
@@ -82,7 +81,7 @@ const TagInput: React.FC<TagInputProps> = ({
       />
       {searchText && (
         <div className='absolute z-20 border bg-white rounded-md flex flex-col gap-2 w-full'>
-          {professionals.data?.map((prof, index) => (
+          {patients.data?.map((prof, index) => (
             <div
               key={index}
               onClick={() => {
@@ -99,7 +98,7 @@ const TagInput: React.FC<TagInputProps> = ({
                   [lastName1, lastName2] = prof.lastName.split(' ');
                 } else lastName1 = prof.lastName;
 
-                handleClickOnProf({
+                handleClickOnPatient({
                   firstName1,
                   firstName2,
                   lastName1,
@@ -114,7 +113,7 @@ const TagInput: React.FC<TagInputProps> = ({
         </div>
       )}
       <div className='flex flex-wrap gap-2 mt-2.5'>
-        {taggedProfs.map((prof, index) => {
+        {tagged.map((prof, index) => {
           return (
             <div
               key={index}
@@ -136,4 +135,4 @@ const TagInput: React.FC<TagInputProps> = ({
   );
 };
 
-export default TagInput;
+export default TagInputPatients;
