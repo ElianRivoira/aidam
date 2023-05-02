@@ -80,7 +80,7 @@ const editPatient = ({ query }: MyPageProps) => {
 
   useEffect(() => {
     if (type === 1 && open === false) {
-      router.push('/patients');
+      router.push(`/patients/${query.id}/profile`);
     }
   }, [open]);
 

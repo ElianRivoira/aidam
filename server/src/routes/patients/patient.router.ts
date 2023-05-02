@@ -64,6 +64,12 @@ patientRouter.put(
   patientController.httpUnassignProf
 );
 
+patientRouter.put(
+  '/delete/certificate/:id',
+  validateLoggedAdmin,
+  patientController.httpDeleteCertificate
+);
+
 patientRouter.delete(
   '/:id',
   validateLoggedAdmin,

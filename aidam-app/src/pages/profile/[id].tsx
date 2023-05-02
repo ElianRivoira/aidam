@@ -72,7 +72,7 @@ const Profile = ({ query }: MyPageProps) => {
         {useMediaQuery(1024) ? (
           <>
             <Navbar />
-            <div className='px-3.5 w-full max-w-md md:border md:shadow-xg md:rounded-3xl md:mt-5'>
+            <div className='px-3.5 w-full'>
               <div className='flex justify-between mt-3'>
                 <ArrowBack />
                 <Link href={`/profile/edit/${user.data?._id}`} className='font-light text-xm flex flex-col items-center'>
@@ -121,7 +121,7 @@ const Profile = ({ query }: MyPageProps) => {
                     />
                     <div className='mb-8 overflow-y-auto'>
                       {filteredPatients?.map((patient, index) => (
-                        <li key={index}>
+                        <li key={index} className='mb-4 hover:text-aidam70 transition-colors'>
                           <Link href={`/patients/${patient._id}/profile`}>
                             {patient.firstName} {patient.lastName}
                           </Link>
@@ -202,7 +202,7 @@ const Profile = ({ query }: MyPageProps) => {
                     />
                     <div className='h-48 overflow-y-auto'>
                       {filteredPatients?.map((patient, index) => (
-                        <li key={index}>
+                        <li key={index} className='mb-4 hover:text-aidam70 transition-colors'>
                           <Link href={`/patients/${patient._id}/profile`}>
                             {patient.firstName} {patient.lastName}
                           </Link>

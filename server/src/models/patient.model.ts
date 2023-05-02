@@ -13,6 +13,7 @@ export interface PatientAttrs {
   birth: Date;
   email: string;
   phone: number;
+  certificate: string[];
 }
 
 interface PatientModel extends mongoose.Model<PatientDoc> {
@@ -34,6 +35,8 @@ export interface PatientDoc extends mongoose.Document {
   observationsId: Array<ObservationDoc['_id']>;
   professionalsId: Array<UserDoc['_id']>;
   active: boolean;
+  certificate: string[];
+  reports: string[];
 }
 
 const patientSchema = new mongoose.Schema({
@@ -86,6 +89,18 @@ const patientSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  certificate: [
+    {
+      type: String,
+      default: [''],
+    },
+  ],
+  reports: [
+    {
+      type: String,
+      default: [''],
+    },
+  ],
 });
 
 patientSchema.statics.build = (attrs: PatientAttrs) => {

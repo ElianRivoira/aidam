@@ -38,9 +38,23 @@ export const unassignProf = async (id: string, prof: INames): Promise<void> => {
 export const searchPatients = async (name: string): Promise<Patient[]> => {
   const res = await api.get(`/patients/search/${name}`);
   return res.data;
-}
+};
 
 export const downloadCertificate = async (id: string) => {
-  const res = await apiFile.get(`/patients/download/certificate/${id}`);
-  return res.data;
-}
+  await apiFile.get(`/patients/download/certificate/${id}`);
+};
+
+export const deleteCertificate = async ({
+  id,
+  fileName,
+}: {
+  id: string | undefined;
+  fileName: string;
+}): Promise<void> => {
+  if (id) {
+    const res = await api.put(`/patients/delete/certificate/${id}`, {
+      fileName,
+    });
+    return res.data;
+  }
+};

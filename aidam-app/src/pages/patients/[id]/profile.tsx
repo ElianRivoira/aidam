@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -17,20 +17,30 @@ import cardIcon from '@/assets/icons/cardIcon.svg';
 import scheduleIcon from '@/assets/icons/scheduleIcon.svg';
 import Navbar from '@/components/navbar/Navbar';
 import NavbarPatient from '@/components/profile/patient/NavbarPatient';
-import { downloadCertificate, getOnePatient } from '@/services/patients';
+import {
+  deleteCertificate,
+  getOnePatient,
+} from '@/services/patients';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import ArrowBack from '@/components/ArrowBack';
 import DotsMenu from '@/components/profile/patient/DotsMenu';
 import { deletePatient } from '@/services/patients';
 import Modal from '@/components/Modal';
+import PickCertificateModal from '@/components/profile/patient/PickCertificateModal';
+import { getLoggedUser } from '@/services/users';
 
 const Profile = ({ query }: MyPageProps) => {
   const [birthDate, setBirthDate] = useState('');
+  const [openCertificateModal, setOpenCertificateModal] = useState(false);
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
-  const router = useRouter()
+  const [openCertModal, setOpenCertModal] = useState(false);
+  const [typeCertModal, setTypeCertModal] = useState(0);
+  const [successMsg, setSuccessMsg] = useState('');
+
+  const router = useRouter();
 
   const patient = useQuery({
     queryKey: ['patient', query.id],
@@ -38,9 +48,16 @@ const Profile = ({ query }: MyPageProps) => {
     queryFn: () => getOnePatient(query.id),
   });
 
+  const user = useQuery({
+    queryKey: ['user'],
+    enabled: hasCookie('session'),
+    queryFn: getLoggedUser,
+  });
+
   const delPatient = useMutation({
     mutationFn: deletePatient,
     onSuccess: patient => {
+      setSuccessMsg('Paciente eliminado correctamente');
       setType(1);
       setOpen(true);
     },
@@ -51,10 +68,25 @@ const Profile = ({ query }: MyPageProps) => {
     },
   });
 
-  const handleDownload = async () => {
-    const pathCertificate = await downloadCertificate(query.id);
-    window.open(pathCertificate);
-  }
+  const delCert = useMutation({
+    mutationFn: deleteCertificate,
+    onSuccess: () => {
+      setSuccessMsg('Certificado eliminado correctamente');
+      setTypeCertModal(1);
+      setOpenCertModal(true);
+      patient.refetch();
+    },
+    onError: (err: any) => {
+      setType(2);
+      setErrors(err.response.data.errors);
+      setOpen(true);
+    },
+  });
+
+  const handleDownload = async (fileName: string): Promise<void> => {
+    // const pathCertificate = await downloadCertificate(query.id);
+    window.open(`http://localhost:8000/download/certificate/${fileName}`);
+  };
 
   useEffect(() => {
     if (patient.data) {
@@ -64,8 +96,8 @@ const Profile = ({ query }: MyPageProps) => {
   }, [patient.isSuccess]);
 
   useEffect(() => {
-    if(open === false && type === 1) router.push({pathname: '/patients'})
-  }, [open])
+    if (open === false && type === 1) router.push({ pathname: '/patients' });
+  }, [open]);
 
   return (
     <>
@@ -81,13 +113,20 @@ const Profile = ({ query }: MyPageProps) => {
               <div className='flex justify-between items-center mt-8'>
                 <ArrowBack />
                 <div className='flex gap-12 relative z-0'>
-                  <button onClick={handleDownload} className='text-lm font-medium text-white px-4 py-2.5 h-fit rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'>
+                  <button
+                    onClick={() => setOpenCertificateModal(true)}
+                    className='text-lm font-medium text-white px-4 py-2.5 h-fit rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
+                  >
                     Certificado
                   </button>
                   {patient.data && (
                     <DotsMenu
                       handleDelete={() => delPatient.mutate(patient.data._id)}
-                      handleEdit={() => router.push({pathname: `/admin/patients/edit/${patient.data?._id}`})}
+                      handleEdit={() =>
+                        router.push({
+                          pathname: `/admin/patients/edit/${patient.data?._id}`,
+                        })
+                      }
                     />
                   )}
                 </div>
@@ -105,7 +144,10 @@ const Profile = ({ query }: MyPageProps) => {
                   <div className='flex flex-col px-2.5 mb-4 lg:w-1/3'>
                     <div className='flex justify-between mb-4'>
                       <p className='font-semibold'>DIAGNÓSTICO</p>
-                      <button onClick={handleDownload} className='text-xs font-normal text-white px-4 py-2.5 rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'>
+                      <button
+                        onClick={() => setOpenCertificateModal(true)}
+                        className='text-xs font-normal text-white px-4 py-2.5 rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
+                      >
                         Certificado
                       </button>
                     </div>
@@ -145,23 +187,23 @@ const Profile = ({ query }: MyPageProps) => {
               {useMediaQuery(1024) && (
                 <hr className='w-full border-black03 mb-5' />
               )}
-                <div className='flex flex-col px-2.5 mb-4 lg:w-1/3 items-center lgMax:items-start lg:border-x border-black03'>
-                  <h1 className='font-semibold mb-12 lgMax:mb-6 text-center lg:text-xg'>
-                    PROFESIONALES
-                  </h1>
-                  <ul className='list-disc text-lg lgMax:text-lb font-normal lgMax:ml-4 '>
-                    {patient.data?.professionalsId.map((prof, index) => (
-                      <li key={index} className='mb-4'>
-                        <Link
-                          href={`/profile/${prof._id}`}
-                          className='hover:text-aidam70 transition-colors font-semibold'
-                        >
-                          {prof.firstName} {prof.lastName}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+              <div className='flex flex-col px-2.5 mb-4 lg:w-1/3 items-center lgMax:items-start lg:border-x border-black03'>
+                <h1 className='font-semibold mb-12 lgMax:mb-6 text-center lg:text-xg'>
+                  PROFESIONALES
+                </h1>
+                <ul className='list-disc text-lg lgMax:text-lb font-normal lgMax:ml-4 '>
+                  {patient.data?.professionalsId.map((prof, index) => (
+                    <li key={index} className='mb-4'>
+                      <Link
+                        href={`/profile/${prof._id}`}
+                        className='hover:text-aidam70 transition-colors font-semibold'
+                      >
+                        {prof.firstName} {prof.lastName}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
               <div className='flex flex-col px-2.5 mb-4 lg:w-1/3 lg:items-center'>
                 <div className='w-fit'>
                   {!useMediaQuery(1024) && (
@@ -196,8 +238,20 @@ const Profile = ({ query }: MyPageProps) => {
           type={type}
           errors={errors}
         >
-          <h1>Paciente eliminado correctamente</h1>
+          <h1>{successMsg}</h1>
         </Modal>
+        <PickCertificateModal
+          open={openCertificateModal}
+          openCertModal={openCertModal}
+          setOpenCertModal={setOpenCertModal}
+          typeCertModal={typeCertModal}
+          setTypeCertModal={setTypeCertModal}
+          onClose={() => setOpenCertificateModal(false)}
+          patient={patient.data}
+          handleDownload={handleDownload}
+          admin={user.data?.admin}
+          delCert={delCert}
+        />
       </main>
     </>
   );
