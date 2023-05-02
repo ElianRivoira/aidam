@@ -80,6 +80,7 @@ interface Patient {
   observationsId: Observation[];
   professionalsId: User[];
   active: boolean;
+  certificate: string[];
 }
 
 interface PostPatient {

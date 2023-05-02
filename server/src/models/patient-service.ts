@@ -56,16 +56,47 @@ const getOnePatient = async (
 const putPatient = async (
   id: string,
   data?: object,
-  professionalId?: string,
-  pull?: boolean
+  professionalId?: string | null,
+  pull?: boolean,
+  certificate?: string
 ): Promise<PatientDoc | null> => {
   const findAndUpdate = () => {
     if (pull) {
+      if (certificate) {
+        return Patient.findByIdAndUpdate(
+          id,
+          {
+            ...data,
+            $pull: {
+              professionalsId: professionalId,
+              certificate: certificate,
+            },
+          },
+          {
+            new: true,
+          }
+        );
+      } else {
+        return Patient.findByIdAndUpdate(
+          id,
+          {
+            ...data,
+            $pull: { professionalsId: professionalId },
+          },
+          {
+            new: true,
+          }
+        );
+      }
+    } else if (certificate) {
       return Patient.findByIdAndUpdate(
         id,
         {
           ...data,
-          $pull: { professionalsId: professionalId },
+          $addToSet: {
+            professionalsId: professionalId,
+            certificate: certificate,
+          },
         },
         {
           new: true,
@@ -76,7 +107,9 @@ const putPatient = async (
         id,
         {
           ...data,
-          $addToSet: { professionalsId: professionalId },
+          $addToSet: {
+            professionalsId: professionalId,
+          },
         },
         {
           new: true,
