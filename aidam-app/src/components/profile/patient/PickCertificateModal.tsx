@@ -65,24 +65,26 @@ const PickCertificateModal: React.FC<PickCertificateModalProps> = ({
                   key={index}
                   className={`${styles.divCertificate} w-fit flex flex-col border border-white hover:border-black03 rounded-md pt-0 transition-all`}
                 >
-                  <button
-                    onClick={() => {
-                      setDeleteMsg(
-                        '¿Está seguro que desea eliminar este certificado?'
-                      );
-                      setTypeCertModal(4);
-                      setOpenCertModal(true);
-                      setFileNameToDelete(cert);
-                    }}
-                    className={`w-fit self-end h-[18px] mr-1 mt-1 -mb-1`}
-                  >
-                    <Image
-                      src={x}
-                      alt='eliminar'
-                      width={18}
-                      className={`${styles.x} hidden`}
-                    />
-                  </button>
+                  {admin && (
+                    <button
+                      onClick={() => {
+                        setDeleteMsg(
+                          '¿Está seguro que desea eliminar este certificado?'
+                        );
+                        setTypeCertModal(4);
+                        setOpenCertModal(true);
+                        setFileNameToDelete(cert);
+                      }}
+                      className={`w-fit self-end h-[18px] mr-1 mt-1 -mb-1`}
+                    >
+                      <Image
+                        src={x}
+                        alt='eliminar'
+                        width={18}
+                        className={`${styles.x} hidden`}
+                      />
+                    </button>
+                  )}
                   <button
                     onClick={() => handleDownload(cert)}
                     className='flex flex-col items-center p-3 pt-0'
@@ -124,7 +126,7 @@ const PickCertificateModal: React.FC<PickCertificateModalProps> = ({
         deleteFunc={() =>
           delCert.mutate({ id: patient?._id, fileName: fileNameToDelete })
         }
-        deleteMessage = {deleteMsg}
+        deleteMessage={deleteMsg}
       >
         <h1>Certificado eliminado correctamente</h1>
       </Modal>

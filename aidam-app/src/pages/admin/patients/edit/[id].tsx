@@ -118,8 +118,8 @@ const editPatient = ({ query }: MyPageProps) => {
       </Head>
       <main className='min-h-screen bg-background'>
         <NavbarDesktop />
-        <div className='w-full mt-12 px-12'>
-          <ArrowBack />
+        <div className='w-full mt-12 px-12 mb-4'>
+          <ArrowBack route={`/patients/${query.id}/profile`} />
           <h1 className='text-center text-xl4 font-semibold'>
             EDITAR PACIENTE
           </h1>

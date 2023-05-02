@@ -17,10 +17,7 @@ import cardIcon from '@/assets/icons/cardIcon.svg';
 import scheduleIcon from '@/assets/icons/scheduleIcon.svg';
 import Navbar from '@/components/navbar/Navbar';
 import NavbarPatient from '@/components/profile/patient/NavbarPatient';
-import {
-  deleteCertificate,
-  getOnePatient,
-} from '@/services/patients';
+import { deleteCertificate, getOnePatient } from '@/services/patients';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import ArrowBack from '@/components/ArrowBack';
@@ -111,7 +108,7 @@ const Profile = ({ query }: MyPageProps) => {
           <div className='flex flex-col lgMax:px-3.5'>
             {!useMediaQuery(1024) && (
               <div className='flex justify-between items-center mt-8'>
-                <ArrowBack />
+                <ArrowBack route='/patients' />
                 <div className='flex gap-12 relative z-0'>
                   <button
                     onClick={() => setOpenCertificateModal(true)}
@@ -132,11 +129,18 @@ const Profile = ({ query }: MyPageProps) => {
                 </div>
               </div>
             )}
-            <div className='lgMax:my-8 mb-8 lg:mb-11 flex flex-col items-center'>
-              <Image src={profileImage} alt='perfil' className='lg:w-[90px]' />
-              <p className='font-semibold text-lb lg:text-xl1 lg:mt-3'>
-                {patient.data?.firstName} {patient.data?.lastName}
-              </p>
+            <div className='lgMax:my-8 lg:mb-11 flex w-full'>
+              <ArrowBack route='/patients' width={33} />
+              <div className='flex flex-col mx-auto items-center'>
+                <Image
+                  src={profileImage}
+                  alt='perfil'
+                  className='lg:w-[90px]'
+                />
+                <p className='font-semibold text-lb lg:text-xl1 lg:mt-3'>
+                  {patient.data?.firstName} {patient.data?.lastName}
+                </p>
+              </div>
             </div>
             <div className='flex lgMax:flex-col'>
               {useMediaQuery(1024) && (
@@ -187,7 +191,7 @@ const Profile = ({ query }: MyPageProps) => {
               {useMediaQuery(1024) && (
                 <hr className='w-full border-black03 mb-5' />
               )}
-              <div className='flex flex-col px-2.5 mb-4 lg:w-1/3 items-center lgMax:items-start lg:border-x border-black03'>
+              <div className='flex flex-col px-2.5 mb-1 lg:w-1/3 items-center lgMax:items-start lg:border-x border-black03'>
                 <h1 className='font-semibold mb-12 lgMax:mb-6 text-center lg:text-xg'>
                   PROFESIONALES
                 </h1>
@@ -204,6 +208,9 @@ const Profile = ({ query }: MyPageProps) => {
                   ))}
                 </ul>
               </div>
+              {useMediaQuery(1024) && (
+                <hr className='w-full border-black03 mb-5' />
+              )}
               <div className='flex flex-col px-2.5 mb-4 lg:w-1/3 lg:items-center'>
                 <div className='w-fit'>
                   {!useMediaQuery(1024) && (

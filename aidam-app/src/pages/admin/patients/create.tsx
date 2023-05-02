@@ -80,8 +80,8 @@ const create = () => {
       </Head>
       <main className='min-h-screen bg-background'>
         <NavbarDesktop />
-        <div className='w-full mt-12 px-12'>
-          <ArrowBack />
+        <div className='w-full mt-12 px-12 mb-4'>
+          <ArrowBack route='/patients' />
           <h1 className='text-center text-xl4 font-semibold'>NUEVO PACIENTE</h1>
           <form
             encType='multipart/form-data'
