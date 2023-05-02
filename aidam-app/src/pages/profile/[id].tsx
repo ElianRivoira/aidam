@@ -11,14 +11,16 @@ import professionLogo from '@/assets/icons/professionLogo.svg';
 import licenseIcon from '@/assets/icons/licenseIcon.svg';
 import emailIcon from '@/assets/icons/emailIcon.svg';
 import phoneIcon from '@/assets/icons/phoneIcon.svg';
-import { useQuery } from '@tanstack/react-query';
-import { getLoggedUser, findUserById } from '@/services/users';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { findUserById } from '@/services/users';
 import { hasCookie } from 'cookies-next';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
-import { useRouter } from 'next/router';
 import { NextPageContext } from 'next';
 import ArrowBack from '@/components/ArrowBack';
 import Link from 'next/link';
+import Modal from '@/components/Modal';
+import { deleteUser } from '@/services/users';
+import { useRouter } from 'next/router';
 
 const Profile = ({ query }: MyPageProps) => {
   const {
@@ -35,6 +37,10 @@ const Profile = ({ query }: MyPageProps) => {
 
   const [filteredPatients, setFilteredPatients] = useState<Patient[]>();
   const [browserPatients, setbrowserPatients] = useState('');
+  const [open, setOpen] = useState(false);
+  const [type, setType] = useState(0);
+  const [errors, setErrors] = useState<CustomError[]>([]);
+  const [successMsg, setSuccessMsg] = useState('');
 
   const filter = (patientsArr: Patient[], letters: string) => {
     if (letters === '') {
@@ -48,6 +54,28 @@ const Profile = ({ query }: MyPageProps) => {
     );
     setFilteredPatients(filteredPatients);
   };
+
+  const router = useRouter();
+
+  const deleteProfessional = useMutation({
+    mutationFn: deleteUser,
+    onSuccess: () => {
+      setSuccessMsg('¡El usuario ha sido dado de baja correctamente!');
+      setType(1);
+      setOpen(true);
+    },
+    onError: (err: any) => {
+      setType(2);
+      setErrors(err.response.data.errors);
+      setOpen(true);
+    },
+  });
+
+  useEffect(() => {
+    if (!open && type === 1) {
+      router.push('/admin/professionals');
+    }
+  }, [open]);
 
   useEffect(() => {
     if (user?.patientsId) {
@@ -104,6 +132,19 @@ const Profile = ({ query }: MyPageProps) => {
                   title='Matrícula'
                   info={user?.license}
                 />
+                <div className='mb-4 overflow-y-auto'>
+                  <h1 className='font-semibold text-lb mb-4'>PACIENTES</h1>
+                  {filteredPatients?.map((patient, index) => (
+                    <li
+                      key={index}
+                      className='text-sm lg:text-lb font-semibold mb-2 hover:text-aidam'
+                    >
+                      <Link href={`/patients/${patient._id}/profile`}>
+                        {patient.firstName} {patient.lastName}
+                      </Link>
+                    </li>
+                  ))}
+                </div>
               </div>
               <hr className='w-full border-black03' />
               <div className='mt-8 px-2.5'>
@@ -126,7 +167,13 @@ const Profile = ({ query }: MyPageProps) => {
                   <ArrowBack />
                 </div>
                 <div>
-                  <button className='text-lb font-semibold text-white px-4 py-2.5 rounded-md bg-[#B81212CC] hover:bg-[#e26f6fcc] transition-colors'>
+                  <button
+                    onClick={() => {
+                      setOpen(true);
+                      setType(4);
+                    }}
+                    className='text-lb font-semibold text-white px-4 py-2.5 rounded-md bg-[#B81212CC] hover:bg-[#e26f6fcc] transition-colors'
+                  >
                     Dar de baja
                   </button>
                 </div>
@@ -138,19 +185,21 @@ const Profile = ({ query }: MyPageProps) => {
                 </p>
               </div>
               <div className='flex mt-14'>
-                <div className='flex flex-col font-semibold text-xl pl-20 w-1/3'>
-                  <h1 className='mb-10'>DATOS PERSONALES</h1>
-                  <div>
-                    <Data
-                      icon={professionLogo}
-                      title='Profesión'
-                      info={user?.profession}
-                    />
-                    <Data
-                      icon={licenseIcon}
-                      title='Matrícula'
-                      info={user?.license}
-                    />
+                <div className='flex flex-col font-semibold text-xl w-1/3 items-center'>
+                  <div className='w-fit'>
+                    <h1 className='mb-10'>DATOS PERSONALES</h1>
+                    <div>
+                      <Data
+                        icon={professionLogo}
+                        title='Profesión'
+                        info={user?.profession}
+                      />
+                      <Data
+                        icon={licenseIcon}
+                        title='Matrícula'
+                        info={user?.license}
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className='flex flex-col font-semibold border-x-2 text-xl w-1/3 items-center'>
@@ -158,7 +207,7 @@ const Profile = ({ query }: MyPageProps) => {
                   <div className='self-start px-12 flex-1 w-full'>
                     <input
                       placeholder='Buscar paciente'
-                      className='max-w-[250px] outline-none border rounded-md px-2 hover:border-aidam focus:border-aidam mb-4'
+                      className='w-full outline-none border font-normal rounded-md px-2 hover:border-aidam focus:border-aidam mb-4'
                       onChange={(e) => setbrowserPatients(e.target.value)}
                       value={browserPatients}
                     />
@@ -173,23 +222,35 @@ const Profile = ({ query }: MyPageProps) => {
                     </div>
                   </div>
                 </div>
-                <div className='flex flex-col font-semibold text-xl pl-20 w-1/3'>
-                  <h1 className='mb-10'>CONTACTO</h1>
-                  <div>
-                    <Data
-                      icon={emailIcon}
-                      title='Correo electrónico'
-                      info={user?.email}
-                    />
-                    <Data
-                      icon={phoneIcon}
-                      title='Teléfono'
-                      info={user?.phone}
-                    />
+                <div className='flex flex-col font-semibold text-xl w-1/3 mx-auto items-center'>
+                  <div className='w-fit'>
+                    <h1 className='mb-10'>CONTACTO</h1>
+                    <div>
+                      <Data
+                        icon={emailIcon}
+                        title='Correo electrónico'
+                        info={user?.email}
+                      />
+                      <Data
+                        icon={phoneIcon}
+                        title='Teléfono'
+                        info={user?.phone}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+            <Modal
+              open={open}
+              onClose={() => setOpen(false)}
+              type={type}
+              deleteFunc={() => deleteProfessional.mutate(query.id)}
+              errors={errors}
+              deleteMessage={'¿Está seguro que desea dar de baja el usuario?'}
+            >
+              <h1>{successMsg}</h1>
+            </Modal>
           </>
         )}
       </div>

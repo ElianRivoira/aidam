@@ -45,7 +45,7 @@ const Observations = ({ query }: MyPageProps) => {
 
   const postObs = useMutation({
     mutationFn: postObservation,
-    onSuccess: newObservation => {
+    onSuccess: (newObservation) => {
       setSuccessMsg('Observación creada satisfactoriamente');
       setType(1);
       setOpen(true);
@@ -59,7 +59,7 @@ const Observations = ({ query }: MyPageProps) => {
 
   const putObs = useMutation({
     mutationFn: putObservation,
-    onSuccess: newobs => {
+    onSuccess: (newobs) => {
       setSuccessMsg('Observación modificada satisfactoriamente');
       setType(1);
       setOpen(true);
@@ -73,7 +73,7 @@ const Observations = ({ query }: MyPageProps) => {
 
   const deleteObs = useMutation({
     mutationFn: deleteObservation,
-    onSuccess: newobs => {
+    onSuccess: (newobs) => {
       setType(3);
       setOpen(true);
     },
@@ -180,7 +180,7 @@ const Observations = ({ query }: MyPageProps) => {
                     </button>
                   </div>
                   <div className='w-full flex flex-col items-center'>
-                    {patient.data?.observationsId.map(obs => {
+                    {patient.data?.observationsId.map((obs) => {
                       const obsDate = new Date(obs.date);
                       if (searchDate) {
                         if (obsDate.getMonth() === searchDate.getMonth()) {
@@ -213,7 +213,7 @@ const Observations = ({ query }: MyPageProps) => {
                       ? formatStringDate(searchDate)
                       : formatStringDate(actualDate)}
                   </div>
-                  {patient.data?.observationsId.map(obs => {
+                  {patient.data?.observationsId.map((obs) => {
                     const obsDate = new Date(obs.date);
                     if (searchDate) {
                       if (obsDate.getMonth() === searchDate.getMonth()) {
@@ -269,6 +269,7 @@ const Observations = ({ query }: MyPageProps) => {
               type={type}
               deleteFunc={handleDelete}
               errors={errors}
+              deleteMessage={'¿Está seguro que desea eliminar la observación?'}
             >
               <h1>{successMsg}</h1>
             </Modal>
