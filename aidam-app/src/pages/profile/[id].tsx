@@ -15,9 +15,17 @@ import professionLogo from '@/assets/icons/professionLogo.svg';
 import licenseIcon from '@/assets/icons/licenseIcon.svg';
 import emailIcon from '@/assets/icons/emailIcon.svg';
 import phoneIcon from '@/assets/icons/phoneIcon.svg';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { findUserById } from '@/services/users';
+import { hasCookie } from 'cookies-next';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
+import { NextPageContext } from 'next';
 import ArrowBack from '@/components/ArrowBack';
+import Link from 'next/link';
+import Modal from '@/components/Modal';
+import { deleteUser } from '@/services/users';
+import { useRouter } from 'next/router';
+
 
 const Profile = ({ query }: MyPageProps) => {
   const user = useQuery({
@@ -28,6 +36,10 @@ const Profile = ({ query }: MyPageProps) => {
 
   const [filteredPatients, setFilteredPatients] = useState<Patient[]>();
   const [browserPatients, setbrowserPatients] = useState('');
+  const [open, setOpen] = useState(false);
+  const [type, setType] = useState(0);
+  const [errors, setErrors] = useState<CustomError[]>([]);
+  const [successMsg, setSuccessMsg] = useState('');
 
   const filter = (patientsArr: Patient[], letters: string) => {
     let filteredPatients: Patient[];
@@ -54,6 +66,28 @@ const Profile = ({ query }: MyPageProps) => {
     }
     setFilteredPatients(filteredPatients);
   };
+
+  const router = useRouter();
+
+  const deleteProfessional = useMutation({
+    mutationFn: deleteUser,
+    onSuccess: () => {
+      setSuccessMsg('¡El usuario ha sido dado de baja correctamente!');
+      setType(1);
+      setOpen(true);
+    },
+    onError: (err: any) => {
+      setType(2);
+      setErrors(err.response.data.errors);
+      setOpen(true);
+    },
+  });
+
+  useEffect(() => {
+    if (!open && type === 1) {
+      router.push('/admin/professionals');
+    }
+  }, [open]);
 
   useEffect(() => {
     setFilteredPatients(user.data?.patientsId);
@@ -108,6 +142,19 @@ const Profile = ({ query }: MyPageProps) => {
                   title='Matrícula'
                   info={user.data?.license}
                 />
+                <div className='mb-4 overflow-y-auto'>
+                  <h1 className='font-semibold text-lb mb-4'>PACIENTES</h1>
+                  {filteredPatients?.map((patient, index) => (
+                    <li
+                      key={index}
+                      className='text-sm lg:text-lb font-semibold mb-2 hover:text-aidam'
+                    >
+                      <Link href={`/patients/${patient._id}/profile`}>
+                        {patient.firstName} {patient.lastName}
+                      </Link>
+                    </li>
+                  ))}
+                </div>
               </div>
               <hr className='w-full border-black03' />
               <div className='flex flex-col font-semibold text-lb mt-8 px-2.5 w-full'>
@@ -162,9 +209,15 @@ const Profile = ({ query }: MyPageProps) => {
                     Editar
                   </Link>
                   {user.data?.admin && (
-                    <button className='text-lb font-semibold text-white px-4 py-2.5 rounded-md bg-redLogout hover:bg-redLogout/[.8] transition-colors'>
-                      Dar de baja
-                    </button>
+                     <button
+                    onClick={() => {
+                      setOpen(true);
+                      setType(4);
+                    }}
+                    className='text-lb font-semibold text-white px-4 py-2.5 rounded-md bg-[#B81212CC] hover:bg-[#e26f6fcc] transition-colors'
+                  >
+                    Dar de baja
+                  </button>
                   )}
                 </div>
               </div>
@@ -198,6 +251,7 @@ const Profile = ({ query }: MyPageProps) => {
                       placeholder='Buscar paciente'
                       className='max-w-[250px] outline-none border border-black03 rounded-md px-2 hover:border-aidam focus:border-aidam mb-4 transition-colors'
                       onChange={e => setbrowserPatients(e.target.value)}
+
                       value={browserPatients}
                     />
                     <div className='h-48 overflow-y-auto'>
@@ -228,6 +282,16 @@ const Profile = ({ query }: MyPageProps) => {
                 </div>
               </div>
             </div>
+            <Modal
+              open={open}
+              onClose={() => setOpen(false)}
+              type={type}
+              deleteFunc={() => deleteProfessional.mutate(query.id)}
+              errors={errors}
+              deleteMessage={'¿Está seguro que desea dar de baja el usuario?'}
+            >
+              <h1>{successMsg}</h1>
+            </Modal>
           </>
         )}
       </div>

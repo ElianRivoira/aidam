@@ -11,6 +11,7 @@ interface ModalProps {
   errors?: CustomError[];
   deleteFunc?: () => void;
   type: number;
+  deleteMessage?: string;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -20,6 +21,7 @@ const Modal: React.FC<ModalProps> = ({
   errors,
   deleteFunc,
   type,
+  deleteMessage,
 }) => {
   if (!open) return null;
   return (
@@ -65,9 +67,7 @@ const Modal: React.FC<ModalProps> = ({
           </>
         ) : type === 4 ? (
           <>
-            <p className='text-lb font-normal mt-1'>
-              ¿Está seguro que desea eliminar la observación?
-            </p>
+            <p className='text-lb font-normal mt-1'>{deleteMessage}</p>
             <div className='flex gap-5 justify-center mt-6'>
               <button
                 className='border flex items-center text-lb p-4 rounded-md w-fit bg-aidam80 text-white h-10 hover:bg-aidam70 active:shadow-active'
