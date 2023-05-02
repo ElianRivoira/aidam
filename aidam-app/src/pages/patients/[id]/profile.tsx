@@ -130,7 +130,7 @@ const Profile = ({ query }: MyPageProps) => {
               </div>
             )}
             <div className='lgMax:my-8 lg:mb-11 flex w-full'>
-              <ArrowBack route='/patients' width={33} />
+              {useMediaQuery(1024) && <ArrowBack route='/patients' width={33} />}
               <div className='flex flex-col mx-auto items-center'>
                 <Image
                   src={profileImage}
