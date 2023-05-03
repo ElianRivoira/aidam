@@ -9,7 +9,7 @@ import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import Input from '@/components/form/Input';
 import ArrowBack from '@/components/ArrowBack';
 import Modal from '@/components/Modal';
-import { findUserById, putUser } from '@/services/users';
+import { findUserById, getLoggedUser, putUser } from '@/services/users';
 import TagInputPatients from '@/components/form/TagInputPatients';
 import professions from '@/utils/professions';
 import useMediaQuery from '@/hooks/useMediaQuery';
@@ -43,8 +43,14 @@ const editUser = ({ query }: MyPageProps) => {
     files && setProfileImage(files[0]);
   };
 
-  const user = useQuery({
+  const loggedUser = useQuery({
     queryKey: ['user'],
+    enabled: hasCookie('session'),
+    queryFn: getLoggedUser,
+  });
+
+  const user = useQuery({
+    queryKey: ['user', query.id],
     enabled: hasCookie('session'),
     queryFn: () => findUserById(query.id),
   });
@@ -110,7 +116,9 @@ const editUser = ({ query }: MyPageProps) => {
   return (
     <>
       <Head>
-        <title>AIDAM {user.data?.admin ? 'Admin' : ''} - Editar usuario</title>
+        <title>
+          AIDAM {loggedUser.data?.admin ? 'Admin' : ''} - Editar usuario
+        </title>
       </Head>
       <main className='min-h-screen bg-background'>
         {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
@@ -187,7 +195,7 @@ const editUser = ({ query }: MyPageProps) => {
                   value={profileImage?.name}
                   onChange={e => handleFile(e)}
                 />
-                {user.data?.admin && (
+                {loggedUser.data?.admin && (
                   <TagInputPatients
                     tagged={patients}
                     setTagged={setPatients}

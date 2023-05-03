@@ -36,24 +36,24 @@ const DesktopCard: React.FC<DesktopCardProps> = ({
       {user ? (
         <Link
           href={`/profile/${user._id}`}
-          className='flex py-5 px-7 rounded-xl border border-[#F0F0F0] mb-4'
+          className='flex py-5 px-7 rounded-xl border border-grey2 mb-4 hover:bg-grey2 hover:border-grey5 transition-colors'
         >
           <div className='w-[20%]'>
-            <div className='mb-4 text-sm text-[#505050]'>Nombre y Apellido</div>
+            <div className='mb-4 text-sm text-grey8'>Nombre y Apellido</div>
             <div className='font-semibold'>
               {user.firstName + ' ' + user.lastName}
             </div>
           </div>
           <div className='w-[20%]'>
-            <div className='mb-4 text-sm text-[#505050]'>Profesión</div>
+            <div className='mb-4 text-sm text-grey8'>Profesión</div>
             <div className='font-semibold'>{user.profession}</div>
           </div>
           <div className='w-[20%]'>
-            <div className='mb-4 text-sm text-[#505050]'>Última conexión</div>
+            <div className='mb-4 text-sm text-grey8'>Última conexión</div>
             <div className='font-semibold'>{lastConnectionString}</div>
           </div>
           <div className='w-[40%]'>
-            <div className='mb-4 text-sm text-[#505050]'>Últimas Acciones</div>
+            <div className='mb-4 text-sm text-grey8'>Últimas Acciones</div>
             <div className='font-semibold'>
               {user.lastThreeTasks.length > 0 ? (
                 user.lastThreeTasks.map((action, index) => (
