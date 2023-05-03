@@ -89,6 +89,7 @@ const Profile = ({ query }: MyPageProps) => {
     if (user.data?.profileImg) {
       const path = `http://localhost:8000/users/profileimg/${user.data.profileImg}`;
       setPathImg(path);
+      console.log(user.data._id)
     }
   }, [user.isSuccess]);
 

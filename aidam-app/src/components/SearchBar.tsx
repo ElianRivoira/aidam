@@ -14,45 +14,48 @@ const SearchBar: React.FC<Props> = ({ search, setSearch, setActiveUsers }) => {
     try {
       if (search === '') {
         const users = await searchUser('*');
-        return users
+        return users;
       } else {
         const users = await searchUser(search);
-        return users
+        return users;
       }
     } catch (error) {
       setError('Something went wrong. Please try again.');
     }
   }
-
-  useEffect(() => {
-    let isMounted = true;
-    if (!search) {
-      fetchSearchedUsers('*').then((users) => {
-        if (isMounted && setActiveUsers) {
-          setActiveUsers(users);
-        }
-      });
-    } else {
-      fetchSearchedUsers(search).then((users) => {
-        if (isMounted && setActiveUsers) {
-          setActiveUsers(users);
-        }
-      });
-      return () => {
-        isMounted = false;
-      };
+  console.log(search)
+  const onKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (e.key === 'Enter') {
+      if (!search) {
+        fetchSearchedUsers('*').then(users => {
+          if (setActiveUsers) {
+            setActiveUsers(users);
+          }
+        });
+      } else {
+        fetchSearchedUsers(search).then(users => {
+          if (setActiveUsers) {
+            setActiveUsers(users);
+          }
+        });
+      }
     }
-  }, [search]);
+  };
 
   return (
     <div className='w-2/3'>
       {error && <div className='text-red-500'>{error}</div>}
       <input
         type='search'
+        id='search'
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={e => {
+          console.log(e.target.value)
+          setSearch(e.target.value)}}
         placeholder='Buscar'
-        className='w-full border rounded-full px-4 py-1 shadow-card outline-none'
+        className='w-full border rounded-full px-4 py-1 shadow-card outline-none focus:shadow-active hover:bg-gray-100 focus:bg-gray-100 transition-all'
+        // onKeyDown={onKeyDown}
       />
     </div>
   );
