@@ -10,7 +10,6 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import Navbar from '@/components/navbar/Navbar';
 import Data from '@/components/profile/Data';
-import profileEdit from '@/assets/icons/profileEdit.svg';
 import profileImage from '@/assets/icons/profileImage.svg';
 import professionLogo from '@/assets/icons/professionLogo.svg';
 import licenseIcon from '@/assets/icons/licenseIcon.svg';
@@ -35,6 +34,7 @@ const Profile = ({ query }: MyPageProps) => {
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [successMsg, setSuccessMsg] = useState('');
+  const [pathImg, setPathImg] = useState('');
 
   const filter = (patientsArr: Patient[], letters: string) => {
     let filteredPatients: Patient[];
@@ -86,6 +86,10 @@ const Profile = ({ query }: MyPageProps) => {
 
   useEffect(() => {
     setFilteredPatients(user.data?.patientsId);
+    if(user.data?.profileImg){
+      const path = `http://localhost:8000/users/profileimg/${user.data.profileImg}`
+      setPathImg(path)
+    }
   }, [user.isSuccess]);
 
   useEffect(() => {
@@ -95,36 +99,36 @@ const Profile = ({ query }: MyPageProps) => {
   return (
     <>
       <Head>
-        <title>AIDAM {user.data?.admin ? 'Admin' : ''} - Perfil</title>
+        <title>{user.data?.admin ? 'AIDAM Admin - Perfil' : 'AIDAM - Perfil'}</title>
       </Head>
       <div className='min-h-screen flex flex-col items-center'>
         {useMediaQuery(1024) ? (
           <>
             <Navbar />
             <div className='px-3.5 w-full'>
-              <div className={`flex ${user.data?.admin ? 'justify-between' : 'justify-end'} mt-3`}>
+              <div
+                className={`flex ${
+                  user.data?.admin ? 'justify-between' : 'justify-end'
+                } mt-4`}
+              >
                 {user.data?.admin && <ArrowBack route='/admin/professionals' />}
+              </div>
+              <div className='flex flex-col'>
                 <Link
                   href={`/profile/edit/${user.data?._id}`}
-                  className='font-light text-xm flex flex-col items-center'
+                  className='self-end text-xs font-normal text-white px-4 py-2.5 mr-1 h-fit rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
                 >
-                  <Image
-                    src={profileEdit}
-                    alt='editar perfil'
-                    width={25}
-                    height={25}
-                    className='-mb-3'
-                  />
-                  <br />
-                  Editar perfil
+                  Editar
                 </Link>
-              </div>
-              <div className='flex flex-col items-center'>
-                <Image src={profileImage} alt='imagen' className='' />
-                <p className='font-semibold text-lb'>
-                  {user.data?.firstName.toUpperCase()}{' '}
-                  {user.data?.lastName.toUpperCase()}
-                </p>
+                <div className='flex flex-col items-center mx-auto'>
+                  <div className='rounded-full w-[110px] h-[110px] overflow-hidden'>
+                    {pathImg ? <img src={pathImg} alt='imagen' className='' /> : <Image src={profileImage} alt='imagen' />}
+                  </div>
+                  <p className='font-semibold text-lb'>
+                    {user.data?.firstName.toUpperCase()}{' '}
+                    {user.data?.lastName.toUpperCase()}
+                  </p>
+                </div>
               </div>
               <div className='mt-12 px-2.5'>
                 <h1 className='font-semibold text-lb mb-5.5'>

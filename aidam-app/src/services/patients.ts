@@ -40,10 +40,6 @@ export const searchPatients = async (name: string): Promise<Patient[]> => {
   return res.data;
 };
 
-export const downloadCertificate = async (id: string) => {
-  await apiFile.get(`/patients/download/certificate/${id}`);
-};
-
 export const deleteCertificate = async ({
   id,
   fileName,

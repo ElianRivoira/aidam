@@ -1,4 +1,4 @@
-import { api, apiForm } from './axiosInstance';
+import { api, apiForm, apiImg } from './axiosInstance';
 
 export const postUser = async (data: PostUser): Promise<User> => {
   const res = await api.post('/users', data);

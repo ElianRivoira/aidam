@@ -215,7 +215,7 @@ const editUser = ({ query }: MyPageProps) => {
             type={type}
             errors={errors}
           >
-            <h1>Paciente editado satisfactoriamente</h1>
+            <h1>Perfil editado satisfactoriamente</h1>
           </Modal>
         </div>
       </main>

@@ -13,6 +13,7 @@ interface User {
   lastThreeTasks: [];
   status: boolean;
   lastLoginDate: Date;
+  profileImg: string;
 }
 
 interface FormUser {
