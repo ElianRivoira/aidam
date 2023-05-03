@@ -25,7 +25,7 @@ const Menu: React.FC<MenuProps> = ({ isOpen, setIsOpen, handleLogout }) => {
     error,
     isSuccess,
   } = useQuery({
-    queryKey: ['user'],
+    queryKey: ['loggedUser'],
     enabled: hasCookie('session'),
     queryFn: getLoggedUser,
   });

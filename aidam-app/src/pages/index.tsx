@@ -15,7 +15,7 @@ const index = () => {
     error,
     isSuccess,
   } = useQuery({
-    queryKey: ['user'],
+    queryKey: ['loggedUser'],
     enabled: hasCookie('session'),
     queryFn: getLoggedUser,
   });

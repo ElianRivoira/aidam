@@ -21,7 +21,7 @@ const TagInputPatients: React.FC<TagInputProps> = ({
   const [searchText, setSearchText] = useState('');
 
   const patients = useQuery({
-    queryKey: ['search patients in cp'],
+    queryKey: ['search patients in create prof'],
     enabled: hasCookie('session') && searchText.length > 0,
     queryFn: () => searchPatients(searchText),
   });
