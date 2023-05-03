@@ -21,7 +21,7 @@ const TagInput: React.FC<TagInputProps> = ({
   const [searchText, setSearchText] = useState('');
 
   const professionals = useQuery({
-    queryKey: ['search professionals in cp'],
+    queryKey: ['search professionals in create prof'],
     enabled: hasCookie('session') && searchText.length > 0,
     queryFn: () => searchUser(searchText),
   });

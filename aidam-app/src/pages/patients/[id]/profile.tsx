@@ -46,7 +46,7 @@ const Profile = ({ query }: MyPageProps) => {
   });
 
   const user = useQuery({
-    queryKey: ['user'],
+    queryKey: ['loggedUser'],
     enabled: hasCookie('session'),
     queryFn: getLoggedUser,
   });

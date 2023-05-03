@@ -44,7 +44,7 @@ const editUser = ({ query }: MyPageProps) => {
   };
 
   const loggedUser = useQuery({
-    queryKey: ['user'],
+    queryKey: ['loggedUser'],
     enabled: hasCookie('session'),
     queryFn: getLoggedUser,
   });
@@ -76,6 +76,7 @@ const editUser = ({ query }: MyPageProps) => {
     Object.keys(userInfo).forEach(key => {
       formData.append(key, userInfo[key]);
     });
+    formData.append('patients', JSON.stringify(patients));
     profileImage && formData.append('profileImage', profileImage as Blob);
 
     if (user.data) {
@@ -87,6 +88,7 @@ const editUser = ({ query }: MyPageProps) => {
   useEffect(() => {
     if (type === 1 && open === false) {
       router.push(`/profile/${user.data?._id}`);
+      user.refetch();
     }
   }, [open]);
 

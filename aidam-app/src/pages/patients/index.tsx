@@ -17,7 +17,7 @@ const patients = () => {
   const [search, setSearch] = useState('');
 
   const user = useQuery({
-    queryKey: ['user'],
+    queryKey: ['loggedUser'],
     enabled: hasCookie('session'),
     queryFn: getLoggedUser,
   });

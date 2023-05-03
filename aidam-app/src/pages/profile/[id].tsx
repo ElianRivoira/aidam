@@ -15,7 +15,7 @@ import professionLogo from '@/assets/icons/professionLogo.svg';
 import licenseIcon from '@/assets/icons/licenseIcon.svg';
 import emailIcon from '@/assets/icons/emailIcon.svg';
 import phoneIcon from '@/assets/icons/phoneIcon.svg';
-import { findUserById } from '@/services/users';
+import { findUserById, getLoggedUser } from '@/services/users';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import ArrowBack from '@/components/ArrowBack';
 import Modal from '@/components/Modal';
@@ -26,6 +26,12 @@ const Profile = ({ query }: MyPageProps) => {
     queryKey: ['user', query.id],
     enabled: hasCookie('session'),
     queryFn: () => findUserById(query.id),
+  });
+
+  const loggedUser = useQuery({
+    queryKey: ['loggedUser'],
+    enabled: hasCookie('session'),
+    queryFn: getLoggedUser,
   });
 
   const [filteredPatients, setFilteredPatients] = useState<Patient[]>();
@@ -89,9 +95,10 @@ const Profile = ({ query }: MyPageProps) => {
     if (user.data?.profileImg) {
       const path = `http://localhost:8000/users/profileimg/${user.data.profileImg}`;
       setPathImg(path);
-      console.log(user.data._id)
+    } else {
+      setPathImg('');
     }
-  }, [user.isSuccess]);
+  }, [user.isSuccess, user.isRefetching]);
 
   useEffect(() => {
     if (user.data) filter(user.data.patientsId, browserPatients);
@@ -101,20 +108,22 @@ const Profile = ({ query }: MyPageProps) => {
     <>
       <Head>
         <title>
-          {user.data?.admin ? 'AIDAM Admin - Perfil' : 'AIDAM - Perfil'}
+          {loggedUser.data?.admin ? 'AIDAM Admin - Perfil' : 'AIDAM - Perfil'}
         </title>
       </Head>
-      <div className='min-h-screen flex flex-col items-center'>
+      <div className='min-h-screen flex flex-col items-center bg-background'>
         {useMediaQuery(1024) ? (
           <>
             <Navbar />
             <div className='px-3.5 w-full'>
               <div
                 className={`flex ${
-                  user.data?.admin ? 'justify-between' : 'justify-end'
+                  loggedUser.data?.admin ? 'justify-between' : 'justify-end'
                 } mt-4`}
               >
-                {user.data?.admin && <ArrowBack route='/admin/professionals' />}
+                {loggedUser.data?.admin && (
+                  <ArrowBack route='/admin/professionals' />
+                )}
               </div>
               <div className='flex flex-col'>
                 <Link
@@ -128,7 +137,11 @@ const Profile = ({ query }: MyPageProps) => {
                     {pathImg ? (
                       <img src={pathImg} alt='imagen' className='' />
                     ) : (
-                      <Image src={profileImage} alt='imagen' className='w-full' />
+                      <Image
+                        src={profileImage}
+                        alt='imagen'
+                        className='w-full'
+                      />
                     )}
                   </div>
                   <p className='font-semibold text-lb'>
@@ -153,8 +166,8 @@ const Profile = ({ query }: MyPageProps) => {
                 />
               </div>
               <hr className='w-full border-black03' />
-              <div className='flex flex-col font-semibold text-lb mt-8 px-2.5 w-full'>
-                <h1 className='mb-5.5'>PACIENTES</h1>
+              <div className='flex flex-col mt-8 px-2.5 w-full'>
+                <h1 className='mb-5.5 font-semibold text-lb'>PACIENTES</h1>
                 <div className='self-start flex-1 w-full'>
                   <input
                     placeholder='Buscar paciente'
@@ -198,7 +211,7 @@ const Profile = ({ query }: MyPageProps) => {
             <div className='w-full px-12'>
               <div className='flex mt-9 justify-between'>
                 <div>
-                  {user.data?.admin && (
+                  {loggedUser.data?.admin && (
                     <ArrowBack route='/admin/professionals' />
                   )}
                 </div>
@@ -209,7 +222,7 @@ const Profile = ({ query }: MyPageProps) => {
                   >
                     Editar
                   </Link>
-                  {user.data?.admin && (
+                  {loggedUser.data?.admin && (
                     <button
                       onClick={() => {
                         setOpen(true);
@@ -236,27 +249,31 @@ const Profile = ({ query }: MyPageProps) => {
                 </p>
               </div>
               <div className='flex mt-14'>
-                <div className='flex flex-col font-semibold text-xl pl-20 w-1/3'>
-                  <h1 className='mb-10'>DATOS PERSONALES</h1>
-                  <div>
-                    <Data
-                      icon={professionLogo}
-                      title='Profesión'
-                      info={user.data?.profession}
-                    />
-                    <Data
-                      icon={licenseIcon}
-                      title='Matrícula'
-                      info={user.data?.license}
-                    />
+                <div className='font-semibold text-xl w-1/3 flex justify-center'>
+                  <div className='w-fit flex flex-col'>
+                    <h1 className='mb-10'>DATOS PERSONALES</h1>
+                    <div>
+                      <Data
+                        icon={professionLogo}
+                        title='Profesión'
+                        info={user.data?.profession}
+                      />
+                      <Data
+                        icon={licenseIcon}
+                        title='Matrícula'
+                        info={user.data?.license}
+                      />
+                    </div>
                   </div>
                 </div>
-                <div className='flex flex-col font-semibold border-x-2 text-xl w-1/3 items-center'>
-                  <h1 className='mb-10'>PACIENTES</h1>
-                  <div className='self-start px-12 flex-1 w-full'>
+                <div className='flex justify-center border-x-2 w-1/3 items-center'>
+                  <div className='w-[80%] flex flex-col'>
+                    <h1 className='mb-10 font-semibold text-xl text-center'>
+                      PACIENTES
+                    </h1>
                     <input
                       placeholder='Buscar paciente'
-                      className='max-w-[250px] outline-none border border-black03 rounded-md px-2 hover:border-aidam focus:border-aidam mb-4 transition-colors'
+                      className='self-center text-ln outline-none border border-black03 rounded-md w-[70%] px-2 py-1 hover:border-aidam focus:border-aidam mb-4 transition-colors'
                       onChange={e => setbrowserPatients(e.target.value)}
                       value={browserPatients}
                     />
@@ -264,7 +281,7 @@ const Profile = ({ query }: MyPageProps) => {
                       {filteredPatients?.map((patient, index) => (
                         <li
                           key={index}
-                          className='mb-4 hover:text-aidam70 transition-colors'
+                          className='mb-4 hover:text-aidam70 transition-colors font-semibold text-ln'
                         >
                           <Link href={`/patients/${patient._id}/profile`}>
                             {patient.firstName} {patient.lastName}
@@ -274,19 +291,21 @@ const Profile = ({ query }: MyPageProps) => {
                     </div>
                   </div>
                 </div>
-                <div className='flex flex-col font-semibold text-xl pl-20 w-1/3'>
-                  <h1 className='mb-10'>CONTACTO</h1>
-                  <div>
-                    <Data
-                      icon={emailIcon}
-                      title='Correo electrónico'
-                      info={user.data?.email}
-                    />
-                    <Data
-                      icon={phoneIcon}
-                      title='Teléfono'
-                      info={user.data?.phone}
-                    />
+                <div className='flex justify-center font-semibold text-xl w-1/3'>
+                  <div className='flex flex-col w-fit'>
+                    <h1 className='mb-10'>CONTACTO</h1>
+                    <div>
+                      <Data
+                        icon={emailIcon}
+                        title='Correo electrónico'
+                        info={user.data?.email}
+                      />
+                      <Data
+                        icon={phoneIcon}
+                        title='Teléfono'
+                        info={user.data?.phone}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

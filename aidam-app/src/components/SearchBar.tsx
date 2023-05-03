@@ -23,7 +23,23 @@ const SearchBar: React.FC<Props> = ({ search, setSearch, setActiveUsers }) => {
       setError('Something went wrong. Please try again.');
     }
   }
-  console.log(search)
+
+  useEffect(() => {
+    if (!search) {
+      fetchSearchedUsers('*').then(users => {
+        if (setActiveUsers) {
+          setActiveUsers(users);
+        }
+      });
+    } else {
+      fetchSearchedUsers(search).then(users => {
+        if (setActiveUsers) {
+          setActiveUsers(users);
+        }
+      });
+    }
+  }, [search]);
+
   const onKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (e.key === 'Enter') {
