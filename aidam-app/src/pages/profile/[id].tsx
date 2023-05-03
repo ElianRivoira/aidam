@@ -86,9 +86,9 @@ const Profile = ({ query }: MyPageProps) => {
 
   useEffect(() => {
     setFilteredPatients(user.data?.patientsId);
-    if(user.data?.profileImg){
-      const path = `http://localhost:8000/users/profileimg/${user.data.profileImg}`
-      setPathImg(path)
+    if (user.data?.profileImg) {
+      const path = `http://localhost:8000/users/profileimg/${user.data.profileImg}`;
+      setPathImg(path);
     }
   }, [user.isSuccess]);
 
@@ -99,7 +99,9 @@ const Profile = ({ query }: MyPageProps) => {
   return (
     <>
       <Head>
-        <title>{user.data?.admin ? 'AIDAM Admin - Perfil' : 'AIDAM - Perfil'}</title>
+        <title>
+          {user.data?.admin ? 'AIDAM Admin - Perfil' : 'AIDAM - Perfil'}
+        </title>
       </Head>
       <div className='min-h-screen flex flex-col items-center'>
         {useMediaQuery(1024) ? (
@@ -121,8 +123,12 @@ const Profile = ({ query }: MyPageProps) => {
                   Editar
                 </Link>
                 <div className='flex flex-col items-center mx-auto'>
-                  <div className='rounded-full w-[110px] h-[110px] overflow-hidden'>
-                    {pathImg ? <img src={pathImg} alt='imagen' className='' /> : <Image src={profileImage} alt='imagen' />}
+                  <div className='rounded-full w-[90px] h-[90px] overflow-hidden mb-2'>
+                    {pathImg ? (
+                      <img src={pathImg} alt='imagen' className='' />
+                    ) : (
+                      <Image src={profileImage} alt='imagen' className='w-full' />
+                    )}
                   </div>
                   <p className='font-semibold text-lb'>
                     {user.data?.firstName.toUpperCase()}{' '}
@@ -216,7 +222,13 @@ const Profile = ({ query }: MyPageProps) => {
                 </div>
               </div>
               <div className='flex flex-col items-center'>
-                <Image src={profileImage} alt='perfil' className='w-[90px]' />
+                <div className='rounded-full w-[110px] h-[110px] overflow-hidden mb-2'>
+                  {pathImg ? (
+                    <img src={pathImg} alt='imagen' className='' />
+                  ) : (
+                    <Image src={profileImage} alt='imagen' className='w-full' />
+                  )}
+                </div>
                 <p className='font-semibold text-2xl'>
                   {user.data?.firstName.toUpperCase()}{' '}
                   {user.data?.lastName.toUpperCase()}
