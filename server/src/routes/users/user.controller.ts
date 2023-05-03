@@ -1,7 +1,5 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import path from 'path';
-import fs from 'fs'
 
 import userService from '../../models/user-service';
 import { BadRequestError } from '../../errors/bad-request-error';
@@ -9,7 +7,6 @@ import { RequestValidationError } from '../../errors/request-validation-error';
 import { validateToken } from '../../utils/tokens';
 import { ServerError } from '../../errors/server-error';
 import patientService from '../../models/patient-service';
-import getProfileImg from '../../utils/getProfileImg';
 
 const httpRegisterUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
