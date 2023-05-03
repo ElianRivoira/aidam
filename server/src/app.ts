@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Express } from 'express';
 import 'express-async-errors';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -35,9 +35,9 @@ app.use(
 );
 app.use(morgan('dev'));
 
-app.use(express.static(path.join(__dirname, '..', 'public')));
-
 app.use('/download/certificate', express.static(path.join(__dirname, '../certificates')))
+
+app.use('/users/profileimg', express.static(path.join(__dirname, '../profilesImgs')))
 
 app.use('/api', apiRouter);
 
@@ -46,9 +46,5 @@ app.all('*', async (req, res) => {
 });
 
 app.use(errorHandler);
-
-app.get('/*', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
-});
 
 export default app;

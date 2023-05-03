@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
+import path from 'path';
+import fs from 'fs'
 
 import userService from '../../models/user-service';
 import { BadRequestError } from '../../errors/bad-request-error';
@@ -7,6 +9,7 @@ import { RequestValidationError } from '../../errors/request-validation-error';
 import { validateToken } from '../../utils/tokens';
 import { ServerError } from '../../errors/server-error';
 import patientService from '../../models/patient-service';
+import getProfileImg from '../../utils/getProfileImg';
 
 const httpRegisterUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
@@ -145,6 +148,9 @@ const httpPutUser = async (req: Request, res: Response) => {
     const { email, phone, firstName, lastName, license, profession } = req.body;
     if (req.session?.token) {
       const { user } = validateToken(req.session.token);
+
+      const profileImg = req.file?.filename;
+
       const updatedUser = await userService.putUser(user.id, {
         email,
         phone,
@@ -152,7 +158,7 @@ const httpPutUser = async (req: Request, res: Response) => {
         lastName,
         license,
         profession,
-      });
+      }, undefined, false, profileImg);
       res.send(updatedUser);
     }
   } catch (e) {

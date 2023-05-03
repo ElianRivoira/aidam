@@ -9,7 +9,7 @@ import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import Input from '@/components/form/Input';
 import ArrowBack from '@/components/ArrowBack';
 import Modal from '@/components/Modal';
-import { findUserById, getLoggedUser, putUser } from '@/services/users';
+import { findUserById, putUser } from '@/services/users';
 import TagInputPatients from '@/components/form/TagInputPatients';
 import professions from '@/utils/professions';
 import useMediaQuery from '@/hooks/useMediaQuery';
@@ -115,8 +115,12 @@ const editUser = ({ query }: MyPageProps) => {
       <main className='min-h-screen bg-background'>
         {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
         <div className='w-full mt-12 lgMax:mt-4 px-12'>
-          <ArrowBack />
-          <h1 className='text-center text-xl4 lgMax:text-xl2 font-semibold'>EDITAR USUARIO</h1>
+          <div className='flex items-center w-full'>
+            <ArrowBack route={`/profile/${user.data?._id}`} />
+            <h1 className='text-center text-xl4 lgMax:text-xl2 font-semibold mx-auto'>
+              EDITAR USUARIO
+            </h1>
+          </div>
           <form
             encType='multipart/form-data'
             onSubmit={handleSubmit}
@@ -192,7 +196,7 @@ const editUser = ({ query }: MyPageProps) => {
                 )}
               </div>
             </div>
-            <div className='flex justify-evenly mt-10 lgMax:mt-5'>
+            <div className='flex justify-evenly lgMax:justify-between mt-10 lgMax:mt-5'>
               <div className='w-1/4'></div>
               <div className='w-1/4'></div>
               <div className='w-1/4 flex justify-end'>
@@ -211,7 +215,7 @@ const editUser = ({ query }: MyPageProps) => {
             type={type}
             errors={errors}
           >
-            <h1>Paciente editado satisfactoriamente</h1>
+            <h1>Perfil editado satisfactoriamente</h1>
           </Modal>
         </div>
       </main>

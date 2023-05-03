@@ -2,30 +2,24 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { NextPageContext } from 'next';
-import { useQuery } from '@tanstack/react-query';
 import { hasCookie } from 'cookies-next';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import useMediaQuery from '@/hooks/useMediaQuery';
 import Navbar from '@/components/navbar/Navbar';
 import Data from '@/components/profile/Data';
-import profileEdit from '@/assets/icons/profileEdit.svg';
 import profileImage from '@/assets/icons/profileImage.svg';
 import professionLogo from '@/assets/icons/professionLogo.svg';
 import licenseIcon from '@/assets/icons/licenseIcon.svg';
 import emailIcon from '@/assets/icons/emailIcon.svg';
 import phoneIcon from '@/assets/icons/phoneIcon.svg';
-import { useMutation, useQuery } from '@tanstack/react-query';
 import { findUserById } from '@/services/users';
-import { hasCookie } from 'cookies-next';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
-import { NextPageContext } from 'next';
 import ArrowBack from '@/components/ArrowBack';
-import Link from 'next/link';
 import Modal from '@/components/Modal';
 import { deleteUser } from '@/services/users';
-import { useRouter } from 'next/router';
-
 
 const Profile = ({ query }: MyPageProps) => {
   const user = useQuery({
@@ -40,6 +34,7 @@ const Profile = ({ query }: MyPageProps) => {
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [successMsg, setSuccessMsg] = useState('');
+  const [pathImg, setPathImg] = useState('');
 
   const filter = (patientsArr: Patient[], letters: string) => {
     let filteredPatients: Patient[];
@@ -91,6 +86,10 @@ const Profile = ({ query }: MyPageProps) => {
 
   useEffect(() => {
     setFilteredPatients(user.data?.patientsId);
+    if(user.data?.profileImg){
+      const path = `http://localhost:8000/users/profileimg/${user.data.profileImg}`
+      setPathImg(path)
+    }
   }, [user.isSuccess]);
 
   useEffect(() => {
@@ -100,33 +99,36 @@ const Profile = ({ query }: MyPageProps) => {
   return (
     <>
       <Head>
-        <title>AIDAM {user.data?.admin ? 'Admin' : ''} - Perfil</title>
+        <title>{user.data?.admin ? 'AIDAM Admin - Perfil' : 'AIDAM - Perfil'}</title>
       </Head>
       <div className='min-h-screen flex flex-col items-center'>
         {useMediaQuery(1024) ? (
           <>
             <Navbar />
             <div className='px-3.5 w-full'>
-              <div className='flex justify-between mt-3'>
-                <ArrowBack />
-                <Link href={`/profile/edit/${user.data?._id}`} className='font-light text-xm flex flex-col items-center'>
-                  <Image
-                    src={profileEdit}
-                    alt='editar perfil'
-                    width={25}
-                    height={25}
-                    className='-mb-3'
-                  />
-                  <br />
-                  Editar perfil
-                </Link>
+              <div
+                className={`flex ${
+                  user.data?.admin ? 'justify-between' : 'justify-end'
+                } mt-4`}
+              >
+                {user.data?.admin && <ArrowBack route='/admin/professionals' />}
               </div>
-              <div className='flex flex-col items-center'>
-                <Image src={profileImage} alt='imagen' className='' />
-                <p className='font-semibold text-lb'>
-                  {user.data?.firstName.toUpperCase()}{' '}
-                  {user.data?.lastName.toUpperCase()}
-                </p>
+              <div className='flex flex-col'>
+                <Link
+                  href={`/profile/edit/${user.data?._id}`}
+                  className='self-end text-xs font-normal text-white px-4 py-2.5 mr-1 h-fit rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
+                >
+                  Editar
+                </Link>
+                <div className='flex flex-col items-center mx-auto'>
+                  <div className='rounded-full w-[110px] h-[110px] overflow-hidden'>
+                    {pathImg ? <img src={pathImg} alt='imagen' className='' /> : <Image src={profileImage} alt='imagen' />}
+                  </div>
+                  <p className='font-semibold text-lb'>
+                    {user.data?.firstName.toUpperCase()}{' '}
+                    {user.data?.lastName.toUpperCase()}
+                  </p>
+                </div>
               </div>
               <div className='mt-12 px-2.5'>
                 <h1 className='font-semibold text-lb mb-5.5'>
@@ -142,41 +144,31 @@ const Profile = ({ query }: MyPageProps) => {
                   title='Matrícula'
                   info={user.data?.license}
                 />
-                <div className='mb-4 overflow-y-auto'>
-                  <h1 className='font-semibold text-lb mb-4'>PACIENTES</h1>
-                  {filteredPatients?.map((patient, index) => (
-                    <li
-                      key={index}
-                      className='text-sm lg:text-lb font-semibold mb-2 hover:text-aidam'
-                    >
-                      <Link href={`/patients/${patient._id}/profile`}>
-                        {patient.firstName} {patient.lastName}
-                      </Link>
-                    </li>
-                  ))}
-                </div>
               </div>
               <hr className='w-full border-black03' />
               <div className='flex flex-col font-semibold text-lb mt-8 px-2.5 w-full'>
-                  <h1 className='mb-5.5'>PACIENTES</h1>
-                  <div className='self-start flex-1 w-full'>
-                    <input
-                      placeholder='Buscar paciente'
-                      className='max-w-[250px] outline-none border border-black03 rounded-md px-2 py-1 hover:border-aidam focus:border-aidam mb-4 transition-colors font-normal'
-                      onChange={e => setbrowserPatients(e.target.value)}
-                      value={browserPatients}
-                    />
-                    <div className='mb-8 overflow-y-auto'>
-                      {filteredPatients?.map((patient, index) => (
-                        <li key={index} className='mb-4 hover:text-aidam70 transition-colors'>
-                          <Link href={`/patients/${patient._id}/profile`}>
-                            {patient.firstName} {patient.lastName}
-                          </Link>
-                        </li>
-                      ))}
-                    </div>
+                <h1 className='mb-5.5'>PACIENTES</h1>
+                <div className='self-start flex-1 w-full'>
+                  <input
+                    placeholder='Buscar paciente'
+                    className='max-w-[250px] outline-none border border-black03 rounded-md px-2 py-1 hover:border-aidam focus:border-aidam mb-4 transition-colors font-normal'
+                    onChange={e => setbrowserPatients(e.target.value)}
+                    value={browserPatients}
+                  />
+                  <div className='mb-4 overflow-y-auto'>
+                    {filteredPatients?.map((patient, index) => (
+                      <li
+                        key={index}
+                        className='mb-4 hover:text-aidam70 transition-colors'
+                      >
+                        <Link href={`/patients/${patient._id}/profile`}>
+                          {patient.firstName} {patient.lastName}
+                        </Link>
+                      </li>
+                    ))}
                   </div>
                 </div>
+              </div>
               <hr className='w-full border-black03' />
               <div className='mt-8 px-2.5'>
                 <h1 className='font-semibold text-lb mb-5.5'>CONTACTO</h1>
@@ -199,7 +191,9 @@ const Profile = ({ query }: MyPageProps) => {
             <div className='w-full px-12'>
               <div className='flex mt-9 justify-between'>
                 <div>
-                  <ArrowBack />
+                  {user.data?.admin && (
+                    <ArrowBack route='/admin/professionals' />
+                  )}
                 </div>
                 <div className='flex gap-4'>
                   <Link
@@ -209,15 +203,15 @@ const Profile = ({ query }: MyPageProps) => {
                     Editar
                   </Link>
                   {user.data?.admin && (
-                     <button
-                    onClick={() => {
-                      setOpen(true);
-                      setType(4);
-                    }}
-                    className='text-lb font-semibold text-white px-4 py-2.5 rounded-md bg-[#B81212CC] hover:bg-[#e26f6fcc] transition-colors'
-                  >
-                    Dar de baja
-                  </button>
+                    <button
+                      onClick={() => {
+                        setOpen(true);
+                        setType(4);
+                      }}
+                      className='text-lb font-semibold text-white px-4 py-2.5 rounded-md bg-[#B81212CC] hover:bg-[#e26f6fcc] transition-colors'
+                    >
+                      Dar de baja
+                    </button>
                   )}
                 </div>
               </div>
@@ -251,12 +245,14 @@ const Profile = ({ query }: MyPageProps) => {
                       placeholder='Buscar paciente'
                       className='max-w-[250px] outline-none border border-black03 rounded-md px-2 hover:border-aidam focus:border-aidam mb-4 transition-colors'
                       onChange={e => setbrowserPatients(e.target.value)}
-
                       value={browserPatients}
                     />
                     <div className='h-48 overflow-y-auto'>
                       {filteredPatients?.map((patient, index) => (
-                        <li key={index} className='mb-4 hover:text-aidam70 transition-colors'>
+                        <li
+                          key={index}
+                          className='mb-4 hover:text-aidam70 transition-colors'
+                        >
                           <Link href={`/patients/${patient._id}/profile`}>
                             {patient.firstName} {patient.lastName}
                           </Link>
