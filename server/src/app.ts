@@ -10,6 +10,7 @@ import bodyParser from 'body-parser';
 import apiRouter from './routes/api';
 import { errorHandler } from './middlewares/error-handler';
 import { NotFoundError } from './errors/not-found-error';
+import { validateLoggedUser } from './middlewares/userValidators';
 
 dotenv.config();
 
@@ -35,9 +36,9 @@ app.use(
 );
 app.use(morgan('dev'));
 
-app.use('/download/certificate', express.static(path.join(__dirname, '../certificates')))
+app.use('/download/certificate', validateLoggedUser, express.static(path.join(__dirname, '../certificates')))
 
-app.use('/users/profileimg', express.static(path.join(__dirname, '../profilesImgs')))
+app.use('/users/profileimg', validateLoggedUser, express.static(path.join(__dirname, '../profilesImgs')))
 
 app.use('/api', apiRouter);
 
