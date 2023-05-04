@@ -217,7 +217,7 @@ const httpUnassignPatient = async (req: Request, res: Response) => {
       );
     }
 
-    res.send(data);
+    res.send({user: data, patientName});
   } catch (e) {
     console.error(e);
     throw new ServerError(e);

@@ -45,7 +45,7 @@ const Profile = ({ query }: MyPageProps) => {
     queryFn: () => getOnePatient(query.id),
   });
 
-  const user = useQuery({
+  const loggedUser = useQuery({
     queryKey: ['loggedUser'],
     enabled: hasCookie('session'),
     queryFn: getLoggedUser,
@@ -116,21 +116,23 @@ const Profile = ({ query }: MyPageProps) => {
                   >
                     Certificado
                   </button>
-                  {patient.data && (
+                  {patient.data && loggedUser.data?.admin ? (
                     <DotsMenu
                       handleDelete={() => delPatient.mutate(patient.data._id)}
                       handleEdit={() =>
                         router.push({
-                          pathname: `/admin/patients/edit/${patient.data?._id}`,
+                          pathname: `/admin/patients/edit/${patient.data._id}`,
                         })
                       }
                     />
-                  )}
+                  ): null}
                 </div>
               </div>
             )}
             <div className='lgMax:my-8 lg:mb-11 flex w-full'>
-              {useMediaQuery(1024) && <ArrowBack route='/patients' width={33} />}
+              {useMediaQuery(1024) && (
+                <ArrowBack route='/patients' width={33} />
+              )}
               <div className='flex flex-col mx-auto items-center'>
                 <Image
                   src={profileImage}
@@ -146,7 +148,7 @@ const Profile = ({ query }: MyPageProps) => {
               {useMediaQuery(1024) && (
                 <>
                   <div className='flex flex-col px-2.5 mb-4 lg:w-1/3'>
-                    <div className='flex justify-between mb-4'>
+                    <div className='flex justify-between items-center mb-4'>
                       <p className='font-semibold'>DIAGNÓSTICO</p>
                       <button
                         onClick={() => setOpenCertificateModal(true)}
@@ -162,7 +164,7 @@ const Profile = ({ query }: MyPageProps) => {
               )}
               <div className='flex flex-col px-2.5 lg:w-1/3 lg:items-center'>
                 <div className='w-fit'>
-                  <h1 className='font-semibold mb-6 lg:text-xg'>
+                  <h1 className='font-semibold lg:mb-11 mb-6 lg:text-xg'>
                     DATOS PERSONALES
                   </h1>
                   <Data
@@ -191,22 +193,24 @@ const Profile = ({ query }: MyPageProps) => {
               {useMediaQuery(1024) && (
                 <hr className='w-full border-black03 mb-5' />
               )}
-              <div className='flex flex-col px-2.5 mb-1 lg:w-1/3 items-center lgMax:items-start lg:border-x border-black03'>
-                <h1 className='font-semibold mb-12 lgMax:mb-6 text-center lg:text-xg'>
-                  PROFESIONALES
-                </h1>
-                <ul className='list-disc text-lg lgMax:text-lb font-normal lgMax:ml-4 '>
-                  {patient.data?.professionalsId.map((prof, index) => (
-                    <li key={index} className='mb-4'>
-                      <Link
-                        href={`/profile/${prof._id}`}
-                        className='hover:text-aidam70 transition-colors font-semibold'
+              <div className='flex justify-center lgMax:mb-1 lg:w-1/3 lg:border-x border-black03'>
+                <div className='w-[80%] flex flex-col'>
+                  <h1 className='font-semibold mb-11 lgMax:mb-6 text-center lg:text-xg'>
+                    PROFESIONALES
+                  </h1>
+                  <div>
+                    {patient.data?.professionalsId.map((prof, index) => (
+                      <li
+                        key={index}
+                        className='mb-4 lgMax:ml-4 text-ln lgMax:text-lb hover:text-aidam70 transition-colors font-semibold'
                       >
-                        {prof.firstName} {prof.lastName}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                        <Link href={`/profile/${prof._id}`} className=''>
+                          {prof.firstName} {prof.lastName}
+                        </Link>
+                      </li>
+                    ))}
+                  </div>
+                </div>
               </div>
               {useMediaQuery(1024) && (
                 <hr className='w-full border-black03 mb-5' />
@@ -215,7 +219,7 @@ const Profile = ({ query }: MyPageProps) => {
                 <div className='w-fit'>
                   {!useMediaQuery(1024) && (
                     <>
-                      <h1 className='font-semibold mb-[33px] text-xg'>
+                      <h1 className='font-semibold mb-11 text-xg'>
                         DIAGNÓSTICO
                       </h1>
                       <p className='text-lb mb-11'>{patient.data?.diagnosis}</p>
@@ -256,7 +260,7 @@ const Profile = ({ query }: MyPageProps) => {
           onClose={() => setOpenCertificateModal(false)}
           patient={patient.data}
           handleDownload={handleDownload}
-          admin={user.data?.admin}
+          admin={loggedUser.data?.admin}
           delCert={delCert}
         />
       </main>
