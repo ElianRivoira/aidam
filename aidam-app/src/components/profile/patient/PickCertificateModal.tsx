@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { UseMutationResult } from '@tanstack/react-query';
 
 import pdfIcon from '@/assets/icons/pdfIcon.png';
+import pdfIcon2 from '@/assets/icons/pdfIcon2.png';
+import wordIcon from '@/assets/icons/wordIcon.png';
 import x from '@/assets/icons/x.svg';
 import styles from '@/styles/PickCertificateModal.module.css';
 import Modal from '@/components/Modal';
@@ -59,7 +61,7 @@ const PickCertificateModal: React.FC<PickCertificateModalProps> = ({
               const certNameSplitted = cert.split('-');
               const day = certNameSplitted[3];
               const month = certNameSplitted[4];
-              const year = certNameSplitted[5].split('.')[0];
+              const [year, extension] = certNameSplitted[5].split('.');
               return (
                 <div
                   key={index}
@@ -89,7 +91,8 @@ const PickCertificateModal: React.FC<PickCertificateModalProps> = ({
                     onClick={() => handleDownload(cert)}
                     className='flex flex-col items-center p-3 pt-0'
                   >
-                    <Image src={pdfIcon} alt='pdfIcon' />
+                    {extension === 'pdf' && <Image src={pdfIcon2} alt='pdfIcon' width={96} height={96} />}
+                    {extension === 'docx' || extension === 'doc' ? <Image src={wordIcon} alt='wordIcon' width={96} height={96} /> : null}
                     <p className='font-medium'>
                       {day}-{month}-{year}
                     </p>
