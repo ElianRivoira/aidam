@@ -136,7 +136,9 @@ const editUser = ({ query }: MyPageProps) => {
     <>
       <Head>
         <title>
-          AIDAM {loggedUser.data?.admin ? 'Admin' : ''} - Editar usuario
+          {loggedUser.data?.admin
+            ? 'AIDAM Admin - Editar usuario'
+            : 'AIDAM - Editar usuario'}
         </title>
       </Head>
       <main className='min-h-screen bg-background'>
@@ -208,8 +210,14 @@ const editUser = ({ query }: MyPageProps) => {
               </div>
               <div className='flex flex-col w-1/4 lgMax:w-full lgMax:max-w-[500px] lgMax:mb-9 items-center'>
                 <div className='w-[90px] h-[90px] overflow-hidden rounded-full mb-[19px]'>
-                  {pathImg ? <img src={pathImg} alt='image' /> : (
-                    <Image src={profileIcon} alt='profile icon' className='w-full' />
+                  {pathImg ? (
+                    <img src={pathImg} alt='image' />
+                  ) : (
+                    <Image
+                      src={profileIcon}
+                      alt='profile icon'
+                      className='w-full'
+                    />
                   )}
                 </div>
                 <div className='w-full mb-9'>
