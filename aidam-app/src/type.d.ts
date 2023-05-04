@@ -117,3 +117,12 @@ interface INames {
   lastName1: string;
   lastName2?: string;
 }
+
+interface IunassignProfResponse {
+  patient: Patient;
+  profName: INames;
+}
+interface IunassignPatientResponse {
+  user: User;
+  patientName: INames;
+}

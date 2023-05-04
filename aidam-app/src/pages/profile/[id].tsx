@@ -209,15 +209,13 @@ const Profile = ({ query }: MyPageProps) => {
           <>
             <NavbarDesktop />
             <div className='w-full px-12'>
-              <div className='flex mt-9 justify-between'>
-                <div>
-                  {loggedUser.data?.admin && (
-                    <ArrowBack route='/admin/professionals' />
-                  )}
-                </div>
+              <div className='flex mt-9 justify-between items-center'>
+                {loggedUser.data?.admin && (
+                  <ArrowBack route='/admin/professionals' />
+                )}
                 <div className='flex gap-4'>
                   <Link
-                    className='flex items-center text-lb font-semibold text-white px-4 py-2.5 rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
+                    className='flex items-center text-lb font-semibold text-white h-10 p-4 rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
                     href={`/profile/edit/${user.data?._id}`}
                   >
                     Editar
@@ -228,7 +226,7 @@ const Profile = ({ query }: MyPageProps) => {
                         setOpen(true);
                         setType(4);
                       }}
-                      className='text-lb font-semibold text-white px-4 py-2.5 rounded-md bg-[#B81212CC] hover:bg-[#e26f6fcc] transition-colors'
+                      className='flex items-center text-lb font-semibold text-white h-10 p-4 rounded-md bg-redLogout hover:bg-redLogout/[.9] transition-colors'
                     >
                       Dar de baja
                     </button>
@@ -266,7 +264,7 @@ const Profile = ({ query }: MyPageProps) => {
                     </div>
                   </div>
                 </div>
-                <div className='flex justify-center border-x-2 w-1/3 items-center'>
+                <div className='flex justify-center border-x border-black03 w-1/3 items-center'>
                   <div className='w-[80%] flex flex-col'>
                     <h1 className='mb-10 font-semibold text-xl text-center'>
                       PACIENTES

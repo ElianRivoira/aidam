@@ -222,7 +222,7 @@ const httpUnassignProf = async (req: Request, res: Response) => {
       );
     }
 
-    res.send(patient);
+    res.send({patient, profName});
   } catch (e) {
     console.error(e);
     throw new ServerError(e);
