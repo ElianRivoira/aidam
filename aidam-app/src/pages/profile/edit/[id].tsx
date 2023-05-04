@@ -207,17 +207,19 @@ const editUser = ({ query }: MyPageProps) => {
                 />
               </div>
               <div className='flex flex-col w-1/4 lgMax:w-full lgMax:max-w-[500px] lgMax:mb-9 items-center'>
-                <Input
-                  label='Subir foto de perfil'
-                  name='profileImage'
-                  type='file'
-                  value={profileImage?.name}
-                  onChange={e => handleFile(e)}
-                />
-                <div className='w-[90px] h-[90px] overflow-hidden rounded-full mt-7 mb-7'>
+                <div className='w-[90px] h-[90px] overflow-hidden rounded-full mb-[19px]'>
                   {pathImg ? <img src={pathImg} alt='image' /> : (
                     <Image src={profileIcon} alt='profile icon' className='w-full' />
                   )}
+                </div>
+                <div className='w-full mb-9'>
+                  <Input
+                    label='Subir foto de perfil'
+                    name='profileImage'
+                    type='file'
+                    value={profileImage?.name}
+                    onChange={e => handleFile(e)}
+                  />
                 </div>
                 {loggedUser.data?.admin && (
                   <TagInputPatients
