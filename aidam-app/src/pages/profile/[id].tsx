@@ -219,7 +219,7 @@ const Profile = ({ query }: MyPageProps) => {
           <>
             <NavbarDesktop />
             <div className='w-full px-12'>
-              <div className='flex mt-9 justify-between items-center'>
+              <div className={`flex mt-9 ${loggedUser.data?.admin ? 'justify-between' : 'justify-end'} items-center`}>
                 {loggedUser.data?.admin && (
                   <ArrowBack route='/admin/professionals' />
                 )}
