@@ -36,19 +36,27 @@ const Profile = ({ query }: MyPageProps) => {
   const [openCertModal, setOpenCertModal] = useState(false);
   const [typeCertModal, setTypeCertModal] = useState(0);
   const [successMsg, setSuccessMsg] = useState('');
+  const [cookieError, setCookieError] = useState(false);
 
   const router = useRouter();
 
   const patient = useQuery({
     queryKey: ['patient', query.id],
     enabled: hasCookie('session'),
+    keepPreviousData: true,
     queryFn: () => getOnePatient(query.id),
   });
 
   const loggedUser = useQuery({
     queryKey: ['loggedUser'],
-    enabled: hasCookie('session'),
     queryFn: getLoggedUser,
+    retry: 1,
+    onError: error => {
+      setType(2);
+      setErrors((error as any).response.data.errors);
+      setOpen(true);
+      setCookieError(true);
+    },
   });
 
   const delPatient = useMutation({
@@ -90,10 +98,11 @@ const Profile = ({ query }: MyPageProps) => {
       const date = new Date(patient.data.birth).toLocaleString().split(',')[0];
       setBirthDate(date);
     }
-  }, [patient.isSuccess]);
+  }, [patient.data]);
 
   useEffect(() => {
-    if (open === false && type === 1) router.push({ pathname: '/patients' });
+    if (!open && type === 1) router.push({ pathname: '/patients' });
+    else if (!open && type === 2 && cookieError) router.push({ pathname: '/login' });
   }, [open]);
 
   return (
@@ -197,9 +206,9 @@ const Profile = ({ query }: MyPageProps) => {
               {useMediaQuery(1024) && (
                 <hr className='w-full border-black03 mb-5' />
               )}
-              <div className='flex justify-center lgMax:mb-1 lg:w-1/3 lg:border-x border-black03'>
-                <div className='w-[80%] flex flex-col'>
-                  <h1 className='font-semibold mb-11 lgMax:mb-6 text-center lg:text-xg'>
+              <div className='flex justify-center lgMax:px-2.5 lgMax:mb-1 lg:w-1/3 lg:border-x border-black03'>
+                <div className='w-full lg:w-[80%] flex flex-col'>
+                  <h1 className='font-semibold mb-11 lgMax:mb-6 lg:text-center lg:text-xg'>
                     PROFESIONALES
                   </h1>
                   <div>
