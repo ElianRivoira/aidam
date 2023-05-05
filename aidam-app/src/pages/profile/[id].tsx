@@ -22,6 +22,16 @@ import Modal from '@/components/Modal';
 import { deleteUser } from '@/services/users';
 
 const Profile = ({ query }: MyPageProps) => {
+  const [filteredPatients, setFilteredPatients] = useState<Patient[]>();
+  const [browserPatients, setbrowserPatients] = useState('');
+  const [open, setOpen] = useState(false);
+  const [type, setType] = useState(0);
+  const [errors, setErrors] = useState<CustomError[]>([]);
+  const [successMsg, setSuccessMsg] = useState('');
+  const [pathImg, setPathImg] = useState('');
+  const [cookieError, setCookieError] = useState(false);
+  const router = useRouter();
+
   const user = useQuery({
     queryKey: ['user', query.id],
     enabled: hasCookie('session'),
@@ -30,17 +40,29 @@ const Profile = ({ query }: MyPageProps) => {
 
   const loggedUser = useQuery({
     queryKey: ['loggedUser'],
-    enabled: hasCookie('session'),
     queryFn: getLoggedUser,
+    retry: 1,
+    onError: error => {
+      setType(2);
+      setErrors((error as any).response.data.errors);
+      setOpen(true);
+      setCookieError(true);
+    },
   });
 
-  const [filteredPatients, setFilteredPatients] = useState<Patient[]>();
-  const [browserPatients, setbrowserPatients] = useState('');
-  const [open, setOpen] = useState(false);
-  const [type, setType] = useState(0);
-  const [errors, setErrors] = useState<CustomError[]>([]);
-  const [successMsg, setSuccessMsg] = useState('');
-  const [pathImg, setPathImg] = useState('');
+  const deleteProfessional = useMutation({
+    mutationFn: deleteUser,
+    onSuccess: () => {
+      setSuccessMsg('¡El usuario ha sido dado de baja correctamente!');
+      setType(1);
+      setOpen(true);
+    },
+    onError: (err: any) => {
+      setType(2);
+      setErrors(err.response.data.errors);
+      setOpen(true);
+    },
+  });
 
   const filter = (patientsArr: Patient[], letters: string) => {
     let filteredPatients: Patient[];
@@ -68,26 +90,9 @@ const Profile = ({ query }: MyPageProps) => {
     setFilteredPatients(filteredPatients);
   };
 
-  const router = useRouter();
-
-  const deleteProfessional = useMutation({
-    mutationFn: deleteUser,
-    onSuccess: () => {
-      setSuccessMsg('¡El usuario ha sido dado de baja correctamente!');
-      setType(1);
-      setOpen(true);
-    },
-    onError: (err: any) => {
-      setType(2);
-      setErrors(err.response.data.errors);
-      setOpen(true);
-    },
-  });
-
   useEffect(() => {
-    if (!open && type === 1) {
-      router.push('/admin/professionals');
-    }
+    if (!open && type === 1) router.push('/admin/professionals');
+    else if (!open && type === 2 && cookieError) router.push('/login');
   }, [open]);
 
   useEffect(() => {
@@ -308,19 +313,19 @@ const Profile = ({ query }: MyPageProps) => {
                 </div>
               </div>
             </div>
-            <Modal
-              open={open}
-              onClose={() => setOpen(false)}
-              type={type}
-              deleteFunc={() => deleteProfessional.mutate(query.id)}
-              errors={errors}
-              deleteMessage={'¿Está seguro que desea dar de baja el usuario?'}
-            >
-              <h1>{successMsg}</h1>
-            </Modal>
           </>
         )}
       </div>
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        type={type}
+        deleteFunc={() => deleteProfessional.mutate(query.id)}
+        errors={errors}
+        deleteMessage={'¿Está seguro que desea dar de baja el usuario?'}
+      >
+        <h1>{successMsg}</h1>
+      </Modal>
     </>
   );
 };

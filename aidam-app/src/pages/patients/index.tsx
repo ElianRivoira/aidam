@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
 import { hasCookie } from 'cookies-next';
 
@@ -12,14 +13,24 @@ import SearchBar from '@/components/SearchBar';
 import { getLoggedUser } from '@/services/users';
 import { searchPatients } from '@/services/patients';
 import DesktopCard from '@/components/DesktopCard';
+import Modal from '@/components/Modal';
 
 const patients = () => {
   const [search, setSearch] = useState('');
+  const [open, setOpen] = useState(false);
+  const [type, setType] = useState(0);
+  const [errors, setErrors] = useState<CustomError[]>([]);
+  const router = useRouter();
 
   const loggedUser = useQuery({
     queryKey: ['loggedUser'],
-    enabled: hasCookie('session'),
     queryFn: getLoggedUser,
+    retry: 1,
+    onError: error => {
+      setType(2);
+      setErrors((error as any).response.data.errors);
+      setOpen(true);
+    },
   });
 
   const searchedPatients = useQuery({
@@ -32,7 +43,7 @@ const patients = () => {
   });
 
   useEffect(() => {
-    searchedPatients.refetch();
+    hasCookie('session') && searchedPatients.refetch();
   }, [search]);
 
   return (
@@ -54,7 +65,11 @@ const patients = () => {
             {loggedUser.data?.admin
               ? // si es admin
                 searchedPatients.data?.map((patient, index) => (
-                  <MobileCard key={index} patient={patient} user={loggedUser.data} />
+                  <MobileCard
+                    key={index}
+                    patient={patient}
+                    user={loggedUser.data}
+                  />
                 ))
               : // si no es admin
               search.length > 0
@@ -71,7 +86,11 @@ const patients = () => {
                 )
               : // si no hay texto a buscar traigo los pacientes asignados al usuario
                 loggedUser.data?.patientsId.map((patient, index) => (
-                  <MobileCard key={index} patient={patient} user={loggedUser.data} />
+                  <MobileCard
+                    key={index}
+                    patient={patient}
+                    user={loggedUser.data}
+                  />
                 ))}
           </div>
         </main>
@@ -112,6 +131,14 @@ const patients = () => {
           </main>
         </>
       )}
+      <Modal
+        open={open}
+        onClose={() => router.push('/login')}
+        type={type}
+        errors={errors}
+      >
+        <h1></h1>
+      </Modal>
     </>
   );
 };
