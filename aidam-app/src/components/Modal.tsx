@@ -23,6 +23,7 @@ const Modal: React.FC<ModalProps> = ({
   type,
   deleteMessage,
 }) => {
+  console.log(errors)
   if (!open) return null;
   return (
     <>

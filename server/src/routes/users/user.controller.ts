@@ -4,9 +4,10 @@ import { validationResult } from 'express-validator';
 import userService from '../../models/user-service';
 import { BadRequestError } from '../../errors/bad-request-error';
 import { RequestValidationError } from '../../errors/request-validation-error';
-import { validateToken } from '../../utils/tokens';
+import { validateRecoverToken, validateToken } from '../../utils/tokens';
 import { ServerError } from '../../errors/server-error';
 import patientService from '../../models/patient-service';
+import { NotFoundError } from '../../errors/not-found-error';
 
 const httpRegisterUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
@@ -195,6 +196,62 @@ const httpUnassignPatient = async (req: Request, res: Response) => {
   }
 };
 
+const httpForgotPassword = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ message: 'Usuario requerido' });
+  }
+
+  let response = await userService.forgotPassword(email);
+
+  if (response === 'El usuario no existe') {
+    throw new NotFoundError('El usuario no existe');
+  } else if (response instanceof Error) {
+    throw new ServerError(response);
+  } else {
+    return res.status(200).json({ message: response });
+  }
+};
+
+const httpRecoverPassword = async (req: Request, res: Response) => {
+  const token = String(req.query.token);
+
+  if (!token) {
+    return res
+      .status(204)
+      .send({ status: false, message: 'El Token no existe' });
+  }
+
+  try {
+    const decodedToken = validateRecoverToken(token);
+    const email = decodedToken.email;
+    res
+      .status(200)
+      .send({ status: true, message: 'El Token es válido', email });
+  } catch (err) {
+    return res
+      .status(200)
+      .send({ status: false, message: 'El Token es inválido o ha expirado' });
+  }
+};
+
+const httpChangePassword = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: 'No hay usuario o contraseña' });
+  }
+
+  let response = await userService.changePassword(email, password);
+
+  if (response === 'El usuario no existe') {
+    throw new NotFoundError('El usuario no existe');
+  } else if (response instanceof Error) {
+    throw new ServerError(response);
+  } else {
+    return res.status(200).json({ message: response });
+  }
+};
+
 export default {
   httpSignUp,
   httpUserLogin,
@@ -206,4 +263,7 @@ export default {
   httpPutUser,
   httpGetUserById,
   httpUnassignPatient,
+  httpForgotPassword,
+  httpRecoverPassword,
+  httpChangePassword,
 };

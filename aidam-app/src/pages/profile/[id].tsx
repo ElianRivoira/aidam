@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
-import Link from 'next/link';
-import { NextPageContext } from 'next';
-import { useQuery } from '@tanstack/react-query';
-import { hasCookie } from 'cookies-next';
-
 import useMediaQuery from '@/hooks/useMediaQuery';
 import Navbar from '@/components/navbar/Navbar';
 import Data from '@/components/profile/Data';
@@ -25,7 +20,6 @@ import Link from 'next/link';
 import Modal from '@/components/Modal';
 import { deleteUser } from '@/services/users';
 import { useRouter } from 'next/router';
-
 
 const Profile = ({ query }: MyPageProps) => {
   const user = useQuery({
@@ -109,7 +103,10 @@ const Profile = ({ query }: MyPageProps) => {
             <div className='px-3.5 w-full max-w-md md:border md:shadow-xg md:rounded-3xl md:mt-5'>
               <div className='flex justify-between mt-3'>
                 <ArrowBack />
-                <Link href={`/profile/edit/${user.data?._id}`} className='font-light text-xm flex flex-col items-center'>
+                <Link
+                  href={`/profile/edit/${user.data?._id}`}
+                  className='font-light text-xm flex flex-col items-center'
+                >
                   <Image
                     src={profileEdit}
                     alt='editar perfil'
@@ -158,25 +155,25 @@ const Profile = ({ query }: MyPageProps) => {
               </div>
               <hr className='w-full border-black03' />
               <div className='flex flex-col font-semibold text-lb mt-8 px-2.5 w-full'>
-                  <h1 className='mb-5.5'>PACIENTES</h1>
-                  <div className='self-start flex-1 w-full'>
-                    <input
-                      placeholder='Buscar paciente'
-                      className='max-w-[250px] outline-none border border-black03 rounded-md px-2 py-1 hover:border-aidam focus:border-aidam mb-4 transition-colors font-normal'
-                      onChange={e => setbrowserPatients(e.target.value)}
-                      value={browserPatients}
-                    />
-                    <div className='mb-8 overflow-y-auto'>
-                      {filteredPatients?.map((patient, index) => (
-                        <li key={index}>
-                          <Link href={`/patients/${patient._id}/profile`}>
-                            {patient.firstName} {patient.lastName}
-                          </Link>
-                        </li>
-                      ))}
-                    </div>
+                <h1 className='mb-5.5'>PACIENTES</h1>
+                <div className='self-start flex-1 w-full'>
+                  <input
+                    placeholder='Buscar paciente'
+                    className='max-w-[250px] outline-none border border-black03 rounded-md px-2 py-1 hover:border-aidam focus:border-aidam mb-4 transition-colors font-normal'
+                    onChange={(e) => setbrowserPatients(e.target.value)}
+                    value={browserPatients}
+                  />
+                  <div className='mb-8 overflow-y-auto'>
+                    {filteredPatients?.map((patient, index) => (
+                      <li key={index}>
+                        <Link href={`/patients/${patient._id}/profile`}>
+                          {patient.firstName} {patient.lastName}
+                        </Link>
+                      </li>
+                    ))}
                   </div>
                 </div>
+              </div>
               <hr className='w-full border-black03' />
               <div className='mt-8 px-2.5'>
                 <h1 className='font-semibold text-lb mb-5.5'>CONTACTO</h1>
@@ -209,15 +206,15 @@ const Profile = ({ query }: MyPageProps) => {
                     Editar
                   </Link>
                   {user.data?.admin && (
-                     <button
-                    onClick={() => {
-                      setOpen(true);
-                      setType(4);
-                    }}
-                    className='text-lb font-semibold text-white px-4 py-2.5 rounded-md bg-[#B81212CC] hover:bg-[#e26f6fcc] transition-colors'
-                  >
-                    Dar de baja
-                  </button>
+                    <button
+                      onClick={() => {
+                        setOpen(true);
+                        setType(4);
+                      }}
+                      className='text-lb font-semibold text-white px-4 py-2.5 rounded-md bg-[#B81212CC] hover:bg-[#e26f6fcc] transition-colors'
+                    >
+                      Dar de baja
+                    </button>
                   )}
                 </div>
               </div>
@@ -250,8 +247,7 @@ const Profile = ({ query }: MyPageProps) => {
                     <input
                       placeholder='Buscar paciente'
                       className='max-w-[250px] outline-none border border-black03 rounded-md px-2 hover:border-aidam focus:border-aidam mb-4 transition-colors'
-                      onChange={e => setbrowserPatients(e.target.value)}
-
+                      onChange={(e) => setbrowserPatients(e.target.value)}
                       value={browserPatients}
                     />
                     <div className='h-48 overflow-y-auto'>

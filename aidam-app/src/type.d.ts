@@ -115,3 +115,9 @@ interface INames {
   lastName1: string;
   lastName2?: string;
 }
+
+interface TokenResponse {
+  status: boolean;
+  message?: string;
+  email?: string;
+}
