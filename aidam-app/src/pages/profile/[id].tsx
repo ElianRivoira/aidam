@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 import { NextPageContext } from 'next';
 import { hasCookie } from 'cookies-next';
 import { useMutation, useQuery } from '@tanstack/react-query';
-
 import useMediaQuery from '@/hooks/useMediaQuery';
 import Navbar from '@/components/navbar/Navbar';
 import Data from '@/components/profile/Data';
@@ -20,6 +19,8 @@ import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import ArrowBack from '@/components/ArrowBack';
 import Modal from '@/components/Modal';
 import { deleteUser } from '@/services/users';
+import { useRouter } from 'next/router';
+
 
 const Profile = ({ query }: MyPageProps) => {
   const [filteredPatients, setFilteredPatients] = useState<Patient[]>();
@@ -171,12 +172,15 @@ const Profile = ({ query }: MyPageProps) => {
                 />
               </div>
               <hr className='w-full border-black03' />
+
               <div className='flex flex-col mt-8 px-2.5 w-full'>
                 <h1 className='mb-5.5 font-semibold text-lb'>PACIENTES</h1>
+
                 <div className='self-start flex-1 w-full'>
                   <input
                     placeholder='Buscar paciente'
                     className='max-w-[250px] outline-none border border-black03 rounded-md px-2 py-1 hover:border-aidam focus:border-aidam mb-4 transition-colors font-normal'
+
                     onChange={e => setbrowserPatients(e.target.value)}
                     value={browserPatients}
                   />
@@ -186,6 +190,7 @@ const Profile = ({ query }: MyPageProps) => {
                         key={index}
                         className='mb-4 hover:text-aidam70 transition-colors'
                       >
+
                         <Link href={`/patients/${patient._id}/profile`}>
                           {patient.firstName} {patient.lastName}
                         </Link>
@@ -225,13 +230,17 @@ const Profile = ({ query }: MyPageProps) => {
                   >
                     Editar
                   </Link>
+
                   {loggedUser.data?.admin && (
+
                     <button
                       onClick={() => {
                         setOpen(true);
                         setType(4);
                       }}
+
                       className='flex items-center text-lb font-semibold text-white h-10 p-4 rounded-md bg-redLogout hover:bg-redLogout/[.9] transition-colors'
+
                     >
                       Dar de baja
                     </button>
@@ -276,8 +285,10 @@ const Profile = ({ query }: MyPageProps) => {
                     </h1>
                     <input
                       placeholder='Buscar paciente'
+
                       className='self-center text-ln outline-none border border-black03 rounded-md w-[70%] px-2 py-1 hover:border-aidam focus:border-aidam mb-4 transition-colors'
                       onChange={e => setbrowserPatients(e.target.value)}
+
                       value={browserPatients}
                     />
                     <div className='h-48 overflow-y-auto'>

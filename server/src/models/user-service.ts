@@ -1,9 +1,10 @@
 import User, { UserAttrs, UserDoc } from './user.model';
 import { Password } from '../services/password';
-import { generateToken } from '../utils/tokens';
+import { generateToken, recoverPasswordToken } from '../utils/tokens';
 import { BadRequestError } from '../errors/bad-request-error';
 import { NotFoundError } from '../errors/not-found-error';
 import INames from '../interfaces/INames';
+import { sendPasswordChangerEmail } from '../utils/emails';
 
 const signUp = async (data: UserAttrs): Promise<UserDoc> => {
   const user = User.build(data);
@@ -200,6 +201,46 @@ const putUser = async (
   return user;
 };
 
+const forgotPassword = async (email: string) => {
+  try {
+    let message: string;
+    let user;
+    user = await User.findOne({ email });
+    if (user) {
+      const token = recoverPasswordToken(email);
+      const link = `http://localhost:3000/reset-password?token=${token}`;
+      message = 'Se ha enviado un mensaje a tu email para recuperar tu clave';
+      sendPasswordChangerEmail(email, link);
+    } else {
+      message = 'El usuario no existe';
+    }
+    return message;
+  } catch (error) {
+    return error;
+  }
+};
+
+const changePassword = async (email: string, password: string) => {
+  try {
+    let message: string;
+    let newHashedPassword;
+    let user;
+    newHashedPassword = await Password.toHash(password);
+    user = await User.findOneAndUpdate(
+      { email },
+      { password: newHashedPassword },
+      { new: true }
+    );
+    if (user) {
+      message = 'Tu contraseña ha cambiado';
+    } else {
+      message = 'El usuario no existe';
+    }
+  } catch (error) {
+    return error;
+  }
+};
+
 export default {
   signUp,
   exists,
@@ -211,4 +252,6 @@ export default {
   searchUser,
   putUser,
   getUserById,
+  forgotPassword,
+  changePassword,
 };

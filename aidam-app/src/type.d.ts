@@ -118,6 +118,13 @@ interface INames {
   lastName2?: string;
 }
 
+
+interface TokenResponse {
+  status: boolean;
+  message?: string;
+  email?: string;
+}
+
 interface IunassignProfResponse {
   patient: Patient;
   profName: INames;
@@ -126,3 +133,4 @@ interface IunassignPatientResponse {
   user: User;
   patientName: INames;
 }
+

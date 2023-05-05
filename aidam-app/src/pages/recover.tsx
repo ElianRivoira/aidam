@@ -1,31 +1,30 @@
 import Head from 'next/head';
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
+import { forgotPassword } from '@/services/users';
+import { useRouter } from 'next/router';
 
 import aidamTexto from '@/assets/icons/aidamTexto.svg';
 import Input from '@/components/form/Input';
-import { login } from '@/services/users';
 import Modal from '@/components/Modal';
+import Link from 'next/link';
 
-const Login = () => {
+const Recover = () => {
   const router = useRouter();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    loginUser.mutate({ email, password });
+    sendEmail.mutate(email);
   };
 
-  const loginUser = useMutation({
-    mutationFn: login,
-    onSuccess: user => {
+  const sendEmail = useMutation({
+    mutationFn: forgotPassword,
+    onSuccess: () => {
       setType(1);
       setOpen(true);
     },
@@ -38,9 +37,7 @@ const Login = () => {
 
   useEffect(() => {
     if (type === 1 && open === false) {
-      loginUser.data?.admin
-        ? router.push('/admin/professionals')
-        : router.push('/patients');
+      console.log(sendEmail);
     }
   }, [open]);
 
@@ -60,46 +57,34 @@ const Login = () => {
             </div>
             <div className='w-full mb-3'>
               <Input
-                name='email'
-                label='Correo electrónico'
+                label='Ingresa tu correo electronico'
                 type='email'
-                onChange={e => setEmail(e.target.value)}
+                name='email'
+                onChange={(e) => setEmail(e.target.value)}
                 value={email}
                 pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$'
               />
-              <Input
-                name='password'
-                label='Contraseña'
-                type='password'
-                onChange={e => setPassword(e.target.value)}
-                value={password}
-              />
             </div>
             <div className='flex flex-col'>
-              <Link href={'/recover'} className='text-xs text-aidam mb-3 self-center'>
-                ¿Olvidaste tu contraseña?
-              </Link>
               <button
                 type='submit'
                 className='bg-aidam80 text-white w-44 h-8 rounded-md text-sm mb-3'
               >
-                Iniciar Sesión
+                Recuperar contraseña
               </button>
-              <Link
-                href={'/signup'}
-                className='text-aidam text-sm mb-4 self-center'
-              >
-                Registrarse
-              </Link>
             </div>
+            <Link href={"/login"} className='text-sm hover:text-aidam80'>Volver al login</Link>
           </form>
           <Modal
             open={open}
-            onClose={() => setOpen(false)}
+            onClose={() => {
+              setOpen(false);
+              router.push("/login")
+            }}
             type={type}
             errors={errors}
           >
-            <h1>Inicio de sesión satisfactorio</h1>
+            <h1>Revisá tu casilla de mensajes</h1>
           </Modal>
         </div>
       </div>
@@ -107,4 +92,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Recover;

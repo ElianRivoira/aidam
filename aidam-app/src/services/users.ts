@@ -58,3 +58,23 @@ export async function unassignPatient({
   const res = await api.put(`/users/unassign/${id}`, { patientName: patient });
   return res.data;
 }
+
+export async function forgotPassword(email: string): Promise<string> {
+  console.log(email);
+  const res = await api.put(`/users/forgot-password`, { email });
+  console.log('RES', res.data.message);
+  return res.data.message;
+}
+
+export async function sendToken(token: string): Promise<TokenResponse> {
+  const res = await api.get(`/users/recover-password?token=${token}`);
+  return res.data;
+}
+
+export async function changePassword(
+  email: string,
+  password: string
+): Promise<string> {
+  const res = await api.put(`/users/changePassword`, { email, password });
+  return res.data;
+}
