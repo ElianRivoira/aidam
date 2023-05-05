@@ -5,7 +5,7 @@ import { BadRequestError } from '../errors/bad-request-error';
 const CERT_DIR = path.join(__dirname, '../../certificates');
 const PROFILE_IMG_DIR = path.join(__dirname, '../../profilesImgs');
 const CERT_MIMETYPES = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-const IMG_MIMETYPES = ['image/jpeg', 'image/svg+xml'];
+const IMG_MIMETYPES = ['image/jpeg', 'image/svg+xml', 'image/png'];
 
 export const uploadCertificate = multer({
   storage: multer.diskStorage({

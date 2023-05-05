@@ -8,6 +8,8 @@ import { validateRecoverToken, validateToken } from '../../utils/tokens';
 import { ServerError } from '../../errors/server-error';
 import patientService from '../../models/patient-service';
 import { NotFoundError } from '../../errors/not-found-error';
+import INames from '../../interfaces/INames';
+
 
 const httpRegisterUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
@@ -143,19 +145,47 @@ const httpPutUser = async (req: Request, res: Response) => {
     throw new RequestValidationError(errors.array());
   }
   try {
-    const { email, phone, firstName, lastName, license, profession } = req.body;
-    if (req.session?.token) {
-      const { user } = validateToken(req.session.token);
-      const updatedUser = await userService.putUser(user.id, {
+    const { email, phone, firstName, lastName, license, profession, _id, patients } =
+      req.body;
+
+    const user = await userService.getLoggedUser(_id);
+
+    const profileImg = req.file?.filename;
+
+    const updatedUser = await userService.putUser(
+      user._id,
+      {
         email,
         phone,
         firstName,
         lastName,
         license,
         profession,
+      },
+      undefined,
+      false,
+      profileImg
+    );
+
+    const patientsArray = JSON.parse(patients);
+
+    if (updatedUser) {
+      patientsArray.forEach(async (patient: INames) => {
+        const foundedPatient = await patientService.searchPatient(patient);
+        await patientService.putPatient(
+          foundedPatient[0]._id,
+          undefined,
+          updatedUser._id
+        );
+        await userService.putUser(
+          updatedUser._id,
+          undefined,
+          foundedPatient[0]._id
+        );
       });
-      res.send(updatedUser);
     }
+
+    res.send(updatedUser);
   } catch (e) {
     console.error(e);
     throw new ServerError(e);
@@ -174,9 +204,9 @@ const httpUnassignPatient = async (req: Request, res: Response) => {
     const { data } = await userService.getUserById(req.params.id);
 
     if (data) {
-      const findedPatient = await patientService.searchPatient(patientName);
+      const foundedPatient = await patientService.searchPatient(patientName);
       await patientService.putPatient(
-        findedPatient[0]._id,
+        foundedPatient[0]._id,
         undefined,
         data._id,
         true
@@ -184,12 +214,12 @@ const httpUnassignPatient = async (req: Request, res: Response) => {
       await userService.putUser(
         data._id,
         undefined,
-        findedPatient[0]._id,
+        foundedPatient[0]._id,
         true
       );
     }
 
-    res.send(data);
+    res.send({user: data, patientName});
   } catch (e) {
     console.error(e);
     throw new ServerError(e);

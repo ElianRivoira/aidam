@@ -1,34 +1,46 @@
 import React, { useEffect, useState } from 'react';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { hasCookie } from 'cookies-next';
+import { useQuery } from '@tanstack/react-query';
+
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import SearchBar from '@/components/SearchBar';
 import DesktopCard from '@/components/DesktopCard';
-import Head from 'next/head';
 import { getAllUsers } from '@/services/users';
 import ProfessionalsModal from '@/components/admin/ProfessionalsModal';
+import Modal from '@/components/Modal';
 
 const professionals = () => {
   const [activeUsers, setActiveUsers] = useState<User[]>();
   const [inactiveUsers, setInactiveUsers] = useState<User[]>();
   const [openModal, setOpenModal] = useState(false);
   const [search, setSearch] = useState('');
+  const [open, setOpen] = useState(false);
+  const [type, setType] = useState(0);
+  const [errors, setErrors] = useState<CustomError[]>([]);
+  const router = useRouter();
 
   function toggleModal() {
     setOpenModal(!openModal);
   }
 
-  async function getUsers() {
-    const users = await getAllUsers();
-    let activeUsrs;
-    let inactiveUsrs;
-    activeUsrs = users.filter(user => user.status === true);
-    inactiveUsrs = users.filter(user => user.status === false);
-    setActiveUsers(activeUsrs);
-    setInactiveUsers(inactiveUsrs);
-  }
-
-  useEffect(() => {
-    getUsers();
-  }, []);
+  const users = useQuery({
+    queryKey: ['users'],
+    queryFn: getAllUsers,
+    retry: 1,
+    onSuccess: data => {
+      const activeUsrs = data.filter(user => user.status === true);
+      const inactiveUsrs = data.filter(user => user.status === false);
+      setActiveUsers(activeUsrs);
+      setInactiveUsers(inactiveUsrs);
+    },
+    onError: error => {
+      setType(2);
+      setErrors((error as any).response.data.errors);
+      setOpen(true);
+    },
+  });
 
   return (
     <>
@@ -62,11 +74,19 @@ const professionals = () => {
 
         {openModal && (
           <ProfessionalsModal
-            refreshRender={getUsers}
+            refreshRender={() => users.refetch()}
             closeModal={toggleModal}
             inactiveUsers={inactiveUsers ?? []}
           />
         )}
+        <Modal
+          open={open}
+          onClose={() => router.push('/login')}
+          type={type}
+          errors={errors}
+        >
+          <h1></h1>
+        </Modal>
       </main>
     </>
   );

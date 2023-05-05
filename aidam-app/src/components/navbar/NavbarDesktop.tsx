@@ -15,7 +15,7 @@ const NavbarDesktop = () => {
   const regExp = /\/profile\/[a-z0-9]+/i;
 
   const user = useQuery({
-    queryKey: ['user'],
+    queryKey: ['loggedUser'],
     enabled: hasCookie('session'),
     queryFn: getLoggedUser,
   });

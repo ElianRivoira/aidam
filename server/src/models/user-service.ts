@@ -167,7 +167,8 @@ const putUser = async (
   id: string,
   data?: object,
   patientId?: string,
-  pull?: boolean
+  pull?: boolean,
+  profileImg?: string,
 ) => {
   const findAndUpdate = () => {
     if (pull) {
@@ -186,6 +187,7 @@ const putUser = async (
         id,
         {
           ...data,
+          profileImg,
           $addToSet: { patientsId: patientId },
         },
         {

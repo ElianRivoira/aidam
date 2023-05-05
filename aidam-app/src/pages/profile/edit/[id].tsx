@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import Head from 'next/head';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { NextPageContext } from 'next';
 import { hasCookie } from 'cookies-next';
@@ -14,6 +15,7 @@ import TagInputPatients from '@/components/form/TagInputPatients';
 import professions from '@/utils/professions';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import Navbar from '@/components/navbar/Navbar';
+import profileIcon from '@/assets/icons/profileImage.svg';
 
 const editUser = ({ query }: MyPageProps) => {
   const router = useRouter();
@@ -22,6 +24,7 @@ const editUser = ({ query }: MyPageProps) => {
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [patients, setPatients] = useState<INames[]>([]);
   const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [pathImg, setPathImg] = useState('');
   const [userInfo, setUserInfo] = useState<FormUser>({
     firstName: '',
     lastName: '',
@@ -39,12 +42,32 @@ const editUser = ({ query }: MyPageProps) => {
   };
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { files } = e.target;
-    files && setProfileImage(files[0]);
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+
+      if (file.type.includes('image')) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function load() {
+          if (typeof reader.result === 'string') setPathImg(reader.result);
+        };
+
+        setProfileImage(file);
+      }
+    } else {
+      setPathImg('');
+      setProfileImage(null);
+    }
   };
 
+  const loggedUser = useQuery({
+    queryKey: ['loggedUser'],
+    enabled: hasCookie('session'),
+    queryFn: getLoggedUser,
+  });
+
   const user = useQuery({
-    queryKey: ['user'],
+    queryKey: ['user', query.id],
     enabled: hasCookie('session'),
     queryFn: () => findUserById(query.id),
   });
@@ -70,6 +93,7 @@ const editUser = ({ query }: MyPageProps) => {
     Object.keys(userInfo).forEach(key => {
       formData.append(key, userInfo[key]);
     });
+    formData.append('patients', JSON.stringify(patients));
     profileImage && formData.append('profileImage', profileImage as Blob);
 
     if (user.data) {
@@ -81,6 +105,7 @@ const editUser = ({ query }: MyPageProps) => {
   useEffect(() => {
     if (type === 1 && open === false) {
       router.push(`/profile/${user.data?._id}`);
+      user.refetch();
     }
   }, [open]);
 
@@ -110,13 +135,21 @@ const editUser = ({ query }: MyPageProps) => {
   return (
     <>
       <Head>
-        <title>AIDAM {user.data?.admin ? 'Admin' : ''} - Editar usuario</title>
+        <title>
+          {loggedUser.data?.admin
+            ? 'AIDAM Admin - Editar usuario'
+            : 'AIDAM - Editar usuario'}
+        </title>
       </Head>
       <main className='min-h-screen bg-background'>
         {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
         <div className='w-full mt-12 lgMax:mt-4 px-12'>
-          <ArrowBack />
-          <h1 className='text-center text-xl4 lgMax:text-xl2 font-semibold'>EDITAR USUARIO</h1>
+          <div className='flex items-center w-full'>
+            <ArrowBack route={`/profile/${user.data?._id}`} />
+            <h1 className='text-center text-xl4 lgMax:text-xl2 font-semibold mx-auto'>
+              EDITAR USUARIO
+            </h1>
+          </div>
           <form
             encType='multipart/form-data'
             onSubmit={handleSubmit}
@@ -175,15 +208,28 @@ const editUser = ({ query }: MyPageProps) => {
                   placeholder='+5491234567890'
                 />
               </div>
-              <div className='flex flex-col w-1/4 lgMax:w-full lgMax:max-w-[500px] lgMax:mb-9 gap-9 items-center'>
-                <Input
-                  label='Subir foto de perfil'
-                  name='profileImage'
-                  type='file'
-                  value={profileImage?.name}
-                  onChange={e => handleFile(e)}
-                />
-                {user.data?.admin && (
+              <div className='flex flex-col w-1/4 lgMax:w-full lgMax:max-w-[500px] lgMax:mb-9 items-center'>
+                <div className='w-[90px] h-[90px] overflow-hidden rounded-full mb-[19px]'>
+                  {pathImg ? (
+                    <img src={pathImg} alt='image' />
+                  ) : (
+                    <Image
+                      src={profileIcon}
+                      alt='profile icon'
+                      className='w-full'
+                    />
+                  )}
+                </div>
+                <div className='w-full mb-9'>
+                  <Input
+                    label='Subir foto de perfil'
+                    name='profileImage'
+                    type='file'
+                    value={profileImage?.name}
+                    onChange={e => handleFile(e)}
+                  />
+                </div>
+                {loggedUser.data?.admin && (
                   <TagInputPatients
                     tagged={patients}
                     setTagged={setPatients}
@@ -192,7 +238,7 @@ const editUser = ({ query }: MyPageProps) => {
                 )}
               </div>
             </div>
-            <div className='flex justify-evenly mt-10 lgMax:mt-5'>
+            <div className='flex justify-evenly lgMax:justify-between mt-10 lgMax:mt-5'>
               <div className='w-1/4'></div>
               <div className='w-1/4'></div>
               <div className='w-1/4 flex justify-end'>
@@ -211,7 +257,7 @@ const editUser = ({ query }: MyPageProps) => {
             type={type}
             errors={errors}
           >
-            <h1>Paciente editado satisfactoriamente</h1>
+            <h1>Perfil editado satisfactoriamente</h1>
           </Modal>
         </div>
       </main>

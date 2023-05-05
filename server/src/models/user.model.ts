@@ -30,6 +30,7 @@ export interface UserDoc extends mongoose.Document {
   lastLoginDate: Date;
   observationsId: Array<ObservationDoc['_id']>;
   patientsId: Array<PatientDoc['_id']>;
+  profileImg: string;
 }
 
 const userSchema = new mongoose.Schema({
@@ -82,6 +83,9 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  profileImg: {
+    type: String,
+  }
 });
 
 userSchema.pre('save', async function (done) {

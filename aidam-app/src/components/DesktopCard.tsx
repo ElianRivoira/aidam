@@ -36,24 +36,24 @@ const DesktopCard: React.FC<DesktopCardProps> = ({
       {user ? (
         <Link
           href={`/profile/${user._id}`}
-          className='flex py-5 px-7 rounded-xl border border-[#F0F0F0] mb-4'
+          className='flex py-5 px-7 rounded-xl border border-grey2 mb-4 hover:bg-gray-100 hover:border-grey3 transition-colors'
         >
           <div className='w-[20%]'>
-            <div className='mb-4 text-sm text-[#505050]'>Nombre y Apellido</div>
+            <div className='mb-4 text-sm text-grey8'>Nombre y Apellido</div>
             <div className='font-semibold'>
               {user.firstName + ' ' + user.lastName}
             </div>
           </div>
           <div className='w-[20%]'>
-            <div className='mb-4 text-sm text-[#505050]'>Profesión</div>
+            <div className='mb-4 text-sm text-grey8'>Profesión</div>
             <div className='font-semibold'>{user.profession}</div>
           </div>
           <div className='w-[20%]'>
-            <div className='mb-4 text-sm text-[#505050]'>Última conexión</div>
+            <div className='mb-4 text-sm text-grey8'>Última conexión</div>
             <div className='font-semibold'>{lastConnectionString}</div>
           </div>
           <div className='w-[40%]'>
-            <div className='mb-4 text-sm text-[#505050]'>Últimas Acciones</div>
+            <div className='mb-4 text-sm text-grey8'>Últimas Acciones</div>
             <div className='font-semibold'>
               {user.lastThreeTasks.length > 0 ? (
                 user.lastThreeTasks.map((action, index) => (
@@ -68,51 +68,50 @@ const DesktopCard: React.FC<DesktopCardProps> = ({
       ) : patient ? (
         <Link
           href={`/patients/${patient._id}/profile`}
-          className='flex py-5 px-7 rounded-xl border border-[#F0F0F0] mb-4'
+          className='flex py-5 px-7 rounded-xl border border-grey2 mb-4 hover:bg-gray-100 hover:border-grey3 transition-colors'
         >
           <div className='w-1/4'>
-            <div className='mb-4 text-sm text-[#505050]'>Nombre y Apellido</div>
+            <div className='mb-4 text-sm text-grey8'>Nombre y Apellido</div>
             <div className='font-semibold'>
               {patient.firstName + ' ' + patient.lastName}
             </div>
           </div>
           <div className='w-1/4'>
-            <div className='mb-4 text-sm text-[#505050]'>DNI</div>
+            <div className='mb-4 text-sm text-grey8'>DNI</div>
             <div className='font-semibold'>{patient.dni}</div>
           </div>
           <div className='w-1/4'>
-            <div className='mb-4 text-sm text-[#505050]'>Obra Social</div>
+            <div className='mb-4 text-sm text-grey8'>Obra Social</div>
             <div className='font-semibold'>
               {patient.socialwork.toUpperCase()}
             </div>
           </div>
           <div className='w-1/4'>
-            <div className='mb-4 text-sm text-[#505050]'>N° de afiliado</div>
+            <div className='mb-4 text-sm text-grey8'>N° de afiliado</div>
             <div className='font-semibold'>{patient.affiliateNumber}</div>
           </div>
         </Link>
       ) : observation ? (
         <button
-          // href={`/patients/${patientId}/observations/${observation._id}`}
           onClick={onClick}
-          className='flex w-3/4 py-5 pr-7 rounded-xl border border-[#F0F0F0] mb-4'
+          className='flex w-3/4 py-5 pr-7 rounded-xl border border-grey2 mb-4 hover:bg-gray-100 hover:border-grey3 transition-colors'
         >
           <div className='w-1/4 flex justify-center'>
             <Image src={profileImage} alt='profile image' />
           </div>
           <div className='w-1/4'>
-            <div className='mb-4 text-sm text-[#505050]'>Nombre y Apellido</div>
+            <div className='mb-4 text-sm text-grey8'>Nombre y Apellido</div>
             <div className='font-semibold'>
               {observation.professional.firstName}{' '}
               {observation.professional.lastName}
             </div>
           </div>
           <div className='w-1/4'>
-            <div className='mb-4 text-sm text-[#505050]'>Descripción</div>
+            <div className='mb-4 text-sm text-grey8'>Descripción</div>
             <div className='font-semibold'>{observation.title}</div>
           </div>
           <div className='w-1/4'>
-            <div className='mb-4 text-sm text-[#505050]'>
+            <div className='mb-4 text-sm text-grey8'>
               Fecha de observación
             </div>
             <div className='font-semibold'>

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { hasCookie } from 'cookies-next';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import x from '@/assets/icons/x-white.svg';
 import { searchUser } from '@/services/users';
 import { unassignProf } from '@/services/patients';
+import Modal from '../Modal';
+import { createINames } from '@/utils/INames';
 
 interface TagInputProps {
   tagged: INames[];
@@ -13,17 +15,34 @@ interface TagInputProps {
   patient?: Patient | undefined;
 }
 
-const TagInput: React.FC<TagInputProps> = ({
-  tagged,
-  setTagged,
-  patient,
-}) => {
+const TagInput: React.FC<TagInputProps> = ({ tagged, setTagged, patient }) => {
   const [searchText, setSearchText] = useState('');
+  const [open, setOpen] = useState(false);
+  const [type, setType] = useState(0);
+  const [errors, setErrors] = useState<CustomError[]>([]);
+  const [successMsg, setSuccessMsg] = useState('');
 
   const professionals = useQuery({
-    queryKey: ['search professionals in cp'],
+    queryKey: ['search professionals in create prof'],
     enabled: hasCookie('session') && searchText.length > 0,
     queryFn: () => searchUser(searchText),
+  });
+
+  const unassignProfessional = useMutation({
+    mutationFn: unassignProf,
+    onSuccess: response => {
+      handleTagRemove(response.profName);
+      setSuccessMsg(
+        'El profesional ha sido desvinculado del paciente correctamente'
+      );
+      setType(1);
+      setOpen(true);
+    },
+    onError: (err: any) => {
+      setType(2);
+      setErrors(err.response.data.errors);
+      setOpen(true);
+    },
   });
 
   useEffect(() => {
@@ -62,9 +81,14 @@ const TagInput: React.FC<TagInputProps> = ({
 
   const handleTagRemove = async (profToDelete: INames) => {
     // Eliminar el usuario etiquetado de la lista
-    const filteredProfs = tagged.filter(prof => prof !== profToDelete);
+    const filteredProfs = tagged.filter(
+      prof =>
+        prof.firstName1 !== profToDelete.firstName1 &&
+        prof.firstName2 !== profToDelete.firstName2 &&
+        prof.lastName1 !== profToDelete.lastName1 &&
+        prof.lastName2 !== profToDelete.lastName2
+    );
     setTagged(filteredProfs);
-    patient && (await unassignProf(patient._id, profToDelete));
   };
 
   return (
@@ -78,7 +102,7 @@ const TagInput: React.FC<TagInputProps> = ({
         value={searchText}
         onChange={handleInputChange}
         className='w-full h-10 rounded-md border border-black02 p-1.5 outline-none focus:border-aidam hover:border-aidam80'
-        placeholder='Ejemplo Ejemplo'
+        placeholder='Buscar...'
       />
       {searchText && (
         <div className='absolute z-20 border bg-white rounded-md flex flex-col gap-2 w-full'>
@@ -86,25 +110,8 @@ const TagInput: React.FC<TagInputProps> = ({
             <div
               key={index}
               onClick={() => {
-                let firstName1: string = '';
-                let firstName2: string = '';
-                let lastName1: string = '';
-                let lastName2: string = '';
-
-                if (prof.firstName.includes(' ')) {
-                  [firstName1, firstName2] = prof.firstName.split(' ');
-                } else firstName1 = prof.firstName;
-
-                if (prof.lastName.includes(' ')) {
-                  [lastName1, lastName2] = prof.lastName.split(' ');
-                } else lastName1 = prof.lastName;
-
-                handleClickOnProf({
-                  firstName1,
-                  firstName2,
-                  lastName1,
-                  lastName2,
-                });
+                const names = createINames(prof);
+                handleClickOnProf(names);
               }}
               className='hover:bg-aidamNav hover:text-white rounded-md p-3 cursor-pointer w-full transition-colors'
             >
@@ -121,17 +128,29 @@ const TagInput: React.FC<TagInputProps> = ({
               className='bg-[#1F1BB7A3] w-fit rounded-md border border-black02 text-white text-lh font-normal p-1.5 pr-2 flex items-center'
             >
               <button
-                onClick={() => handleTagRemove(prof)}
+                onClick={() => {
+                  patient &&
+                    unassignProfessional.mutate({ id: patient._id, prof });
+                }}
                 className='flex items-center mr-1'
                 type='button'
               >
                 <Image src={x} alt='x' width={20} />
               </button>
-              {prof.firstName1} {prof.firstName2} {prof.lastName1} {prof.lastName2}
+              {prof.firstName1} {prof.firstName2} {prof.lastName1}{' '}
+              {prof.lastName2}
             </div>
           );
         })}
       </div>
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        type={type}
+        errors={errors}
+      >
+        <h1>{successMsg}</h1>
+      </Modal>
     </div>
   );
 };

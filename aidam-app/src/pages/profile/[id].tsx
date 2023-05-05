@@ -1,39 +1,69 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { NextPageContext } from 'next';
+import { hasCookie } from 'cookies-next';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import Navbar from '@/components/navbar/Navbar';
 import Data from '@/components/profile/Data';
-import profileEdit from '@/assets/icons/profileEdit.svg';
 import profileImage from '@/assets/icons/profileImage.svg';
 import professionLogo from '@/assets/icons/professionLogo.svg';
 import licenseIcon from '@/assets/icons/licenseIcon.svg';
 import emailIcon from '@/assets/icons/emailIcon.svg';
 import phoneIcon from '@/assets/icons/phoneIcon.svg';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { findUserById } from '@/services/users';
-import { hasCookie } from 'cookies-next';
+import { findUserById, getLoggedUser } from '@/services/users';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
-import { NextPageContext } from 'next';
 import ArrowBack from '@/components/ArrowBack';
-import Link from 'next/link';
 import Modal from '@/components/Modal';
 import { deleteUser } from '@/services/users';
 import { useRouter } from 'next/router';
 
-const Profile = ({ query }: MyPageProps) => {
-  const user = useQuery({
-    queryKey: ['user', query.id],
-    enabled: hasCookie('session'),
-    queryFn: () => findUserById(query.id),
-  });
 
+const Profile = ({ query }: MyPageProps) => {
   const [filteredPatients, setFilteredPatients] = useState<Patient[]>();
   const [browserPatients, setbrowserPatients] = useState('');
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [successMsg, setSuccessMsg] = useState('');
+  const [pathImg, setPathImg] = useState('');
+  const [cookieError, setCookieError] = useState(false);
+  const router = useRouter();
+
+  const user = useQuery({
+    queryKey: ['user', query.id],
+    enabled: hasCookie('session'),
+    queryFn: () => findUserById(query.id),
+  });
+
+  const loggedUser = useQuery({
+    queryKey: ['loggedUser'],
+    queryFn: getLoggedUser,
+    retry: 1,
+    onError: error => {
+      setType(2);
+      setErrors((error as any).response.data.errors);
+      setOpen(true);
+      setCookieError(true);
+    },
+  });
+
+  const deleteProfessional = useMutation({
+    mutationFn: deleteUser,
+    onSuccess: () => {
+      setSuccessMsg('¡El usuario ha sido dado de baja correctamente!');
+      setType(1);
+      setOpen(true);
+    },
+    onError: (err: any) => {
+      setType(2);
+      setErrors(err.response.data.errors);
+      setOpen(true);
+    },
+  });
 
   const filter = (patientsArr: Patient[], letters: string) => {
     let filteredPatients: Patient[];
@@ -61,31 +91,20 @@ const Profile = ({ query }: MyPageProps) => {
     setFilteredPatients(filteredPatients);
   };
 
-  const router = useRouter();
-
-  const deleteProfessional = useMutation({
-    mutationFn: deleteUser,
-    onSuccess: () => {
-      setSuccessMsg('¡El usuario ha sido dado de baja correctamente!');
-      setType(1);
-      setOpen(true);
-    },
-    onError: (err: any) => {
-      setType(2);
-      setErrors(err.response.data.errors);
-      setOpen(true);
-    },
-  });
-
   useEffect(() => {
-    if (!open && type === 1) {
-      router.push('/admin/professionals');
-    }
+    if (!open && type === 1) router.push('/admin/professionals');
+    else if (!open && type === 2 && cookieError) router.push('/login');
   }, [open]);
 
   useEffect(() => {
     setFilteredPatients(user.data?.patientsId);
-  }, [user.isSuccess]);
+    if (user.data?.profileImg) {
+      const path = `http://localhost:8000/users/profileimg/${user.data.profileImg}`;
+      setPathImg(path);
+    } else {
+      setPathImg('');
+    }
+  }, [user.isSuccess, user.isRefetching]);
 
   useEffect(() => {
     if (user.data) filter(user.data.patientsId, browserPatients);
@@ -94,36 +113,48 @@ const Profile = ({ query }: MyPageProps) => {
   return (
     <>
       <Head>
-        <title>AIDAM {user.data?.admin ? 'Admin' : ''} - Perfil</title>
+        <title>
+          {loggedUser.data?.admin ? 'AIDAM Admin - Perfil' : 'AIDAM - Perfil'}
+        </title>
       </Head>
-      <div className='min-h-screen flex flex-col items-center'>
+      <div className='min-h-screen flex flex-col items-center bg-background'>
         {useMediaQuery(1024) ? (
           <>
             <Navbar />
-            <div className='px-3.5 w-full max-w-md md:border md:shadow-xg md:rounded-3xl md:mt-5'>
-              <div className='flex justify-between mt-3'>
-                <ArrowBack />
+            <div className='px-3.5 w-full'>
+              <div
+                className={`flex ${
+                  loggedUser.data?.admin ? 'justify-between' : 'justify-end'
+                } mt-4`}
+              >
+                {loggedUser.data?.admin && (
+                  <ArrowBack route='/admin/professionals' />
+                )}
+              </div>
+              <div className='flex flex-col'>
                 <Link
                   href={`/profile/edit/${user.data?._id}`}
-                  className='font-light text-xm flex flex-col items-center'
+                  className='self-end text-xs font-normal text-white px-4 py-2.5 mr-1 h-fit rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
                 >
-                  <Image
-                    src={profileEdit}
-                    alt='editar perfil'
-                    width={25}
-                    height={25}
-                    className='-mb-3'
-                  />
-                  <br />
-                  Editar perfil
+                  Editar
                 </Link>
-              </div>
-              <div className='flex flex-col items-center'>
-                <Image src={profileImage} alt='imagen' className='' />
-                <p className='font-semibold text-lb'>
-                  {user.data?.firstName.toUpperCase()}{' '}
-                  {user.data?.lastName.toUpperCase()}
-                </p>
+                <div className='flex flex-col items-center mx-auto'>
+                  <div className='rounded-full w-[90px] h-[90px] overflow-hidden mb-2'>
+                    {pathImg ? (
+                      <img src={pathImg} alt='imagen' className='' />
+                    ) : (
+                      <Image
+                        src={profileImage}
+                        alt='imagen'
+                        className='w-full'
+                      />
+                    )}
+                  </div>
+                  <p className='font-semibold text-lb'>
+                    {user.data?.firstName.toUpperCase()}{' '}
+                    {user.data?.lastName.toUpperCase()}
+                  </p>
+                </div>
               </div>
               <div className='mt-12 px-2.5'>
                 <h1 className='font-semibold text-lb mb-5.5'>
@@ -139,33 +170,27 @@ const Profile = ({ query }: MyPageProps) => {
                   title='Matrícula'
                   info={user.data?.license}
                 />
-                <div className='mb-4 overflow-y-auto'>
-                  <h1 className='font-semibold text-lb mb-4'>PACIENTES</h1>
-                  {filteredPatients?.map((patient, index) => (
-                    <li
-                      key={index}
-                      className='text-sm lg:text-lb font-semibold mb-2 hover:text-aidam'
-                    >
-                      <Link href={`/patients/${patient._id}/profile`}>
-                        {patient.firstName} {patient.lastName}
-                      </Link>
-                    </li>
-                  ))}
-                </div>
               </div>
               <hr className='w-full border-black03' />
-              <div className='flex flex-col font-semibold text-lb mt-8 px-2.5 w-full'>
-                <h1 className='mb-5.5'>PACIENTES</h1>
+
+              <div className='flex flex-col mt-8 px-2.5 w-full'>
+                <h1 className='mb-5.5 font-semibold text-lb'>PACIENTES</h1>
+
                 <div className='self-start flex-1 w-full'>
                   <input
                     placeholder='Buscar paciente'
                     className='max-w-[250px] outline-none border border-black03 rounded-md px-2 py-1 hover:border-aidam focus:border-aidam mb-4 transition-colors font-normal'
-                    onChange={(e) => setbrowserPatients(e.target.value)}
+
+                    onChange={e => setbrowserPatients(e.target.value)}
                     value={browserPatients}
                   />
-                  <div className='mb-8 overflow-y-auto'>
+                  <div className='mb-4 overflow-y-auto'>
                     {filteredPatients?.map((patient, index) => (
-                      <li key={index}>
+                      <li
+                        key={index}
+                        className='mb-4 hover:text-aidam70 transition-colors'
+                      >
+
                         <Link href={`/patients/${patient._id}/profile`}>
                           {patient.firstName} {patient.lastName}
                         </Link>
@@ -194,24 +219,28 @@ const Profile = ({ query }: MyPageProps) => {
           <>
             <NavbarDesktop />
             <div className='w-full px-12'>
-              <div className='flex mt-9 justify-between'>
-                <div>
-                  <ArrowBack />
-                </div>
+              <div className='flex mt-9 justify-between items-center'>
+                {loggedUser.data?.admin && (
+                  <ArrowBack route='/admin/professionals' />
+                )}
                 <div className='flex gap-4'>
                   <Link
-                    className='flex items-center text-lb font-semibold text-white px-4 py-2.5 rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
+                    className='flex items-center text-lb font-semibold text-white h-10 p-4 rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
                     href={`/profile/edit/${user.data?._id}`}
                   >
                     Editar
                   </Link>
-                  {user.data?.admin && (
+
+                  {loggedUser.data?.admin && (
+
                     <button
                       onClick={() => {
                         setOpen(true);
                         setType(4);
                       }}
-                      className='text-lb font-semibold text-white px-4 py-2.5 rounded-md bg-[#B81212CC] hover:bg-[#e26f6fcc] transition-colors'
+
+                      className='flex items-center text-lb font-semibold text-white h-10 p-4 rounded-md bg-redLogout hover:bg-redLogout/[.9] transition-colors'
+
                     >
                       Dar de baja
                     </button>
@@ -219,40 +248,55 @@ const Profile = ({ query }: MyPageProps) => {
                 </div>
               </div>
               <div className='flex flex-col items-center'>
-                <Image src={profileImage} alt='perfil' className='w-[90px]' />
+                <div className='rounded-full w-[110px] h-[110px] overflow-hidden mb-2'>
+                  {pathImg ? (
+                    <img src={pathImg} alt='imagen' className='' />
+                  ) : (
+                    <Image src={profileImage} alt='imagen' className='w-full' />
+                  )}
+                </div>
                 <p className='font-semibold text-2xl'>
                   {user.data?.firstName.toUpperCase()}{' '}
                   {user.data?.lastName.toUpperCase()}
                 </p>
               </div>
               <div className='flex mt-14'>
-                <div className='flex flex-col font-semibold text-xl pl-20 w-1/3'>
-                  <h1 className='mb-10'>DATOS PERSONALES</h1>
-                  <div>
-                    <Data
-                      icon={professionLogo}
-                      title='Profesión'
-                      info={user.data?.profession}
-                    />
-                    <Data
-                      icon={licenseIcon}
-                      title='Matrícula'
-                      info={user.data?.license}
-                    />
+                <div className='font-semibold text-xl w-1/3 flex justify-center'>
+                  <div className='w-fit flex flex-col'>
+                    <h1 className='mb-10'>DATOS PERSONALES</h1>
+                    <div>
+                      <Data
+                        icon={professionLogo}
+                        title='Profesión'
+                        info={user.data?.profession}
+                      />
+                      <Data
+                        icon={licenseIcon}
+                        title='Matrícula'
+                        info={user.data?.license}
+                      />
+                    </div>
                   </div>
                 </div>
-                <div className='flex flex-col font-semibold border-x-2 text-xl w-1/3 items-center'>
-                  <h1 className='mb-10'>PACIENTES</h1>
-                  <div className='self-start px-12 flex-1 w-full'>
+                <div className='flex justify-center border-x border-black03 w-1/3 items-center'>
+                  <div className='w-[80%] flex flex-col'>
+                    <h1 className='mb-10 font-semibold text-xl text-center'>
+                      PACIENTES
+                    </h1>
                     <input
                       placeholder='Buscar paciente'
-                      className='max-w-[250px] outline-none border border-black03 rounded-md px-2 hover:border-aidam focus:border-aidam mb-4 transition-colors'
-                      onChange={(e) => setbrowserPatients(e.target.value)}
+
+                      className='self-center text-ln outline-none border border-black03 rounded-md w-[70%] px-2 py-1 hover:border-aidam focus:border-aidam mb-4 transition-colors'
+                      onChange={e => setbrowserPatients(e.target.value)}
+
                       value={browserPatients}
                     />
                     <div className='h-48 overflow-y-auto'>
                       {filteredPatients?.map((patient, index) => (
-                        <li key={index}>
+                        <li
+                          key={index}
+                          className='mb-4 hover:text-aidam70 transition-colors font-semibold text-ln'
+                        >
                           <Link href={`/patients/${patient._id}/profile`}>
                             {patient.firstName} {patient.lastName}
                           </Link>
@@ -261,36 +305,38 @@ const Profile = ({ query }: MyPageProps) => {
                     </div>
                   </div>
                 </div>
-                <div className='flex flex-col font-semibold text-xl pl-20 w-1/3'>
-                  <h1 className='mb-10'>CONTACTO</h1>
-                  <div>
-                    <Data
-                      icon={emailIcon}
-                      title='Correo electrónico'
-                      info={user.data?.email}
-                    />
-                    <Data
-                      icon={phoneIcon}
-                      title='Teléfono'
-                      info={user.data?.phone}
-                    />
+                <div className='flex justify-center font-semibold text-xl w-1/3'>
+                  <div className='flex flex-col w-fit'>
+                    <h1 className='mb-10'>CONTACTO</h1>
+                    <div>
+                      <Data
+                        icon={emailIcon}
+                        title='Correo electrónico'
+                        info={user.data?.email}
+                      />
+                      <Data
+                        icon={phoneIcon}
+                        title='Teléfono'
+                        info={user.data?.phone}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <Modal
-              open={open}
-              onClose={() => setOpen(false)}
-              type={type}
-              deleteFunc={() => deleteProfessional.mutate(query.id)}
-              errors={errors}
-              deleteMessage={'¿Está seguro que desea dar de baja el usuario?'}
-            >
-              <h1>{successMsg}</h1>
-            </Modal>
           </>
         )}
       </div>
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        type={type}
+        deleteFunc={() => deleteProfessional.mutate(query.id)}
+        errors={errors}
+        deleteMessage={'¿Está seguro que desea dar de baja el usuario?'}
+      >
+        <h1>{successMsg}</h1>
+      </Modal>
     </>
   );
 };

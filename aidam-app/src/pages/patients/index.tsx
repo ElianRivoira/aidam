@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
 import { hasCookie } from 'cookies-next';
 
@@ -12,14 +13,24 @@ import SearchBar from '@/components/SearchBar';
 import { getLoggedUser } from '@/services/users';
 import { searchPatients } from '@/services/patients';
 import DesktopCard from '@/components/DesktopCard';
+import Modal from '@/components/Modal';
 
 const patients = () => {
   const [search, setSearch] = useState('');
+  const [open, setOpen] = useState(false);
+  const [type, setType] = useState(0);
+  const [errors, setErrors] = useState<CustomError[]>([]);
+  const router = useRouter();
 
-  const user = useQuery({
-    queryKey: ['user'],
-    enabled: hasCookie('session'),
+  const loggedUser = useQuery({
+    queryKey: ['loggedUser'],
     queryFn: getLoggedUser,
+    retry: 1,
+    onError: error => {
+      setType(2);
+      setErrors((error as any).response.data.errors);
+      setOpen(true);
+    },
   });
 
   const searchedPatients = useQuery({
@@ -32,13 +43,17 @@ const patients = () => {
   });
 
   useEffect(() => {
-    searchedPatients.refetch();
+    hasCookie('session') && searchedPatients.refetch();
   }, [search]);
 
   return (
     <>
       <Head>
-        <title>AIDAM - Pacientes</title>
+        <title>
+          {loggedUser.data?.admin
+            ? 'AIDAM Admin - Pacientes'
+            : 'AIDAM - Pacientes'}
+        </title>
       </Head>
       {useMediaQuery(1024) ? (
         <main className='bg-background'>
@@ -47,20 +62,35 @@ const patients = () => {
             <SearchBar search={search} setSearch={setSearch} />
           </div>
           <div className='m-3.5 flex flex-col items-center'>
-            {user.data?.admin
+            {loggedUser.data?.admin
               ? // si es admin
                 searchedPatients.data?.map((patient, index) => (
-                  <MobileCard key={index} patient={patient} user={user.data} />
+                  <MobileCard
+                    key={index}
+                    patient={patient}
+                    user={loggedUser.data}
+                  />
                 ))
               : // si no es admin
               search.length > 0
               ? // si hay texto a buscar
-                searchedPatients.data?.map((patient, index) => (
-                  user.data && <MobileCard key={index} patient={patient} user={user.data} />
-                ))
+                searchedPatients.data?.map(
+                  (patient, index) =>
+                    loggedUser.data && (
+                      <MobileCard
+                        key={index}
+                        patient={patient}
+                        user={loggedUser.data}
+                      />
+                    )
+                )
               : // si no hay texto a buscar traigo los pacientes asignados al usuario
-                user.data?.patientsId.map((patient, index) => (
-                  <MobileCard key={index} patient={patient} user={user.data} />
+                loggedUser.data?.patientsId.map((patient, index) => (
+                  <MobileCard
+                    key={index}
+                    patient={patient}
+                    user={loggedUser.data}
+                  />
                 ))}
           </div>
         </main>
@@ -71,7 +101,7 @@ const patients = () => {
             <div className='flex justify-end mt-7 w-full'>
               <div className='w-[70%] flex justify-between items-center mr-12'>
                 <SearchBar search={search} setSearch={setSearch} />
-                {user.data?.admin && (
+                {loggedUser.data?.admin && (
                   <Link
                     href={'/admin/patients/create'}
                     className='h-10 bg-aidam80 hover:bg-aidam70 transition-colors text-lb text-white font-semibold rounded-md p-4 flex items-center'
@@ -82,25 +112,33 @@ const patients = () => {
               </div>
             </div>
             <div className='mx-12 mt-14'>
-              {user.data?.admin
+              {loggedUser.data?.admin
                 ? // si es admin
-                searchedPatients.data?.map((patient, index) => (
-                  <DesktopCard key={index} patient={patient} />
-                ))
-              : // si no es admin
-              search.length > 0
-              ? // si hay texto a buscar
-                searchedPatients.data?.map((patient, index) => (
-                  <DesktopCard key={index} patient={patient} />
-                ))
-              : // si no hay texto a buscar traigo los pacientes asignados al usuario
-                user.data?.patientsId.map((patient, index) => (
-                  <DesktopCard key={index} patient={patient} />
-                ))}
+                  searchedPatients.data?.map((patient, index) => (
+                    <DesktopCard key={index} patient={patient} />
+                  ))
+                : // si no es admin
+                search.length > 0
+                ? // si hay texto a buscar
+                  searchedPatients.data?.map((patient, index) => (
+                    <DesktopCard key={index} patient={patient} />
+                  ))
+                : // si no hay texto a buscar traigo los pacientes asignados al usuario
+                  loggedUser.data?.patientsId.map((patient, index) => (
+                    <DesktopCard key={index} patient={patient} />
+                  ))}
             </div>
           </main>
         </>
       )}
+      <Modal
+        open={open}
+        onClose={() => router.push('/login')}
+        type={type}
+        errors={errors}
+      >
+        <h1></h1>
+      </Modal>
     </>
   );
 };

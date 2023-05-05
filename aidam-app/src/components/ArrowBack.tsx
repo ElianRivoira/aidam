@@ -6,13 +6,21 @@ import arrowLeft from '@/assets/icons/arrowLeft.svg';
 
 interface ArrowProps {
   width?: number;
+  route: string;
 }
 
-const ArrowBack: React.FC<ArrowProps> = ({ width }) => {
+const ArrowBack: React.FC<ArrowProps> = ({ width, route }) => {
   const router = useRouter();
 
   return (
-    <button onClick={() => router.back()}>
+    <button
+      className='h-fit'
+      onClick={() =>
+        router.push({
+          pathname: route,
+        })
+      }
+    >
       <Image src={arrowLeft} alt='back' width={width ? width : 40} />
     </button>
   );

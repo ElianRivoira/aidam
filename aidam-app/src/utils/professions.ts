@@ -5,7 +5,7 @@ const professions = [
   'Pediatra',
   'Psicopedagoga/o',
   'Pedagoga terapeuta',
-  'Fonoaudióloga',
+  'Fonoaudióloga/o',
   'Psicóloga/o',
   'Kinesióloga/o',
   'Terapeuta del lenguaje',

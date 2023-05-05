@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { hasCookie } from 'cookies-next';
 import { NextPageContext } from 'next';
+import { useRouter } from 'next/router';
 
 import Navbar from '@/components/navbar/Navbar';
 import NavbarPatient from '@/components/profile/patient/NavbarPatient';
@@ -35,12 +35,20 @@ const Observations = ({ query }: MyPageProps) => {
   const [obsId, setObsId] = useState('');
   const [dateValue, setDateValue] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [cookieError, setCookieError] = useState(false);
+  const router = useRouter();
 
   const patient = useQuery({
     queryKey: ['patient', query.id],
     keepPreviousData: true,
-    enabled: hasCookie('session'),
     queryFn: () => getOnePatient(query.id),
+    retry: 1,
+    onError: error => {
+      setType(2);
+      setErrors((error as any).response.data.errors);
+      setOpen(true);
+      setCookieError(true);
+    },
   });
 
   const postObs = useMutation({
@@ -86,11 +94,11 @@ const Observations = ({ query }: MyPageProps) => {
   });
 
   useEffect(() => {
-    if (type === 1 && open === false) {
+    if (type === 1 && !open) {
       setOpenObs(false);
       setOpenCreateObs(false);
       patient.refetch();
-    }
+    } else if (type === 2 && !open && cookieError) router.push('/login')
   }, [open]);
 
   const handleDelete = () => {

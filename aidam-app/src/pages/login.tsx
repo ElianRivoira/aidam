@@ -60,6 +60,7 @@ const Login = () => {
             </div>
             <div className='w-full mb-3'>
               <Input
+                name='email'
                 label='Correo electrónico'
                 type='email'
                 onChange={e => setEmail(e.target.value)}
@@ -67,6 +68,7 @@ const Login = () => {
                 pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$'
               />
               <Input
+                name='password'
                 label='Contraseña'
                 type='password'
                 onChange={e => setPassword(e.target.value)}
