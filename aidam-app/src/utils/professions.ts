@@ -9,7 +9,7 @@ const professions = [
   'Psicóloga/o',
   'Kinesióloga/o',
   'Terapeuta del lenguaje',
-  'Trabajadora social',
+  'Trabajador/a social',
   'Administrador/a',
   'Secretaria/o',
   'Terapeuta ocupacional',

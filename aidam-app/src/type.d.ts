@@ -82,6 +82,8 @@ interface Patient {
   professionalsId: User[];
   active: boolean;
   certificate: string[];
+  cud: string;
+  adress: string;
 }
 
 interface PostPatient {
@@ -95,6 +97,8 @@ interface PostPatient {
   diagnosis: string;
   email: string;
   phone: number;
+  cud: string;
+  adress: string;
 }
 
 interface FormPatient {
@@ -108,6 +112,8 @@ interface FormPatient {
   diagnosis: string;
   email: string;
   phone: string;
+  cud: string;
+  adress: string;
   [key: string]: string;
 }
 

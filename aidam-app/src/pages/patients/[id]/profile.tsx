@@ -89,7 +89,6 @@ const Profile = ({ query }: MyPageProps) => {
   });
 
   const handleDownload = async (fileName: string): Promise<void> => {
-    // const pathCertificate = await downloadCertificate(query.id);
     window.open(`http://localhost:8000/download/certificate/${fileName}`);
   };
 
@@ -200,6 +199,16 @@ const Profile = ({ query }: MyPageProps) => {
                     icon={scheduleIcon}
                     title={'Fecha de nacimiento'}
                     info={birthDate}
+                  ></Data>
+                  <Data
+                    icon={scheduleIcon}
+                    title={'Dirección'}
+                    info={patient.data?.adress}
+                  ></Data>
+                  <Data
+                    icon={scheduleIcon}
+                    title={'CUD'}
+                    info={patient.data?.cud}
                   ></Data>
                 </div>
               </div>
