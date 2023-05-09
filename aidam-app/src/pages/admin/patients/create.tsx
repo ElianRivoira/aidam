@@ -28,6 +28,8 @@ const create = () => {
     diagnosis: '',
     email: '',
     phone: '',
+    cud: '',
+    adress: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,6 +123,14 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.birth}
                 />
+                <Input
+                  label='Dirección'
+                  name='adress'
+                  type='text'
+                  onChange={e => handleChange(e)}
+                  value={patientInfo.adress}
+                  placeholder='Ejemplo 1234'
+                />
               </div>
               <div className='flex flex-col w-1/4 gap-9 items-center'>
                 <Input
@@ -146,6 +156,14 @@ const create = () => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.authorizedModule}
                   placeholder='18688242'
+                />
+                <Input
+                  label='CUD'
+                  name='cud'
+                  type='text'
+                  onChange={e => handleChange(e)}
+                  value={patientInfo.cud}
+                  // placeholder='Trastorno ...'
                 />
                 <Input
                   label='Diagnóstico'
