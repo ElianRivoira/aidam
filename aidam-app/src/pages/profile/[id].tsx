@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { NextPageContext } from 'next';
 import { hasCookie } from 'cookies-next';
 import { useMutation, useQuery } from '@tanstack/react-query';
+
 import useMediaQuery from '@/hooks/useMediaQuery';
 import Navbar from '@/components/navbar/Navbar';
 import Data from '@/components/profile/Data';
@@ -19,8 +20,6 @@ import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import ArrowBack from '@/components/ArrowBack';
 import Modal from '@/components/Modal';
 import { deleteUser } from '@/services/users';
-import { useRouter } from 'next/router';
-
 
 const Profile = ({ query }: MyPageProps) => {
   const [filteredPatients, setFilteredPatients] = useState<Patient[]>();

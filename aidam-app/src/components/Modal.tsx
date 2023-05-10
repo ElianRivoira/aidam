@@ -23,7 +23,6 @@ const Modal: React.FC<ModalProps> = ({
   type,
   deleteMessage,
 }) => {
-  console.log(errors)
   if (!open) return null;
   return (
     <>
@@ -71,13 +70,13 @@ const Modal: React.FC<ModalProps> = ({
             <p className='text-lb font-normal mt-1'>{deleteMessage}</p>
             <div className='flex gap-5 justify-center mt-6'>
               <button
-                className='border flex items-center text-lb p-4 rounded-md w-fit bg-aidam80 text-white h-10 hover:bg-aidam70 active:shadow-active'
+                className='border flex items-center text-lb p-4 rounded-md w-fit bg-aidam80 text-white h-10 hover:bg-aidam70 active:shadow-active transition-colors'
                 onClick={onClose}
               >
                 Cancelar
               </button>
               <button
-                className='border flex items-center text-lb p-4 rounded-md w-fit bg-redLogout text-white h-10 hover:bg-redLogout/[.9] active:shadow-active'
+                className='border flex items-center text-lb p-4 rounded-md w-fit bg-redLogout text-white h-10 hover:bg-redLogout/[.9] active:shadow-active transition-colors'
                 onClick={deleteFunc}
               >
                 Eliminar

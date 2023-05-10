@@ -24,6 +24,7 @@ module.exports = {
         therapists: '#0B7EBE',
         redLogout: '#B81212',
         background: '#FFFCFC',
+        lightBlue: '#1C71AF',
       },
       fontSize: {
         sl: ['7px', '10px'],

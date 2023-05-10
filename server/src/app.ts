@@ -40,6 +40,8 @@ app.use('/download/certificate', validateLoggedUser, express.static(path.join(__
 
 app.use('/users/profileimg', validateLoggedUser, express.static(path.join(__dirname, '../profilesImgs')))
 
+app.use('/patients/reports', validateLoggedUser, express.static(path.join(__dirname, '../reports')))
+
 app.use('/api', apiRouter);
 
 app.all('*', async (req, res) => {

@@ -14,7 +14,7 @@ interface PickCertificateModalProps {
   open: boolean;
   onClose: () => void;
   patient: Patient | undefined;
-  handleDownload: (fileName: string) => Promise<void>;
+  handleDownload: (fileName: string) => void;
   admin: boolean | undefined;
   openCertModal: boolean;
   setOpenCertModal: React.Dispatch<React.SetStateAction<boolean>>;

@@ -82,6 +82,7 @@ interface Patient {
   professionalsId: User[];
   active: boolean;
   certificate: string[];
+  reports: string[];
   cud: string;
   adress: string;
 }
@@ -124,7 +125,6 @@ interface INames {
   lastName2?: string;
 }
 
-
 interface TokenResponse {
   status: boolean;
   message?: string;
@@ -140,3 +140,7 @@ interface IunassignPatientResponse {
   patientName: INames;
 }
 
+interface DividedReports {
+  half1: string[];
+  half2: string[];
+}

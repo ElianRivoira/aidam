@@ -10,9 +10,10 @@ interface Props {
   search: string;
   setSearch: (e: string) => void;
   setActiveUsers?: React.Dispatch<React.SetStateAction<User[] | undefined>>;
+  width?: string;
 }
 
-const SearchBar: React.FC<Props> = ({ search, setSearch, setActiveUsers }) => {
+const SearchBar: React.FC<Props> = ({ search, setSearch, setActiveUsers, width }) => {
   const [error, setError] = useState<string | null>(null);
 
   async function fetchSearchedUsers(search: string) {
@@ -53,7 +54,7 @@ const SearchBar: React.FC<Props> = ({ search, setSearch, setActiveUsers }) => {
   };
 
   return (
-    <div className='w-2/3 flex flex-col items-center'>
+    <div className={`${width ? width : 'w-2/3'} flex flex-col items-center`}>
       {error && <div className='text-red-500'>{error}</div>}
       <form onSubmit={onSubmit} className='relative flex items-center w-full'>
         <input
@@ -61,7 +62,7 @@ const SearchBar: React.FC<Props> = ({ search, setSearch, setActiveUsers }) => {
           id='search'
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder='Buscar'
+          placeholder='Buscar ...'
           className={`${search ? 'pl-8' : ''} ${
             styles.searchBar
           } w-full border rounded-full px-4 py-1 shadow-card outline-none focus:shadow-active hover:bg-gray-100 focus:bg-gray-100 transition-all`}
