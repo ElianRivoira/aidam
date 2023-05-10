@@ -30,6 +30,8 @@ const editPatient = ({ query }: MyPageProps) => {
     diagnosis: '',
     email: '',
     phone: '',
+    cud: '',
+    adress: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,6 +99,8 @@ const editPatient = ({ query }: MyPageProps) => {
         diagnosis: patient.data.diagnosis,
         email: patient.data.email,
         phone: patient.data.phone.toString(),
+        cud: patient.data.cud,
+        adress: patient.data.adress,
       });
       setProfessionals(
         patient.data.professionalsId.map(prof => {

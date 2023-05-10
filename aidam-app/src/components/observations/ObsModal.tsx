@@ -65,12 +65,12 @@ const ObsModal: React.FC<ObsModalProps> = ({
         onClick={onClose}
         className='fixed top-0 left-0 right-0 bottom-0 bg-black/[.75] z-50'
       />
-      <div className='fixed top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 bg-white p-4 w-full lg:w-1/3 z-50 rounded-md flex flex-col items-center'>
+      <div className='fixed top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 bg-white p-4 w-full lg:w-[40%] max-w-[530px] z-50 rounded-md flex flex-col items-center'>
         <button className='w-fit self-end' onClick={onClose}>
           <Image src={x} alt='salir' />
         </button>
         <div className='w-full flex flex-col'>
-          <h1 className='w-full my-6 text-xl2 font-medium text-center'>
+          <h1 className='w-full mb-6 text-xl2 font-medium text-center'>
             {observation.data?.title}
           </h1>
           <hr className='border-black03 w-full' />
@@ -89,6 +89,7 @@ const ObsModal: React.FC<ObsModalProps> = ({
           <textarea
             readOnly={readonly}
             onChange={e => setObsText(e.target.value)}
+            rows={15}
             className={`flex w-full min-h-[200px] rounded-2xl p-3 shadow-card mb-[26px] text-lb font-normal resize-none cursor-default outline-none ${
               readonly
                 ? ''

@@ -53,7 +53,7 @@ const Observations = ({ query }: MyPageProps) => {
 
   const postObs = useMutation({
     mutationFn: postObservation,
-    onSuccess: (newObservation) => {
+    onSuccess: newObservation => {
       setSuccessMsg('Observación creada satisfactoriamente');
       setType(1);
       setOpen(true);
@@ -67,7 +67,7 @@ const Observations = ({ query }: MyPageProps) => {
 
   const putObs = useMutation({
     mutationFn: putObservation,
-    onSuccess: (newobs) => {
+    onSuccess: newobs => {
       setSuccessMsg('Observación modificada satisfactoriamente');
       setType(1);
       setOpen(true);
@@ -98,7 +98,7 @@ const Observations = ({ query }: MyPageProps) => {
       setOpenObs(false);
       setOpenCreateObs(false);
       patient.refetch();
-    } else if (type === 2 && !open && cookieError) router.push('/login')
+    } else if (type === 2 && !open && cookieError) router.push('/login');
   }, [open]);
 
   const handleDelete = () => {
@@ -186,7 +186,7 @@ const Observations = ({ query }: MyPageProps) => {
                     </button>
                   </div>
                   <div className='w-full flex flex-col items-center'>
-                    {patient.data?.observationsId.map((obs) => {
+                    {patient.data?.observationsId.map(obs => {
                       const obsDate = new Date(obs.date);
                       if (searchDate) {
                         if (obsDate.getMonth() === searchDate.getMonth()) {
@@ -219,32 +219,50 @@ const Observations = ({ query }: MyPageProps) => {
                       ? formatStringDate(searchDate)
                       : formatStringDate(actualDate)}
                   </div>
-                  {patient.data?.observationsId.map((obs) => {
-                    const obsDate = new Date(obs.date);
-                    if (searchDate) {
-                      if (obsDate.getMonth() === searchDate.getMonth()) {
-                        return (
-                          <DesktopCard
-                            onClick={() => handleOpenObs(obs._id)}
-                            observation={obs}
-                            key={obs._id}
-                            patientId={patient.data._id}
-                          />
-                        );
+                  {patient.data?.observationsId.length ? (
+                    patient.data?.observationsId.map(obs => {
+                      const obsDate = new Date(obs.date);
+                      if (searchDate) {
+                        if (obsDate.getMonth() === searchDate.getMonth()) {
+                          return (
+                            <DesktopCard
+                              onClick={() => handleOpenObs(obs._id)}
+                              observation={obs}
+                              key={obs._id}
+                              patientId={patient.data._id}
+                            />
+                          );
+                        } else {
+                          return (
+                            <p>
+                              El paciente no posee observaciones para la fecha
+                              seleccionada
+                            </p>
+                          );
+                        }
+                      } else {
+                        if (obsDate.getMonth() === actualDate.getMonth()) {
+                          return (
+                            <DesktopCard
+                              onClick={() => handleOpenObs(obs._id)}
+                              observation={obs}
+                              key={obs._id}
+                              patientId={patient.data._id}
+                            />
+                          );
+                        } else {
+                          return (
+                            <p>
+                              El paciente no posee observaciones para la fecha
+                              seleccionada
+                            </p>
+                          );
+                        }
                       }
-                    } else {
-                      if (obsDate.getMonth() === actualDate.getMonth()) {
-                        return (
-                          <DesktopCard
-                            onClick={() => handleOpenObs(obs._id)}
-                            observation={obs}
-                            key={obs._id}
-                            patientId={patient.data._id}
-                          />
-                        );
-                      }
-                    }
-                  })}
+                    })
+                  ) : (
+                    <p>El paciente no posee observaciones</p>
+                  )}
                 </div>
               )}
             </div>

@@ -5,7 +5,6 @@ import fs from 'fs';
 import patientService from '../../models/patient-service';
 import userService from '../../models/user-service';
 import { RequestValidationError } from '../../errors/request-validation-error';
-import getFile from '../../utils/getFile';
 import INames from '../../interfaces/INames';
 import { ServerError } from '../../errors/server-error';
 import path from 'path';
@@ -222,7 +221,7 @@ const httpUnassignProf = async (req: Request, res: Response) => {
       );
     }
 
-    res.send({patient, profName});
+    res.send({ patient, profName });
   } catch (e) {
     console.error(e);
     throw new ServerError(e);
@@ -247,13 +246,13 @@ const httpDownloadCertificate = async (req: Request, res: Response) => {
   try {
     const patient = await patientService.getOnePatient(req.params.id);
 
-    const responseFileName = `Certificado-de-${patient?.firstName}-${patient?.lastName}`;
+    // const responseFileName = `Certificado-de-${patient?.firstName}-${patient?.lastName}`;
 
-    const fileName = getFile([
-      `${patient?.firstName}`,
-      `${patient?.lastName}`,
-      `${patient?.dni}`,
-    ]);
+    // const fileName = getFile([
+    //   `${patient?.firstName}`,
+    //   `${patient?.lastName}`,
+    //   `${patient?.dni}`,
+    // ]);
     // const filePath = path.join(__dirname, `../../../certificates/${fileName}`);
 
     // res.setHeader('Content-Type', 'application/pdf');
@@ -280,9 +279,12 @@ const httpDeleteCertificate = async (req: Request, res: Response) => {
     const patient = await patientService.getOnePatient(req.params.id);
 
     if (patient) {
-      const filePath = path.join(__dirname, `../../../certificates/${fileName}`);
-      
-      fs.unlink(`${filePath}`, (err) => {
+      const filePath = path.join(
+        __dirname,
+        `../../../certificates/${fileName}`
+      );
+
+      fs.unlink(`${filePath}`, err => {
         if (err) throw new ServerError(err);
         console.log('El archivo fue eliminado exitosamente');
       });
@@ -302,6 +304,66 @@ const httpDeleteCertificate = async (req: Request, res: Response) => {
   }
 };
 
+const httpUploadReport = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+  try {
+    const filename = req.file && req.file.filename;
+    
+    const editedPatient = await patientService.putPatient(
+      req.params.id,
+      undefined,
+      null,
+      false,
+      undefined,
+      filename,
+      );
+      
+      res.send(editedPatient);
+    } catch (e) {
+      throw new ServerError(e);
+    }
+  };
+  
+  const httpDeleteReport = async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw new RequestValidationError(errors.array());
+    }
+    try {
+      const { fileName } = req.body;
+  
+      const patient = await patientService.getOnePatient(req.params.id);
+  
+      if (patient) {
+        const filePath = path.join(
+          __dirname,
+          `../../../reports/${fileName}`
+        );
+  
+        fs.unlink(`${filePath}`, err => {
+          if (err) throw new ServerError(err);
+          console.log('El archivo fue eliminado exitosamente');
+        });
+  
+        await patientService.putPatient(
+          patient._id,
+          undefined,
+          null,
+          true,
+          undefined,
+          fileName
+        );
+      }
+  
+      res.send(patient);
+    } catch (e) {
+      throw new ServerError(e);
+    }
+  };
+
 export {
   httpGetAllPatientsFromTherapist,
   httpGetAllPatients,
@@ -313,4 +375,6 @@ export {
   httpSearchPatient,
   httpDownloadCertificate,
   httpDeleteCertificate,
+  httpUploadReport,
+  httpDeleteReport,
 };
