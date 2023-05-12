@@ -1,6 +1,6 @@
 const express = require('express');
 const patientController = require('./patient.controller');
-import { uploadCertificate, uploadReport } from '../../middlewares/multer';
+import { uploadCertificate, uploadMedicalReport, uploadReport, uploadSocialReport } from '../../middlewares/multer';
 import { validatePatient } from '../../middlewares/patientValidators';
 import {
   validateLoggedAdmin,
@@ -77,9 +77,33 @@ patientRouter.put(
 );
 
 patientRouter.put(
+  '/uploadReport/medical/:id',
+  [validateLoggedUser, uploadMedicalReport.single('report')],
+  patientController.httpUploadMedicalReport
+);
+
+patientRouter.put(
+  '/uploadReport/social/:id',
+  [validateLoggedUser, uploadSocialReport.single('report')],
+  patientController.httpUploadSocialReport
+);
+
+patientRouter.put(
   '/delete/report/:id',
   validateLoggedUser,
   patientController.httpDeleteReport
+);
+
+patientRouter.put(
+  '/delete/report/medical/:id',
+  validateLoggedUser,
+  patientController.httpDeleteMedicalReport
+);
+
+patientRouter.put(
+  '/delete/report/social/:id',
+  validateLoggedUser,
+  patientController.httpDeleteSocialReport
 );
 
 patientRouter.delete(

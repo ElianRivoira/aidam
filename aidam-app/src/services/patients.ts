@@ -73,6 +73,28 @@ export const uploadReport = async ({
   return res.data;
 };
 
+export const uploadMedicalReport = async ({
+  id,
+  form,
+}: {
+  id: string;
+  form: FormData;
+}): Promise<Patient> => {
+  const res = await apiForm.put(`/patients/uploadReport/medical/${id}`, form);
+  return res.data;
+};
+
+export const uploadSocialReport = async ({
+  id,
+  form,
+}: {
+  id: string;
+  form: FormData;
+}): Promise<Patient> => {
+  const res = await apiForm.put(`/patients/uploadReport/social/${id}`, form);
+  return res.data;
+};
+
 export const deleteReport = async ({
   id,
   fileName,
@@ -82,6 +104,36 @@ export const deleteReport = async ({
 }): Promise<void> => {
   if (id) {
     const res = await api.put(`/patients/delete/report/${id}`, {
+      fileName,
+    });
+    return res.data;
+  }
+};
+
+export const deleteMedicalReport = async ({
+  id,
+  fileName,
+}: {
+  id: string | undefined;
+  fileName: string;
+}): Promise<void> => {
+  if (id) {
+    const res = await api.put(`/patients/delete/report/medical/${id}`, {
+      fileName,
+    });
+    return res.data;
+  }
+};
+
+export const deleteSocialReport = async ({
+  id,
+  fileName,
+}: {
+  id: string | undefined;
+  fileName: string;
+}): Promise<void> => {
+  if (id) {
+    const res = await api.put(`/patients/delete/report/social/${id}`, {
       fileName,
     });
     return res.data;

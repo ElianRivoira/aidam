@@ -1,4 +1,4 @@
-import { api, apiForm, apiImg } from './axiosInstance';
+import { api, apiForm } from './axiosInstance';
 
 export const postUser = async (data: PostUser): Promise<User> => {
   const res = await api.post('/users', data);
@@ -60,9 +60,7 @@ export async function unassignPatient({
 }
 
 export async function forgotPassword(email: string): Promise<string> {
-  console.log(email);
   const res = await api.put(`/users/forgot-password`, { email });
-  console.log('RES', res.data.message);
   return res.data.message;
 }
 

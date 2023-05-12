@@ -37,6 +37,8 @@ export interface PatientDoc extends mongoose.Document {
   active: boolean;
   certificate: string[];
   reports: string[];
+  medicalReports: string[];
+  socialReports: string[];
   cud: string;
   adress: string;
 }
@@ -98,6 +100,18 @@ const patientSchema = new mongoose.Schema({
     },
   ],
   reports: [
+    {
+      type: String,
+      default: [''],
+    },
+  ],
+  medicalReports: [
+    {
+      type: String,
+      default: [''],
+    },
+  ],
+  socialReports: [
     {
       type: String,
       default: [''],

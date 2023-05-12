@@ -11,7 +11,6 @@ import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import NavbarPatient from '@/components/profile/patient/NavbarPatient';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import { deleteReport, getOnePatient, uploadReport } from '@/services/patients';
-import { divideStringArray } from '@/utils/divideArray';
 import ReportItem from '@/components/profile/patient/ReportItem';
 import UploadReportModal from '@/components/profile/patient/UploadReportModal';
 import Modal from '@/components/Modal';
@@ -22,7 +21,7 @@ const Reports = ({ query }: MyPageProps) => {
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [search, setSearch] = useState('');
-  const [reports, setReports] = useState<DividedReports | null>(null);
+  const [reports, setReports] = useState<string[]>([]);
   const [openReportModal, setOpenReportModal] = useState(false);
   const [newReport, setNewReport] = useState<File | null>(null);
   const [successMsg, setSuccessMsg] = useState('');
@@ -35,12 +34,16 @@ const Reports = ({ query }: MyPageProps) => {
     keepPreviousData: true,
     queryFn: () => getOnePatient(query.id),
     retry: 1,
+    refetchOnWindowFocus: false,
     onError: error => {
       setType(2);
       setErrors((error as any).response.data.errors);
       setOpen(true);
       setCookieError(true);
     },
+    onSuccess: patient => {
+      setReports(patient.reports);
+    }
   });
 
   const upload = useMutation({
@@ -88,30 +91,33 @@ const Reports = ({ query }: MyPageProps) => {
 
     const formData = new FormData();
 
-    newReport && formData.append('report', newReport as Blob);
-
     if (patient.data) {
+      formData.append('firstName', patient.data.firstName);
+      formData.append('lastName', patient.data.lastName);
+      newReport && formData.append('report', newReport as Blob);
       upload.mutate({ id: patient.data._id, form: formData });
     }
   };
+  
+  const setSearchedReports = (search: string, reportsType?: string) => {
+    if (patient.data) {
+      let searchedReports: string[] = [];
+      if (search.length) {
+        searchedReports = patient.data.reports.filter(report => {
+          return report.toLowerCase().includes(search.toLowerCase());
+        });
+      }
+      if (searchedReports.length) {
+        setReports(searchedReports);
+      } else {
+        setReports(patient.data.reports);
+      }
+    }
+  }
 
   const handleDelete = (fileName: string) => {
     delReport.mutate({ id: patient.data?._id, fileName });
   };
-
-  useEffect(() => {
-    if (patient.data) {
-      const [half1, half2] = divideStringArray(patient.data.reports);
-      if (half1.length) {
-        setReports({
-          half1,
-          half2,
-        });
-      } else {
-        setReports(null);
-      }
-    }
-  }, [patient.data, patient.isRefetching]);
 
   useEffect(() => {
     if (type === 1 && open === false) {
@@ -122,7 +128,7 @@ const Reports = ({ query }: MyPageProps) => {
   return (
     <>
       <Head>
-        <title>{`AIDAM - Observaciones de ${patient.data?.firstName} ${patient.data?.lastName}`}</title>
+        <title>{`AIDAM - Informes de ${patient.data?.firstName} ${patient.data?.lastName}`}</title>
       </Head>
       <main className='flex flex-col items-center min-h-screen bg-background'>
         {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
@@ -152,29 +158,33 @@ const Reports = ({ query }: MyPageProps) => {
             </div>
             {!useMediaQuery(1024) && <hr className='border-black03 mt-4' />}
             <div className='flex justify-center lg:w-2/3 w-full mt-5 self-center'>
-              <SearchBar search={search} setSearch={setSearch} width='w-full' />
+              <SearchBar
+                search={search}
+                setSearch={setSearch}
+                width='w-full'
+                searchFn={setSearchedReports}
+              />
             </div>
             <div
               className={`flex w-full mt-8 ${reports ? 'min-h-[300px]' : ''}`}
             >
               {useMediaQuery(1024) ? (
                 <>
-                  {reports ? (
-                    <>
-                      <div className='w-full px-4'>
-                        {patient.data?.reports.map((report, index) => (
-                          <ReportItem
-                            index={index}
-                            report={report}
-                            setType={setType}
-                            setOpen={setOpen}
-                            setDeleteMsg={setDeleteMsg}
-                            setFileNameToDelete={setFileNameToDelete}
-                            width='w-full'
-                          />
-                        ))}
-                      </div>
-                    </>
+                  {reports.length ? (
+                    <div className='w-full px-4'>
+                      {reports.map(report => (
+                        <ReportItem
+                          index={report}
+                          report={report}
+                          setType={setType}
+                          setOpen={setOpen}
+                          setDeleteMsg={setDeleteMsg}
+                          setFileNameToDelete={setFileNameToDelete}
+                          width='w-full'
+                          patient={patient.data}
+                        />
+                      ))}
+                    </div>
                   ) : (
                     <p className='w-full text-center'>
                       El paciente no posee informes cargados
@@ -183,35 +193,44 @@ const Reports = ({ query }: MyPageProps) => {
                 </>
               ) : (
                 <>
-                  {reports ? (
+                  {reports.length ? (
                     <>
                       <div
                         className={`w-1/2 flex flex-col items-center ${
                           reports ? 'border-r border-black03' : ''
                         }`}
                       >
-                        {reports?.half1.map((report, index) => (
-                          <ReportItem
-                            index={index}
-                            report={report}
-                            setType={setType}
-                            setOpen={setOpen}
-                            setDeleteMsg={setDeleteMsg}
-                            setFileNameToDelete={setFileNameToDelete}
-                          />
-                        ))}
+                        {reports
+                          .slice(0, Math.ceil(reports.length / 2))
+                          .map(report => {
+                            console.log('report dentro del map half1', report);
+                            return (
+                              <ReportItem
+                                index={report}
+                                report={report}
+                                setType={setType}
+                                setOpen={setOpen}
+                                setDeleteMsg={setDeleteMsg}
+                                setFileNameToDelete={setFileNameToDelete}
+                                patient={patient.data}
+                              />
+                            );
+                          })}
                       </div>
                       <div className='w-1/2 flex flex-col items-center'>
-                        {reports?.half2.map((report, index) => (
-                          <ReportItem
-                            index={index+768*2}
-                            report={report}
-                            setType={setType}
-                            setOpen={setOpen}
-                            setDeleteMsg={setDeleteMsg}
-                            setFileNameToDelete={setFileNameToDelete}
-                          />
-                        ))}
+                        {reports
+                          .slice(Math.ceil(reports.length / 2))
+                          .map(report => (
+                            <ReportItem
+                              index={report}
+                              report={report}
+                              setType={setType}
+                              setOpen={setOpen}
+                              setDeleteMsg={setDeleteMsg}
+                              setFileNameToDelete={setFileNameToDelete}
+                              patient={patient.data}
+                            />
+                          ))}
                       </div>
                     </>
                   ) : (

@@ -311,58 +311,187 @@ const httpUploadReport = async (req: Request, res: Response) => {
   }
   try {
     const filename = req.file && req.file.filename;
-    
+    const { firstName, lastName, dni } = req.body;
+    console.log(req.body);
+
     const editedPatient = await patientService.putPatient(
       req.params.id,
       undefined,
       null,
       false,
       undefined,
-      filename,
+      filename
+    );
+
+    res.send(editedPatient);
+  } catch (e) {
+    throw new ServerError(e);
+  }
+};
+
+const httpUploadMedicalReport = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+  try {
+    const filename = req.file && req.file.filename;
+    const { firstName, lastName, dni } = req.body;
+    console.log(req.body);
+
+    const editedPatient = await patientService.putPatient(
+      req.params.id,
+      undefined,
+      null,
+      false,
+      undefined,
+      undefined,
+      filename
+    );
+
+    res.send(editedPatient);
+  } catch (e) {
+    throw new ServerError(e);
+  }
+};
+
+const httpUploadSocialReport = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+  try {
+    const filename = req.file && req.file.filename;
+    const { firstName, lastName, dni } = req.body;
+    console.log(req.body);
+
+    const editedPatient = await patientService.putPatient(
+      req.params.id,
+      undefined,
+      null,
+      false,
+      undefined,
+      undefined,
+      undefined,
+      filename
+    );
+
+    res.send(editedPatient);
+  } catch (e) {
+    throw new ServerError(e);
+  }
+};
+
+const httpDeleteReport = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+  try {
+    const { fileName } = req.body;
+
+    const patient = await patientService.getOnePatient(req.params.id);
+
+    if (patient) {
+      const filePath = path.join(__dirname, `../../../reports/${fileName}`);
+
+      fs.unlink(`${filePath}`, err => {
+        if (err) throw new ServerError(err);
+        console.log('El archivo fue eliminado exitosamente');
+      });
+
+      await patientService.putPatient(
+        patient._id,
+        undefined,
+        null,
+        true,
+        undefined,
+        fileName
       );
-      
-      res.send(editedPatient);
-    } catch (e) {
-      throw new ServerError(e);
     }
-  };
-  
-  const httpDeleteReport = async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      throw new RequestValidationError(errors.array());
+
+    res.send(patient);
+  } catch (e) {
+    throw new ServerError(e);
+  }
+};
+
+const httpDeleteMedicalReport = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+  try {
+    const { fileName } = req.body;
+
+    const patient = await patientService.getOnePatient(req.params.id);
+
+    if (patient) {
+      const filePath = path.join(
+        __dirname,
+        `../../../medicalReports/${fileName}`
+      );
+
+      fs.unlink(`${filePath}`, err => {
+        if (err) throw new ServerError(err);
+        console.log('El archivo fue eliminado exitosamente');
+      });
+
+      await patientService.putPatient(
+        patient._id,
+        undefined,
+        null,
+        true,
+        undefined,
+        undefined,
+        fileName
+      );
     }
-    try {
-      const { fileName } = req.body;
-  
-      const patient = await patientService.getOnePatient(req.params.id);
-  
-      if (patient) {
-        const filePath = path.join(
-          __dirname,
-          `../../../reports/${fileName}`
-        );
-  
-        fs.unlink(`${filePath}`, err => {
-          if (err) throw new ServerError(err);
-          console.log('El archivo fue eliminado exitosamente');
-        });
-  
-        await patientService.putPatient(
-          patient._id,
-          undefined,
-          null,
-          true,
-          undefined,
-          fileName
-        );
-      }
-  
-      res.send(patient);
-    } catch (e) {
-      throw new ServerError(e);
+
+    res.send(patient);
+  } catch (e) {
+    throw new ServerError(e);
+  }
+};
+
+const httpDeleteSocialReport = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new RequestValidationError(errors.array());
+  }
+  try {
+    const { fileName } = req.body;
+
+    const patient = await patientService.getOnePatient(req.params.id);
+
+    if (patient) {
+      const filePath = path.join(
+        __dirname,
+        `../../../socialReports/${fileName}`
+      );
+
+      fs.unlink(`${filePath}`, err => {
+        if (err) throw new ServerError(err);
+        console.log('El archivo fue eliminado exitosamente');
+      });
+
+      await patientService.putPatient(
+        patient._id,
+        undefined,
+        null,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        fileName
+      );
     }
-  };
+
+    res.send(patient);
+  } catch (e) {
+    throw new ServerError(e);
+  }
+};
 
 export {
   httpGetAllPatientsFromTherapist,
@@ -377,4 +506,8 @@ export {
   httpDeleteCertificate,
   httpUploadReport,
   httpDeleteReport,
+  httpUploadMedicalReport,
+  httpUploadSocialReport,
+  httpDeleteMedicalReport,
+  httpDeleteSocialReport,
 };
