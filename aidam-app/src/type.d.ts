@@ -83,6 +83,8 @@ interface Patient {
   active: boolean;
   certificate: string[];
   reports: string[];
+  medicalReports: string[];
+  socialReports: string[];
   cud: string;
   adress: string;
 }

@@ -16,10 +16,12 @@ import DesktopCard from '@/components/DesktopCard';
 import Modal from '@/components/Modal';
 
 const patients = () => {
+  const [cookieError, setCookieError] = useState(false);
   const [search, setSearch] = useState('');
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
+  const [patients, setPatients] = useState<Patient[]>([]);
   const router = useRouter();
 
   const loggedUser = useQuery({
@@ -30,6 +32,7 @@ const patients = () => {
       setType(2);
       setErrors((error as any).response.data.errors);
       setOpen(true);
+      setCookieError(true);
     },
   });
 
@@ -40,11 +43,19 @@ const patients = () => {
       if (search.length > 0) return searchPatients(search);
       else return searchPatients('*');
     },
+    // onSuccess: patients => {
+    //   setPatients(patients)
+    // },
+    onError: error => {
+      setType(2);
+      setErrors((error as any).response.data.errors);
+      setOpen(true);
+    },
   });
 
   useEffect(() => {
-    hasCookie('session') && searchedPatients.refetch();
-  }, [search]);
+    if (type === 2 && !open && cookieError) router.push('/login');
+  }, [open]);
 
   return (
     <>
@@ -59,7 +70,7 @@ const patients = () => {
         <main className='bg-background'>
           <Navbar />
           <div className='mt-7 mb-10 flex justify-center'>
-            <SearchBar search={search} setSearch={setSearch} />
+            <SearchBar search={search} setSearch={setSearch} searchQuery={searchedPatients} />
           </div>
           <div className='m-3.5 flex flex-col items-center'>
             {loggedUser.data?.admin
@@ -100,7 +111,7 @@ const patients = () => {
           <main className='min-h-screen bg-background'>
             <div className='flex justify-end mt-7 w-full'>
               <div className='w-[70%] flex justify-between items-center mr-12'>
-                <SearchBar search={search} setSearch={setSearch} />
+                <SearchBar search={search} setSearch={setSearch} searchQuery={searchedPatients} />
                 {loggedUser.data?.admin && (
                   <Link
                     href={'/admin/patients/create'}

@@ -7,13 +7,16 @@ import pdfIcon2 from '@/assets/icons/pdfIcon2.png';
 import wordIcon from '@/assets/icons/wordIcon.png';
 
 interface ReportItemProps {
-  index: number;
+  index: string;
   report: string;
   setType: React.Dispatch<React.SetStateAction<number>>;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setDeleteMsg: React.Dispatch<React.SetStateAction<string>>;
   setFileNameToDelete: React.Dispatch<React.SetStateAction<string>>;
   width?: string;
+  patient: Patient | undefined;
+  setReportType?: React.Dispatch<React.SetStateAction<string>>;
+  type?: string;
 }
 
 const ReportItem: React.FC<ReportItemProps> = ({
@@ -24,15 +27,20 @@ const ReportItem: React.FC<ReportItemProps> = ({
   setDeleteMsg,
   setFileNameToDelete,
   width,
+  patient,
+  setReportType,
+  type,
 }) => {
   const [fileExtension, setfileExtension] = useState('');
+  const [fileName, setFileName] = useState('');
 
   useEffect(() => {
     const splittedReportName = report.split('.');
     const extension = splittedReportName[splittedReportName.length - 1];
-    console.log(extension);
-    console.log(index);
     setfileExtension(extension);
+    patient &&
+      setFileName(report.split(`${patient.firstName}_${patient.lastName}`)[1]);
+      // console.log(report)
   }, []);
 
   return (
@@ -48,12 +56,12 @@ const ReportItem: React.FC<ReportItemProps> = ({
           alt='icono de archivo'
           className='w-8'
         />
-        {'-'}
+        <span>-</span>
         <p
-          className='text-lb w-full'
-          onClick={() => handleDownloadReport(report)}
+          className='text-lb w-full ml-1'
+          onClick={() => handleDownloadReport(report, type)}
         >
-          {report}
+          {fileName}
         </p>
       </div>
       <button
@@ -62,6 +70,7 @@ const ReportItem: React.FC<ReportItemProps> = ({
           setType(4);
           setOpen(true);
           setFileNameToDelete(report);
+          if (setReportType && type) setReportType(type);
         }}
       >
         <Image src={deleteIcon} alt='eliminar informe' className='w-8' />

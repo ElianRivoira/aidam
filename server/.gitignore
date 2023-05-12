@@ -23,6 +23,12 @@
 !.gitkeep
 /profilesImgs/**
 !.gitkeep
+/reports/**
+!.gitkeep
+/medicalReports/**
+!.gitkeep
+/socialReports/**
+!.gitkeep
 
 npm-debug.log*
 yarn-debug.log*
