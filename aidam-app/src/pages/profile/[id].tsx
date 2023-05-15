@@ -19,7 +19,7 @@ import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import ArrowBack from '@/components/ArrowBack';
 import Modal from '@/components/Modal';
 import { deleteUser } from '@/services/users';
-import { useRouter } from 'next/router';
+
 
 
 const Profile = ({ query }: MyPageProps) => {
