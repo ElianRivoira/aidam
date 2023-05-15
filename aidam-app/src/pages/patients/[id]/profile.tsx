@@ -26,6 +26,7 @@ import { deletePatient } from '@/services/patients';
 import Modal from '@/components/Modal';
 import PickCertificateModal from '@/components/profile/patient/PickCertificateModal';
 import { getLoggedUser } from '@/services/users';
+import { handleDownloadCertificate } from '@/utils/handleDownload';
 
 const Profile = ({ query }: MyPageProps) => {
   const [birthDate, setBirthDate] = useState('');
@@ -87,10 +88,6 @@ const Profile = ({ query }: MyPageProps) => {
       setOpen(true);
     },
   });
-
-  const handleDownload = async (fileName: string): Promise<void> => {
-    window.open(`http://localhost:8000/download/certificate/${fileName}`);
-  };
 
   useEffect(() => {
     if (patient.data) {
@@ -281,7 +278,7 @@ const Profile = ({ query }: MyPageProps) => {
           setTypeCertModal={setTypeCertModal}
           onClose={() => setOpenCertificateModal(false)}
           patient={patient.data}
-          handleDownload={handleDownload}
+          handleDownload={handleDownloadCertificate}
           admin={loggedUser.data?.admin}
           delCert={delCert}
         />

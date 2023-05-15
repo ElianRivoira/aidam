@@ -36,9 +36,33 @@ app.use(
 );
 app.use(morgan('dev'));
 
-app.use('/download/certificate', validateLoggedUser, express.static(path.join(__dirname, '../certificates')))
+app.use(
+  '/download/certificate',
+  validateLoggedUser,
+  express.static(path.join(__dirname, '../certificates'))
+);
 
-app.use('/users/profileimg', validateLoggedUser, express.static(path.join(__dirname, '../profilesImgs')))
+app.use(
+  '/users/profileimg',
+  validateLoggedUser,
+  express.static(path.join(__dirname, '../profilesImgs'))
+);
+
+app.use(
+  '/patients/reports',
+  validateLoggedUser,
+  express.static(path.join(__dirname, '../reports'))
+);
+app.use(
+  '/patients/reports/medical',
+  validateLoggedUser,
+  express.static(path.join(__dirname, '../medicalReports'))
+);
+app.use(
+  '/patients/reports/social',
+  validateLoggedUser,
+  express.static(path.join(__dirname, '../socialReports'))
+);
 
 app.use('/api', apiRouter);
 

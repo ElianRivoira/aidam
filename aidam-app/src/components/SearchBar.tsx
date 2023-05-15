@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
+import { UseQueryResult } from '@tanstack/react-query';
 
 import { searchUser } from '@/services/users';
 import searchIcon from '@/assets/icons/search.svg';
@@ -10,9 +11,21 @@ interface Props {
   search: string;
   setSearch: (e: string) => void;
   setActiveUsers?: React.Dispatch<React.SetStateAction<User[] | undefined>>;
+  width?: string;
+  searchFn?: (search: string, reportsType?: string) => void;
+  searchQuery?: UseQueryResult<Patient[], unknown>;
+  reportsType?: string;
 }
 
-const SearchBar: React.FC<Props> = ({ search, setSearch, setActiveUsers }) => {
+const SearchBar: React.FC<Props> = ({
+  search,
+  setSearch,
+  setActiveUsers,
+  width,
+  searchFn,
+  searchQuery,
+  reportsType,
+}) => {
   const [error, setError] = useState<string | null>(null);
 
   async function fetchSearchedUsers(search: string) {
@@ -29,39 +42,51 @@ const SearchBar: React.FC<Props> = ({ search, setSearch, setActiveUsers }) => {
     }
   }
 
-  const onSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!search) {
-      const users = await fetchSearchedUsers('*');
-      if (setActiveUsers) {
-        setActiveUsers(users);
-      }
+
+    if(searchFn) {
+      searchFn(search, reportsType);
+    } else if (searchQuery) {
+      searchQuery.refetch()
     } else {
-      const users = await fetchSearchedUsers(search);
-      if (setActiveUsers) {
-        setActiveUsers(users);
+      if (!search) {
+        const users = await fetchSearchedUsers('*');
+        if (setActiveUsers) {
+          setActiveUsers(users);
+        }
+      } else {
+        const users = await fetchSearchedUsers(search);
+        if (setActiveUsers) {
+          setActiveUsers(users);
+        }
       }
     }
   };
 
   const clearButton = async () => {
     setSearch('');
-    const users = await fetchSearchedUsers('*');
+    searchFn && searchFn('', reportsType);
+    searchQuery && searchQuery.refetch();
     if (setActiveUsers) {
+      const users = await fetchSearchedUsers('*');
       setActiveUsers(users);
     }
   };
 
   return (
-    <div className='w-2/3 flex flex-col items-center'>
+    <div className={`${width ? width : 'w-2/3'} flex flex-col items-center`}>
       {error && <div className='text-red-500'>{error}</div>}
-      <form onSubmit={onSubmit} className='relative flex items-center w-full'>
+      <form
+        onSubmit={handleSubmit}
+        className='relative flex items-center w-full'
+      >
         <input
           type='search'
           id='search'
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder='Buscar'
+          placeholder='Buscar ...'
           className={`${search ? 'pl-8' : ''} ${
             styles.searchBar
           } w-full border rounded-full px-4 py-1 shadow-card outline-none focus:shadow-active hover:bg-gray-100 focus:bg-gray-100 transition-all`}
