@@ -201,7 +201,7 @@ const medicSocial = ({ query }: MyPageProps) => {
                 {useMediaQuery(1024) && <hr className='border-black03 mb-4' />}
                 <div className='flex lg:gap-9 lgMax:justify-between'>
                   <Link
-                    href={`/patients/${query.id}/medicsocial/create`}
+                    href={`/patients/${query.id}/medicsocial/createMedical`}
                     className='flex items-center text-lm font-medium lgMax:font-normal p-2.5 lgMax:py-2 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
                   >
                     Generar Informe
@@ -266,7 +266,7 @@ const medicSocial = ({ query }: MyPageProps) => {
                 {useMediaQuery(1024) && <hr className='border-black03 mb-4' />}
                 <div className='flex lg:gap-9 lgMax:justify-between'>
                   <Link
-                    href={`/patients/${query.id}/reports/create`}
+                    href={`/patients/${query.id}/medicsocial/createSocial`}
                     className='flex items-center text-lm font-medium lgMax:font-normal p-2.5 lgMax:py-2 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
                   >
                     Generar Informe

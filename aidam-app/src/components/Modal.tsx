@@ -86,7 +86,7 @@ const Modal: React.FC<ModalProps> = ({
         ) : null}
         {type !== 4 ? (
           <button
-            className='mt-6 border rounded-md w-full bg-aidam80 text-white h-10 hover:bg-aidam70 active:shadow-active'
+            className='mt-6 border rounded-md w-full bg-aidam80 text-white h-10 hover:bg-aidam70 active:shadow-active transition-colors'
             onClick={onClose}
           >
             Cerrar
