@@ -11,10 +11,11 @@ import NavbarPatient from '@/components/profile/patient/NavbarPatient';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import { getOnePatient } from '@/services/patients';
 import { TextArea, DateInput, RadioInput, TextInput } from '@/components/reports/Inputs';
-import { centerHeaders, checkPageBreak, inputLine, subtitle, textArea } from '@/utils/jsPDF';
+import { centerHeaders, inputLine, subtitle, textArea } from '@/utils/jsPDF';
 import { getLoggedUser } from '@/services/users';
 import Modal from '@/components/Modal';
 import ArrowBack from '@/components/ArrowBack';
+import calculateAge from '@/utils/calculateAge';
 
 const createMedical = ({ query }: MyPageProps) => {
   const router = useRouter();
@@ -119,7 +120,7 @@ const createMedical = ({ query }: MyPageProps) => {
 
     y = subtitle(doc, `Identificación`, x, y, spacing);
     y = inputLine(doc, `Nombre y Apellido: ${patient.data?.firstName} ${patient.data?.lastName}`, x, y, spacing);
-    y = inputLine(doc, `Edad: `, x, y, spacing);
+    y = inputLine(doc, `Edad: ${patient.data?.birth && calculateAge(patient.data.birth)}`, x, y, spacing);
     y = inputLine(
       doc,
       `Fecha de Nacimiento: ${patient.data?.birth && new Date(patient.data.birth).toLocaleString().split(',')[0]}`,
