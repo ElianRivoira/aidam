@@ -1,5 +1,5 @@
-import { getOnePatient } from '@/services/patients';
-import { useQuery } from '@tanstack/react-query';
+import { getOnePatient, uploadReport } from '@/services/patients';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { NextPageContext } from 'next';
 import React, { useEffect, useRef, useState } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
@@ -7,7 +7,7 @@ import jsPDF from 'jspdf';
 import { getLoggedUser } from '@/services/users';
 import { hasCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
-import { centerHeaders, checkPageBreak } from '@/utils/jsPDF';
+import Modal from '@/components/Modal';
 
 const create = ({ query }: MyPageProps) => {
   const router = useRouter();
@@ -33,6 +33,7 @@ const create = ({ query }: MyPageProps) => {
   const [generalFODA, setGeneralFODA] = useState('');
   const [selectedPlanType, setSelectedPlanType] = useState('');
   const [secondPeriod, setSecondPeriod] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
 
   const signatureRef = useRef<SignatureCanvas>(null);
 
@@ -58,11 +59,13 @@ const create = ({ query }: MyPageProps) => {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
 
-  const handleFormSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let birthDate;
     if (patient.data?.birth) {
-      birthDate = new Date(patient.data?.birth).toLocaleString().split(',')[0];
+      birthDate = new Date(patient.data?.birth);
+      birthDate = birthDate.toLocaleString().split(',');
+      birthDate = birthDate[0];
     }
 
     let signatureData;
@@ -73,13 +76,33 @@ const create = ({ query }: MyPageProps) => {
     let y = 10;
 
     const doc = new jsPDF();
-    doc.setFont('Helvetica');
+    doc.setFont('Arial');
     doc.setFontSize(10);
     const lineHeight = 10;
     const spacing = 6;
     const headingFontSize = 14;
 
-    centerHeaders('PLAN TERAPÉUTICO INTEGRAL', doc, headingFontSize, y);
+    function checkPageBreak() {
+      const pageHeight = doc.internal.pageSize.getHeight();
+      if (y > pageHeight - lineHeight) {
+        doc.addPage();
+        y = 10;
+      }
+    }
+
+    function centerHeaders(text: string) {
+      const headingText = text;
+      const headingFontWidth =
+        (doc.getStringUnitWidth(headingText) * headingFontSize) /
+        doc.internal.scaleFactor;
+      const headingX =
+        (doc.internal.pageSize.getWidth() - headingFontWidth) / 2;
+      doc.setFont('Arial', 'bold');
+      doc.setFontSize(headingFontSize);
+      doc.text(headingText, headingX, y);
+    }
+
+    centerHeaders('PLAN TERAPÉUTICO INTEGRAL');
     y += 10;
     doc.setFontSize(10);
     doc.text(`FECHA: ${reportDate}`, 10, y);
@@ -110,8 +133,8 @@ const create = ({ query }: MyPageProps) => {
     doc.text(`OBRA SOCIAL: ${patient.data?.socialwork}`, 10, y);
     doc.text(`AF: ${patient.data?.affiliateNumber}`, 125, y);
     y += 20;
-    centerHeaders('INFORME DE EVUALUACIÓN TERAPÉUTICA', doc, headingFontSize, y);
-    doc.setFont('Helvetica', 'normal');
+    centerHeaders('INFORME DE EVUALUACIÓN TERAPÉUTICA');
+    doc.setFont('Arial', 'normal');
     doc.setFontSize(10);
     y += 10;
     doc.text(
@@ -130,7 +153,7 @@ const create = ({ query }: MyPageProps) => {
     splitText.forEach((line: string) => {
       doc.text(line, 10, y);
       y += lineHeight;
-      y = checkPageBreak(doc, y);
+      checkPageBreak();
     });
 
     const generalObjectivesText =
@@ -144,7 +167,7 @@ const create = ({ query }: MyPageProps) => {
     splitSecondText.forEach((line: string) => {
       doc.text(line, 10, y);
       y += lineHeight;
-      y = checkPageBreak(doc, y);
+      checkPageBreak();
     });
 
     const generalFODAText = 'Se puede señalar  que el paciente: ' + generalFODA;
@@ -153,12 +176,12 @@ const create = ({ query }: MyPageProps) => {
     splitThirdText.forEach((line: string) => {
       doc.text(line, 10, y);
       y += lineHeight;
-      y = checkPageBreak(doc, y);
+      checkPageBreak();
     });
 
     y += 10;
 
-    centerHeaders(selectedPlanType, doc, headingFontSize, y);
+    centerHeaders(selectedPlanType);
 
     y += 10;
 
@@ -174,7 +197,7 @@ const create = ({ query }: MyPageProps) => {
 
     y += 10;
 
-    doc.setFont('Helvetica', 'normal');
+    doc.setFont('Arial', 'normal');
     doc.setFontSize(10);
 
     doc.text(
@@ -184,30 +207,30 @@ const create = ({ query }: MyPageProps) => {
     );
 
     y += 10;
-    y = checkPageBreak(doc, y);
+    checkPageBreak();
 
     therapeuticObjetives.forEach((objective) => {
-      doc.setFont('Helvetica');
+      doc.setFont('Arial');
       doc.setFontSize(10);
       doc.setTextColor(0, 0, 0);
       doc.text(`\u2022 ${objective}`, 10, y, { align: 'justify' });
-      y = checkPageBreak(doc, y);
+      checkPageBreak();
       y += spacing;
     });
 
     y += 10;
 
     doc.setFontSize(14);
-    y = checkPageBreak(doc, y);
+    checkPageBreak();
 
-    doc.setFont('Helvetica', 'bold');
+    doc.setFont('Arial', 'bold');
 
     doc.text('ESTRATEGIAS DE INTERVENCIÓN', 10, y);
 
     y += 10;
-    y = checkPageBreak(doc, y);
+    checkPageBreak();
 
-    doc.setFont('Helvetica', 'normal');
+    doc.setFont('Arial', 'normal');
     doc.setFontSize(10);
 
     doc.text(
@@ -215,21 +238,21 @@ const create = ({ query }: MyPageProps) => {
       10,
       y
     );
-    y = checkPageBreak(doc, y);
+    checkPageBreak();
 
     y += 10;
 
     therapeuticStrategies.forEach((strat) => {
-      doc.setFont('Helvetica');
+      doc.setFont('Arial');
       doc.setFontSize(10);
       doc.setTextColor(0, 0, 0);
       doc.text(`\u2022 ${strat}`, 10, y, { align: 'justify' });
-      y = checkPageBreak(doc, y);
+      checkPageBreak();
       y += spacing;
     });
 
     y += 10;
-    y = checkPageBreak(doc, y);
+    checkPageBreak();
     const signatureWidth = 70;
     const signatureHeight = 30;
 
@@ -244,10 +267,34 @@ const create = ({ query }: MyPageProps) => {
       );
     doc.text(`${user?.firstName} ${user?.lastName}`, 125, y + 10);
 
-    y = checkPageBreak(doc, y);
+    checkPageBreak();
 
-    doc.save('report.pdf');
+    const blobDoc = doc.output('blob');
+    const file = new File([blobDoc], `${selectedPlanType}`, {
+      type: 'application/pdf',
+    });
+    if (patient.data) {
+      const formData = new FormData();
+      formData.append('firstName', patient.data.firstName);
+      formData.append('lastName', patient.data.lastName);
+      formData.append('report', file as Blob);
+      upload.mutate({ id: patient.data._id, form: formData });
+    }
   };
+
+  const upload = useMutation({
+    mutationFn: uploadReport,
+    onSuccess: (editedPatient) => {
+      setSuccessMsg('Informe cargado correctamente');
+      setType(1);
+      setOpen(true);
+    },
+    onError: (err: any) => {
+      setType(2);
+      setErrors(err.response.data.errors);
+      setOpen(true);
+    },
+  });
 
   const patient = useQuery({
     queryKey: ['patient', query.id],
@@ -261,6 +308,11 @@ const create = ({ query }: MyPageProps) => {
       setCookieError(true);
     },
   });
+
+  useEffect(() => {
+    if (type === 2 && !open && cookieError) router.push('/login');
+    if (type === 1 && !open) router.push(`/patients/${query.id}/reports`);
+  }, [open]);
 
   const { data: user } = useQuery({
     queryKey: ['loggedUser'],
@@ -289,7 +341,7 @@ const create = ({ query }: MyPageProps) => {
   }, []);
 
   return (
-    <div className='px-14 py-10'>
+    <div className='md:px-14 px-3 py-10 text-xs md:text-base'>
       <div className='flex w-full justify-between mt-11 mb-5'>
         <h1>
           {patient.data?.firstName} {patient.data?.lastName}
@@ -300,7 +352,7 @@ const create = ({ query }: MyPageProps) => {
       <h1 className='flex justify-center font-medium'>
         PLAN TERAPÉUTICO INTEGRAL
       </h1>
-      <form className='flex flex-col mt-7 gap-2'>
+      <form className='flex flex-col mt-7 gap-2' onSubmit={handleFormSubmit}>
         <h1 className='mb-2 font-medium'>INFORME DE EVALUACIÓN TERAPÉUTICA:</h1>
         <div>
           <label className='font-medium' htmlFor='fecha'>
@@ -308,6 +360,7 @@ const create = ({ query }: MyPageProps) => {
           </label>
           <input
             value={reportDate}
+            required
             type='date'
             className='border focus:border-none focus:outline-none'
             id='fecha'
@@ -325,6 +378,7 @@ const create = ({ query }: MyPageProps) => {
             className={`bg-white bg-opacity-20 focus:border focus:outline-none border rounded-md mx-1 ${
               firstDateWidth ? 'w-32' : 'w-fit'
             }`}
+            required
             onChange={(e) => {
               setReportPeriod(e.target.value);
               setFirstDateWidth(true);
@@ -350,6 +404,7 @@ const create = ({ query }: MyPageProps) => {
             puntualizar que:{' '}
           </label>
           <textarea
+            required
             id='accionar'
             name='accionar'
             className='rounded-xl outline-none p-3 shadow-card'
@@ -363,6 +418,7 @@ const create = ({ query }: MyPageProps) => {
             observa lo siguiente:{' '}
           </label>
           <textarea
+            required
             id='observacion'
             name='observacion'
             className='rounded-xl outline-none p-3 shadow-card'
@@ -375,6 +431,7 @@ const create = ({ query }: MyPageProps) => {
             Se puede señalar que el paciente:{' '}
           </label>
           <textarea
+            required
             id='foda'
             name='foda'
             className='rounded-xl outline-none p-3 shadow-card h-fit'
@@ -384,6 +441,7 @@ const create = ({ query }: MyPageProps) => {
         </div>
         <div className='flex mt-2'>
           <select
+            required
             id='period'
             name='period'
             className={`bg-white bg-opacity-20 p-1 focus:border focus:outline-none border rounded-md mr-1 ${
@@ -409,6 +467,7 @@ const create = ({ query }: MyPageProps) => {
             Período:
           </label>
           <select
+            required
             id='secondPeriod'
             name='secondPeriod'
             className={`bg-white bg-opacity-20 focus:border focus:outline-none border rounded-md mx-1 ${
@@ -491,8 +550,8 @@ const create = ({ query }: MyPageProps) => {
             <SignatureCanvas
               ref={signatureRef}
               canvasProps={{
-                width: 400,
-                height: 200,
+                width: 300,
+                height: 100,
                 className: 'signature-canvas',
               }}
             />
@@ -501,11 +560,18 @@ const create = ({ query }: MyPageProps) => {
         <button
           type='submit'
           className='flex w-fit items-center text-sm font-normal text-white h-7.5 px-2.5 rounded-md bg-aidam80 hover:bg-aidam70'
-          onClick={handleFormSubmit}
         >
           Generar informe
         </button>
       </form>
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        type={type}
+        errors={errors}
+      >
+        <h1>{successMsg}</h1>
+      </Modal>
     </div>
   );
 };
