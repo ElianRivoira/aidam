@@ -102,6 +102,7 @@ export const uploadMedicalReport = multer({
         .replaceAll('/', '-');
         const fileBasename = file.originalname.split('.')[0];
         const fileExtension = path.extname(file.originalname);
+        console.log('CARGANDO REPORTE')
       cb(null, `${firstName}_${lastName} ${fileBasename} - (${date})${fileExtension}`);
     },
   }),
