@@ -7,6 +7,7 @@ import jsPDF from 'jspdf';
 import { getLoggedUser } from '@/services/users';
 import { hasCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
+import { centerHeaders, checkPageBreak } from '@/utils/jsPDF';
 
 const create = ({ query }: MyPageProps) => {
   const router = useRouter();
@@ -61,9 +62,7 @@ const create = ({ query }: MyPageProps) => {
     e.preventDefault();
     let birthDate;
     if (patient.data?.birth) {
-      birthDate = new Date(patient.data?.birth);
-      birthDate = birthDate.toLocaleString().split(',');
-      birthDate = birthDate[0];
+      birthDate = new Date(patient.data?.birth).toLocaleString().split(',')[0];
     }
 
     let signatureData;
@@ -74,33 +73,13 @@ const create = ({ query }: MyPageProps) => {
     let y = 10;
 
     const doc = new jsPDF();
-    doc.setFont('Arial');
+    doc.setFont('Helvetica');
     doc.setFontSize(10);
     const lineHeight = 10;
     const spacing = 6;
     const headingFontSize = 14;
 
-    function checkPageBreak() {
-      const pageHeight = doc.internal.pageSize.getHeight();
-      if (y > pageHeight - lineHeight) {
-        doc.addPage();
-        y = 10;
-      }
-    }
-
-    function centerHeaders(text: string) {
-      const headingText = text;
-      const headingFontWidth =
-        (doc.getStringUnitWidth(headingText) * headingFontSize) /
-        doc.internal.scaleFactor;
-      const headingX =
-        (doc.internal.pageSize.getWidth() - headingFontWidth) / 2;
-      doc.setFont('Arial', 'bold');
-      doc.setFontSize(headingFontSize);
-      doc.text(headingText, headingX, y);
-    }
-
-    centerHeaders('PLAN TERAPÉUTICO INTEGRAL');
+    centerHeaders('PLAN TERAPÉUTICO INTEGRAL', doc, headingFontSize, y);
     y += 10;
     doc.setFontSize(10);
     doc.text(`FECHA: ${reportDate}`, 10, y);
@@ -131,8 +110,8 @@ const create = ({ query }: MyPageProps) => {
     doc.text(`OBRA SOCIAL: ${patient.data?.socialwork}`, 10, y);
     doc.text(`AF: ${patient.data?.affiliateNumber}`, 125, y);
     y += 20;
-    centerHeaders('INFORME DE EVUALUACIÓN TERAPÉUTICA');
-    doc.setFont('Arial', 'normal');
+    centerHeaders('INFORME DE EVUALUACIÓN TERAPÉUTICA', doc, headingFontSize, y);
+    doc.setFont('Helvetica', 'normal');
     doc.setFontSize(10);
     y += 10;
     doc.text(
@@ -151,7 +130,7 @@ const create = ({ query }: MyPageProps) => {
     splitText.forEach((line: string) => {
       doc.text(line, 10, y);
       y += lineHeight;
-      checkPageBreak();
+      y = checkPageBreak(doc, y);
     });
 
     const generalObjectivesText =
@@ -165,7 +144,7 @@ const create = ({ query }: MyPageProps) => {
     splitSecondText.forEach((line: string) => {
       doc.text(line, 10, y);
       y += lineHeight;
-      checkPageBreak();
+      y = checkPageBreak(doc, y);
     });
 
     const generalFODAText = 'Se puede señalar  que el paciente: ' + generalFODA;
@@ -174,12 +153,12 @@ const create = ({ query }: MyPageProps) => {
     splitThirdText.forEach((line: string) => {
       doc.text(line, 10, y);
       y += lineHeight;
-      checkPageBreak();
+      y = checkPageBreak(doc, y);
     });
 
     y += 10;
 
-    centerHeaders(selectedPlanType);
+    centerHeaders(selectedPlanType, doc, headingFontSize, y);
 
     y += 10;
 
@@ -195,7 +174,7 @@ const create = ({ query }: MyPageProps) => {
 
     y += 10;
 
-    doc.setFont('Arial', 'normal');
+    doc.setFont('Helvetica', 'normal');
     doc.setFontSize(10);
 
     doc.text(
@@ -205,30 +184,30 @@ const create = ({ query }: MyPageProps) => {
     );
 
     y += 10;
-    checkPageBreak();
+    y = checkPageBreak(doc, y);
 
     therapeuticObjetives.forEach((objective) => {
-      doc.setFont('Arial');
+      doc.setFont('Helvetica');
       doc.setFontSize(10);
       doc.setTextColor(0, 0, 0);
       doc.text(`\u2022 ${objective}`, 10, y, { align: 'justify' });
-      checkPageBreak();
+      y = checkPageBreak(doc, y);
       y += spacing;
     });
 
     y += 10;
 
     doc.setFontSize(14);
-    checkPageBreak();
+    y = checkPageBreak(doc, y);
 
-    doc.setFont('Arial', 'bold');
+    doc.setFont('Helvetica', 'bold');
 
     doc.text('ESTRATEGIAS DE INTERVENCIÓN', 10, y);
 
     y += 10;
-    checkPageBreak();
+    y = checkPageBreak(doc, y);
 
-    doc.setFont('Arial', 'normal');
+    doc.setFont('Helvetica', 'normal');
     doc.setFontSize(10);
 
     doc.text(
@@ -236,21 +215,21 @@ const create = ({ query }: MyPageProps) => {
       10,
       y
     );
-    checkPageBreak();
+    y = checkPageBreak(doc, y);
 
     y += 10;
 
     therapeuticStrategies.forEach((strat) => {
-      doc.setFont('Arial');
+      doc.setFont('Helvetica');
       doc.setFontSize(10);
       doc.setTextColor(0, 0, 0);
       doc.text(`\u2022 ${strat}`, 10, y, { align: 'justify' });
-      checkPageBreak();
+      y = checkPageBreak(doc, y);
       y += spacing;
     });
 
     y += 10;
-    checkPageBreak();
+    y = checkPageBreak(doc, y);
     const signatureWidth = 70;
     const signatureHeight = 30;
 
@@ -265,7 +244,7 @@ const create = ({ query }: MyPageProps) => {
       );
     doc.text(`${user?.firstName} ${user?.lastName}`, 125, y + 10);
 
-    checkPageBreak();
+    y = checkPageBreak(doc, y);
 
     doc.save('report.pdf');
   };

@@ -40,6 +40,7 @@ module.exports = {
         xg: ['20px', '20px'],
         xl1: ['24px', '20px'],
         xl2: ['24px', '30px'],
+        'xl2.5': ['26px', '30px'],
         xl4: ['32px', '20px'],
         '4.5xl': ['40px', '47px'],
       },

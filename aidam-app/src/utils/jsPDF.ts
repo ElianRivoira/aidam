@@ -1,0 +1,76 @@
+import jsPDF from 'jspdf';
+
+export function centerHeaders(text: string, doc: jsPDF, headingFontSize: number, y: number) {
+  const headingText = text;
+  const headingFontWidth = (doc.getStringUnitWidth(headingText) * headingFontSize) / doc.internal.scaleFactor;
+  const headingX = (doc.internal.pageSize.getWidth() - headingFontWidth) / 2;
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(headingFontSize);
+  doc.text(headingText, headingX, y);
+}
+
+export function checkPageBreak(doc: jsPDF, y: number) {
+  const pageHeight = doc.internal.pageSize.getHeight();
+  console.log(pageHeight);
+  if (y > pageHeight - 15) {
+    doc.addPage();
+    return (y = 10);
+  } else return y;
+}
+
+export function subtitle(
+  doc: jsPDF,
+  text: string,
+  x: number,
+  y: number,
+  spacing: number,
+  fontSize?: number,
+  fontWeight?: string
+): number {
+  fontSize ? doc.setFontSize(fontSize) : doc.setFontSize(12);
+  fontWeight ? doc.setFont('Helvetica', fontWeight) : doc.setFont('Helvetica', 'bold');
+  doc.text(text, x, y);
+  y += spacing;
+  y = checkPageBreak(doc, y);
+  return y;
+}
+
+export function inputLine(
+  doc: jsPDF,
+  text: string,
+  x: number,
+  y: number,
+  spacing: number,
+  fontSize?: number,
+  fontWeight?: string
+): number {
+  fontSize ? doc.setFontSize(fontSize) : doc.setFontSize(10);
+  fontWeight ? doc.setFont('Helvetica', fontWeight) : doc.setFont('Helvetica', 'normal');
+  doc.text(text, x, y);
+  y += spacing;
+  y = checkPageBreak(doc, y);
+  return y;
+}
+
+export function textArea(
+  doc: jsPDF,
+  text: string,
+  x: number,
+  y: number,
+  lineHeight: number,
+  spacing?: number,
+  fontSize?: number,
+  fontWeight?: string
+): number {
+  fontSize ? doc.setFontSize(fontSize) : doc.setFontSize(10);
+  fontWeight ? doc.setFont('Helvetica', fontWeight) : doc.setFont('Helvetica', 'normal');
+  const splittedText = doc.splitTextToSize(text, 180);
+  splittedText.forEach((line: string) => {
+    doc.text(line, x, y);
+    y += lineHeight;
+    y = checkPageBreak(doc, y);
+  });
+  y += spacing ? spacing : 5;
+  y = checkPageBreak(doc, y);
+  return y;
+}

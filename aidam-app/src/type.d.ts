@@ -146,3 +146,47 @@ interface DividedReports {
   half1: string[];
   half2: string[];
 }
+
+interface MedicalFormData {
+  date1: string;
+  motivoConsulta: string;
+  antecedentesFamiliares: string;
+  oea: string;
+  tamizMetabólico: string;
+  factoresNegativos: string;
+  evaluacionesComplementarias: string;
+  alimentacion: string;
+  sueño: string;
+  motricidadGruesa: string;
+  motricidadFina: string;
+  controlEsfinteres: string;
+  temperamento: string;
+  antecedentesPatologicos: string;
+  trayectoriaEscolar: string;
+  desarrolloSocial: string;
+  desarrolloComunicativo: string;
+  situacionEstresante: string;
+  factoresRiesgo: string;
+  peso: string;
+  talla: string;
+  ta: string;
+  imcapt: string;
+  perimetroCefalico: string;
+  exploracionFisica: string;
+  examenesPrevios: string;
+  pruebasEstandarizadas: string;
+  dateA: string;
+  audicion: string;
+  dateB: string;
+  vision: string;
+  dateC: string;
+  procesamientoSensorial: string;
+  dateD: string;
+  evaluacionMotora: string;
+  dateE: string;
+  dateF: string;
+  evalNeurocognitiva: string;
+  evalNeurolinguistica: string;
+  diagnostico: string;
+  sugerenciasTerapeuticas: string;
+}
