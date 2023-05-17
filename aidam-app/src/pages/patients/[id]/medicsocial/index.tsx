@@ -59,7 +59,7 @@ const medicSocial = ({ query }: MyPageProps) => {
   const uploadSoc = useMutation({
     mutationFn: uploadSocialReport,
     onSuccess: editedPatient => {
-      setSuccessMsg('Informe médico cargado correctamente');
+      setSuccessMsg('Informe social cargado correctamente');
       onCloseReportModal();
       setType(1);
       setOpen(true);
@@ -74,7 +74,7 @@ const medicSocial = ({ query }: MyPageProps) => {
   const uploadMed = useMutation({
     mutationFn: uploadMedicalReport,
     onSuccess: editedPatient => {
-      setSuccessMsg('Informe social cargado correctamente');
+      setSuccessMsg('Informe médico cargado correctamente');
       onCloseReportModal();
       setType(1);
       setOpen(true);

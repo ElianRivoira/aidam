@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { NextPageContext } from 'next';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import jsPDF from 'jspdf';
 
 import Navbar from '@/components/navbar/Navbar';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import NavbarPatient from '@/components/profile/patient/NavbarPatient';
 import useMediaQuery from '@/hooks/useMediaQuery';
-import { getOnePatient } from '@/services/patients';
+import { getOnePatient, uploadMedicalReport } from '@/services/patients';
 import { TextArea, DateInput, RadioInput, TextInput } from '@/components/reports/Inputs';
 import { centerHeaders, inputLine, subtitle, textArea } from '@/utils/jsPDF';
 import { getLoggedUser } from '@/services/users';
@@ -24,6 +24,7 @@ const createMedical = ({ query }: MyPageProps) => {
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
+  const [successMsg, setSuccessMsg] = useState('');
   const [medicalFormData, setMedicalFormData] = useState<MedicalFormData>({
     date1: '',
     motivoConsulta: '',
@@ -87,8 +88,23 @@ const createMedical = ({ query }: MyPageProps) => {
     },
   });
 
+  const uploadMed = useMutation({
+    mutationFn: uploadMedicalReport,
+    onSuccess: editedPatient => {
+      setSuccessMsg('Informe médico generado correctamente');
+      setType(1);
+      setOpen(true);
+    },
+    onError: (err: any) => {
+      setType(2);
+      setErrors(err.response.data.errors);
+      setOpen(true);
+    },
+  });
+
   useEffect(() => {
     if (type === 2 && !open && cookieError) router.push('/login');
+    if (type === 1 && !open) router.push(`/patients/${query.id}/medicsocial`);
   }, [open]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -146,7 +162,7 @@ const createMedical = ({ query }: MyPageProps) => {
 
     y = subtitle(doc, `Antecedentes familiares:`, x, y, spacing);
     y = textArea(doc, medicalFormData.antecedentesFamiliares, x, y, lineHeight, 5);
-    
+
     y = subtitle(doc, `Desarrollo psicomotor:`, x, y, spacing);
     y = subtitle(doc, `Alimentación:`, x, y, spacing, 10);
     y = textArea(doc, medicalFormData.alimentacion, x, y, lineHeight, 1);
@@ -251,7 +267,16 @@ const createMedical = ({ query }: MyPageProps) => {
     y = subtitle(doc, `VII - Sugerencias terapéuticas:`, x, y, spacing);
     y = textArea(doc, medicalFormData.sugerenciasTerapeuticas, x, y, lineHeight, 5);
 
-    doc.save('HC-AIDAM.pdf');
+    // doc.save('HC-AIDAM.pdf');
+    const blobDoc = doc.output('blob');
+    const file = new File([blobDoc], 'Historia clinica fisiatrica.pdf', { type: 'application/pdf' });
+    if(patient.data){
+      const formData = new FormData();
+      formData.append('firstName', patient.data.firstName);
+      formData.append('lastName', patient.data.lastName);
+      formData.append('report', file as Blob);
+      uploadMed.mutate({ id: patient.data._id, form: formData });
+    }
   };
 
   return (
@@ -657,7 +682,7 @@ const createMedical = ({ query }: MyPageProps) => {
           </div>
         </div>
         <Modal open={open} onClose={() => setOpen(false)} type={type} errors={errors}>
-          <h1></h1>
+          <h1>{successMsg}</h1>
         </Modal>
       </main>
     </>
