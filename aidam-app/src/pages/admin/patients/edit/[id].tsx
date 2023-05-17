@@ -157,13 +157,21 @@ const editPatient = ({ query }: MyPageProps) => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.dni}
                   placeholder='12345678'
-                />
+                  />
                 <Input
                   label='Fecha de Nacimiento'
                   name='birth'
                   type='date'
                   onChange={e => handleChange(e)}
                   value={patientInfo.birth}
+                  />
+                <Input
+                  label='Dirección'
+                  name='adress'
+                  type='text'
+                  onChange={e => handleChange(e)}
+                  value={patientInfo.adress}
+                  placeholder='Ejemplo 1234'
                 />
               </div>
               <div className='flex flex-col w-1/4 gap-9 items-center'>
@@ -190,6 +198,14 @@ const editPatient = ({ query }: MyPageProps) => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.authorizedModule}
                   placeholder='18688242'
+                />
+                <Input
+                  label='CUD'
+                  name='cud'
+                  type='text'
+                  onChange={e => handleChange(e)}
+                  value={patientInfo.cud}
+                  // placeholder='18688242'
                 />
                 <Input
                   label='Diagnóstico'
