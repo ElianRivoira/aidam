@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { NextPageContext } from 'next';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import jsPDF from 'jspdf';
+import SignatureCanvas from 'react-signature-canvas';
 
 import Navbar from '@/components/navbar/Navbar';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
-import NavbarPatient from '@/components/profile/patient/NavbarPatient';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import { getOnePatient, uploadMedicalReport } from '@/services/patients';
 import { TextArea, DateInput, RadioInput, TextInput } from '@/components/reports/Inputs';
-import { centerHeaders, inputLine, subtitle, textArea } from '@/utils/jsPDF';
 import { getLoggedUser } from '@/services/users';
 import Modal from '@/components/Modal';
 import ArrowBack from '@/components/ArrowBack';
-import calculateAge from '@/utils/calculateAge';
+import { setCanvasHeight, setCanvasWidth } from '@/utils/canvas';
+import { generateHCPDF } from '@/utils/generatePDF/medicalReports';
 
 const createMedical = ({ query }: MyPageProps) => {
   const router = useRouter();
@@ -25,6 +24,8 @@ const createMedical = ({ query }: MyPageProps) => {
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [successMsg, setSuccessMsg] = useState('');
+  const [screenWidth, setScreenWidth] = useState<number | undefined>(undefined);
+  const firmaRef = useRef<SignatureCanvas>(null);
   const [medicalFormData, setMedicalFormData] = useState<MedicalFormData>({
     date1: '',
     motivoConsulta: '',
@@ -107,6 +108,12 @@ const createMedical = ({ query }: MyPageProps) => {
     if (type === 1 && !open) router.push(`/patients/${query.id}/medicsocial`);
   }, [open]);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setScreenWidth(window.innerWidth);
+    }
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setMedicalFormData({ ...medicalFormData, [name]: value });
@@ -117,167 +124,6 @@ const createMedical = ({ query }: MyPageProps) => {
     setMedicalFormData({ ...medicalFormData, [name]: value });
   };
 
-  const generatePDF = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const doc = new jsPDF();
-
-    const lineHeight = 5;
-    const spacing = 6;
-    const headingFontSize = 14;
-    const x = 10;
-    let y = 10;
-
-    centerHeaders('HISTORIA CLÍNICA - AIDAM', doc, headingFontSize, y);
-    y += spacing;
-
-    y = subtitle(doc, 'I - Evaluación de Crecimiento y Desarrollo', x, y, spacing);
-    y = subtitle(doc, `Fecha: ${medicalFormData.date1}`, x, y, 15);
-
-    y = subtitle(doc, `Identificación`, x, y, spacing);
-    y = inputLine(doc, `Nombre y Apellido: ${patient.data?.firstName} ${patient.data?.lastName}`, x, y, spacing);
-    y = inputLine(doc, `Edad: ${patient.data?.birth && calculateAge(patient.data.birth)}`, x, y, spacing);
-    y = inputLine(
-      doc,
-      `Fecha de Nacimiento: ${patient.data?.birth && new Date(patient.data.birth).toLocaleString().split(',')[0]}`,
-      x,
-      y,
-      spacing
-    );
-    y = inputLine(doc, `DNI: ${patient.data?.dni}`, x, y, spacing);
-    y = inputLine(doc, `Obra Social: ${patient.data?.socialwork}`, x, y, 15);
-
-    y = subtitle(doc, `Informante: ${loggedUser.data?.firstName} ${loggedUser.data?.lastName}`, x, y, 15);
-
-    y = subtitle(doc, `Motivo de consulta:`, x, y, spacing);
-    y = textArea(doc, medicalFormData.motivoConsulta, x, y, lineHeight);
-
-    y = subtitle(doc, `Antecedentes de embarazo y perinatales:`, x, y, spacing);
-    y = subtitle(doc, `OEA:`, x, y, lineHeight, 10);
-    y = textArea(doc, medicalFormData.oea, x, y, lineHeight, 1);
-    y = subtitle(doc, `Tamiz metabólico:`, x, y, lineHeight, 10);
-    y = textArea(doc, medicalFormData.tamizMetabólico, x, y, lineHeight, 1);
-    y = subtitle(doc, `Factores pronósticos negativos:`, x, y, lineHeight, 10);
-    y = textArea(doc, medicalFormData.factoresNegativos, x, y, lineHeight, 5);
-
-    y = subtitle(doc, `Antecedentes familiares:`, x, y, spacing);
-    y = textArea(doc, medicalFormData.antecedentesFamiliares, x, y, lineHeight, 5);
-
-    y = subtitle(doc, `Desarrollo psicomotor:`, x, y, spacing);
-    y = subtitle(doc, `Alimentación:`, x, y, spacing, 10);
-    y = textArea(doc, medicalFormData.alimentacion, x, y, lineHeight, 1);
-    y = subtitle(doc, `Sueño:`, x, y, spacing, 10);
-    y = textArea(doc, medicalFormData.sueño, x, y, lineHeight, 1);
-    y = subtitle(doc, `Motricidad gruesa:`, x, y, spacing, 10);
-    y = textArea(doc, medicalFormData.motricidadGruesa, x, y, lineHeight, 1);
-    y = subtitle(doc, `Motricidad fina:`, x, y, spacing, 10);
-    y = textArea(doc, medicalFormData.motricidadFina, x, y, lineHeight, 1);
-    y = subtitle(doc, `Control de esfínteres:`, x, y, spacing, 10);
-    y = textArea(doc, medicalFormData.controlEsfinteres, x, y, lineHeight, 1);
-    y = subtitle(doc, `Temperamento:`, x, y, spacing, 10);
-    y = textArea(doc, medicalFormData.temperamento, x, y, lineHeight, 10);
-
-    y = subtitle(doc, `Desarrollo social:`, x, y, spacing);
-    y = textArea(doc, medicalFormData.desarrolloSocial, x, y, lineHeight, 5);
-
-    y = subtitle(doc, `Desarrollo comunicativo:`, x, y, spacing);
-    y = inputLine(
-      doc,
-      `Lenguaje expresivo: ${medicalFormData.desarrolloComunicativo === 'Lenguaje expresivo' ? 'X' : ''}`,
-      x,
-      y,
-      spacing
-    );
-    y = inputLine(
-      doc,
-      `Lenguaje comprensivo: ${medicalFormData.desarrolloComunicativo === 'Lenguaje comprensivo' ? 'X' : ''}`,
-      x,
-      y,
-      spacing
-    );
-    y = inputLine(
-      doc,
-      `Lenguaje no verbal: ${medicalFormData.desarrolloComunicativo === 'Lenguaje no verbal' ? 'X' : ''}`,
-      x,
-      y,
-      15
-    );
-
-    y = subtitle(doc, `Antecedentes conductuales:`, x, y, spacing);
-    y = subtitle(doc, `Situación estresante en último año:`, x, y, spacing, 10);
-    y = textArea(doc, medicalFormData.situacionEstresante, x, y, lineHeight, 1);
-    y = subtitle(doc, `Factores de riesgo identificados:`, x, y, spacing, 10);
-    y = textArea(doc, medicalFormData.factoresRiesgo, x, y, lineHeight, 5);
-
-    y = subtitle(doc, `Trayectoria escolar:`, x, y, spacing);
-    y = subtitle(doc, `Funcionamiento escolar global:`, x, y, spacing, 10);
-    y = textArea(doc, medicalFormData.trayectoriaEscolar, x, y, lineHeight, 5);
-
-    y = subtitle(doc, `Antecedentes patológicos personales:`, x, y, spacing);
-    y = textArea(doc, medicalFormData.antecedentesPatologicos, x, y, lineHeight, 5);
-
-    y = subtitle(doc, `Examen físico:`, x, y, spacing);
-    y = inputLine(doc, `Peso: ${medicalFormData.peso}`, x, y, spacing);
-    y = inputLine(doc, `Talla: ${medicalFormData.talla}`, x, y, spacing);
-    y = inputLine(doc, `IMC - A P/T: ${medicalFormData.imcapt}`, x, y, spacing);
-    y = inputLine(doc, `Perímetro cefálico: ${medicalFormData.perimetroCefalico}`, x, y, spacing);
-    y = inputLine(doc, `TA: ${medicalFormData.ta}`, x, y, spacing);
-    y = inputLine(doc, `Exploración física actual: ${medicalFormData.exploracionFisica}`, x, y, 15);
-
-    y = subtitle(doc, `Exámenes, evaluaciones y tratamientos previos:`, x, y, spacing);
-    y = textArea(doc, medicalFormData.examenesPrevios, x, y, lineHeight, 5);
-
-    y = subtitle(
-      doc,
-      `Evaluaciones y terapias conductuales o educativas complementarias y/o alternativas:`,
-      x,
-      y,
-      spacing
-    );
-    y = textArea(doc, medicalFormData.evaluacionesComplementarias, x, y, lineHeight, 5);
-
-    y = subtitle(doc, `II - Pruebas de detección estandarizadas:`, x, y, spacing);
-    y = textArea(doc, medicalFormData.pruebasEstandarizadas, x, y, lineHeight, 5);
-
-    y = subtitle(doc, `III - Evaluación Sensorio - Motora:`, x, y, spacing);
-    y = subtitle(doc, `a) Audición:`, x, y, spacing, 10);
-    y = subtitle(doc, `Fecha: ${medicalFormData.dateA}`, x, y, spacing, 10);
-    y = textArea(doc, medicalFormData.audicion, x, y, lineHeight, 5);
-    y = subtitle(doc, `b) Visión:`, x, y, spacing, 10);
-    y = subtitle(doc, `Fecha: ${medicalFormData.dateB}`, x, y, spacing, 10);
-    y = textArea(doc, medicalFormData.vision, x, y, lineHeight, 5);
-    y = subtitle(doc, `c) Procesamiento sensorial:`, x, y, spacing, 10);
-    y = subtitle(doc, `Fecha: ${medicalFormData.dateC}`, x, y, spacing, 10);
-    y = textArea(doc, medicalFormData.procesamientoSensorial, x, y, lineHeight, 5);
-    y = subtitle(doc, `d) Evaluación motora:`, x, y, spacing, 10);
-    y = subtitle(doc, `Fecha: ${medicalFormData.dateD}`, x, y, spacing, 10);
-    y = textArea(doc, medicalFormData.evaluacionMotora, x, y, lineHeight, 5);
-
-    y = subtitle(doc, `IV - Evaluación Neurocognitiva:`, x, y, spacing);
-    y = subtitle(doc, `Fecha: ${medicalFormData.dateE}`, x, y, spacing, 10);
-    y = textArea(doc, medicalFormData.evalNeurocognitiva, x, y, lineHeight, 5);
-
-    y = subtitle(doc, `V - Evaluación Neurolingüística:`, x, y, spacing);
-    y = subtitle(doc, `Fecha: ${medicalFormData.dateF}`, x, y, spacing, 10);
-    y = textArea(doc, medicalFormData.evalNeurolinguistica, x, y, lineHeight, 5);
-
-    y = subtitle(doc, `VI - Diagnóstico:`, x, y, spacing);
-    y = textArea(doc, medicalFormData.diagnostico, x, y, lineHeight, 5);
-
-    y = subtitle(doc, `VII - Sugerencias terapéuticas:`, x, y, spacing);
-    y = textArea(doc, medicalFormData.sugerenciasTerapeuticas, x, y, lineHeight, 5);
-
-    const blobDoc = doc.output('blob');
-    const file = new File([blobDoc], 'Historia clinica fisiatrica.pdf', { type: 'application/pdf' });
-    if(patient.data){
-      const formData = new FormData();
-      formData.append('firstName', patient.data.firstName);
-      formData.append('lastName', patient.data.lastName);
-      formData.append('report', file as Blob);
-      uploadMed.mutate({ id: patient.data._id, form: formData });
-    }
-  };
-
   return (
     <>
       <Head>
@@ -285,8 +131,7 @@ const createMedical = ({ query }: MyPageProps) => {
       </Head>
       <main className='flex flex-col items-center min-h-screen bg-background'>
         {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
-        <div className='w-full lg:px-12 lg:mt-2.5'>
-          <NavbarPatient />
+        <div className='w-full lg:px-12'>
           <div className='flex flex-col lgMax:px-4'>
             <div className='flex justify-between items-center my-3 lg:my-7 w-full'>
               <div className='flex lgMax:self-start items-center lg:gap-8 gap-4'>
@@ -315,8 +160,8 @@ const createMedical = ({ query }: MyPageProps) => {
                 <option value='hcFisiatrica'>Historia clínica fisiátrica</option>
               </select>
             </div>
-            {formType === 'hcFisiatrica' ? (
-              <form onSubmit={generatePDF}>
+            {formType === 'hc' ? (
+              <form onSubmit={(e) => generateHCPDF(e, medicalFormData, patient, loggedUser, firmaRef, uploadMed)}>
                 <h3 className='text-xb lgMax:text-ln font-medium'>I - Evaluación de Crecimiento y Desarrollo</h3>
                 <div className='flex lgMax:flex-col mt-6'>
                   <div className='w-1/3 lgMax:w-full px-4'>
@@ -343,7 +188,9 @@ const createMedical = ({ query }: MyPageProps) => {
                       value={medicalFormData.antecedentesFamiliares}
                       onChange={handleTextAreaChange}
                     />
-                    <label className='text-ln lgMax:text-lb font-medium block mb-3'>Antecedentes de embarazo y perinatales:</label>
+                    <label className='text-ln lgMax:text-lb font-medium block mb-3'>
+                      Antecedentes de embarazo y perinatales:
+                    </label>
                     <TextArea
                       label='OEA:'
                       name='oea'
@@ -375,7 +222,7 @@ const createMedical = ({ query }: MyPageProps) => {
                       label='Evaluaciones y terapias conductuales o educativas complementarias y/o alternativas:'
                       name='evaluacionesComplementarias'
                       divclass='mb-2'
-                      placeholder='Ingrese las evalueaciones y terapias complementarias'
+                      placeholder='Ingrese las evaluaciones y terapias complementarias'
                       value={medicalFormData.evaluacionesComplementarias}
                       onChange={handleTextAreaChange}
                     />
@@ -665,6 +512,18 @@ const createMedical = ({ query }: MyPageProps) => {
                     value={medicalFormData.sugerenciasTerapeuticas}
                     onChange={handleTextAreaChange}
                   />
+                </div>
+                <div className='flex flex-col mt-20 px-4'>
+                  <p>Firma:</p>
+                  <div className='border rounded-md w-fit border-aidam80'>
+                    <SignatureCanvas
+                      ref={firmaRef}
+                      canvasProps={{
+                        width: setCanvasWidth('firmaRef', screenWidth),
+                        height: setCanvasHeight('firmaRef', screenWidth),
+                      }}
+                    />
+                  </div>
                 </div>
                 <div className='flex justify-end my-4'>
                   <button
