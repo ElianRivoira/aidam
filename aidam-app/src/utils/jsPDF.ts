@@ -9,10 +9,9 @@ export function centerHeaders(text: string, doc: jsPDF, headingFontSize: number,
   doc.text(headingText, headingX, y);
 }
 
-export function checkPageBreak(doc: jsPDF, y: number) {
+export function checkPageBreak(doc: jsPDF, y: number, space?: number) {
   const pageHeight = doc.internal.pageSize.getHeight();
-  console.log(pageHeight);
-  if (y > pageHeight - 15) {
+  if (y > pageHeight - (space ? space : 15)) {
     doc.addPage();
     return (y = 10);
   } else return y;
@@ -42,13 +41,14 @@ export function inputLine(
   y: number,
   spacing: number,
   fontSize?: number,
-  fontWeight?: string
+  fontWeight?: string,
+  notCheckPage?: boolean
 ): number {
   fontSize ? doc.setFontSize(fontSize) : doc.setFontSize(10);
   fontWeight ? doc.setFont('Helvetica', fontWeight) : doc.setFont('Helvetica', 'normal');
   doc.text(text, x, y);
   y += spacing;
-  y = checkPageBreak(doc, y);
+  notCheckPage ? null : (y = checkPageBreak(doc, y));
   return y;
 }
 

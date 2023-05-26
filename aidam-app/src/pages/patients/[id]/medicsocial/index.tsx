@@ -192,7 +192,7 @@ const medicSocial = ({ query }: MyPageProps) => {
         {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
         <div className='w-full lg:px-12 lg:mt-2.5'>
           <NavbarPatient />
-          <div className='flex w-full mt-5'>
+          <div className='flex lgMax:flex-col w-full mt-5'>
             <div className='flex flex-col lg:w-1/2 lgMax:px-4 lg:border-r border-black03 pr-5'>
               <div className='flex lgMax:flex-col lg:items-center justify-between'>
                 <h1 className='text-xl2 font-medium lgMax:my-5'>
@@ -229,15 +229,17 @@ const medicSocial = ({ query }: MyPageProps) => {
               </div>
               <div
                 className={`flex w-full mt-8 ${
-                  medicalReports.length ? 'min-h-[300px]' : ''
+                  medicalReports.length ? 'lg:min-h-[300px]' : ''
                 }`}
               >
                 {medicalReports.length ? (
                   <>
                     <div className='w-full px-4'>
-                      {medicalReports.map(report => (
+                      {medicalReports.map((report, index) => {
+                        console.log(report)
+                        return (
                         <ReportItem
-                          index={report}
+                          index={`${report}.medical.${index}`}
                           report={report}
                           setType={setType}
                           setOpen={setOpen}
@@ -248,7 +250,7 @@ const medicSocial = ({ query }: MyPageProps) => {
                           setReportType={setReportType}
                           type='medical'
                         />
-                      ))}
+                      )})}
                     </div>
                   </>
                 ) : (
@@ -300,9 +302,9 @@ const medicSocial = ({ query }: MyPageProps) => {
                 {socialReports.length ? (
                   <>
                     <div className='w-full px-4'>
-                      {socialReports.map(report => (
+                      {socialReports.map((report, index) => (
                         <ReportItem
-                          index={report}
+                          index={`${report}.social.${index}`}
                           report={report}
                           setType={setType}
                           setOpen={setOpen}

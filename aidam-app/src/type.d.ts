@@ -190,3 +190,112 @@ interface MedicalFormData {
   diagnostico: string;
   sugerenciasTerapeuticas: string;
 }
+
+interface IFamily {
+  id: number;
+  name: string;
+  relationship: string;
+  age: string;
+  civilState: string;
+  ocupation: string;
+  health: string;
+  observations: string;
+  [key: string];
+}
+
+interface ILivingGroup {
+  nameLink: string;
+  incomeSource: string;
+  employmentStability: string;
+  daysOfWork: string;
+  incomeAmount: string;
+  [key: string];
+}
+
+interface ISocialSecurity {
+  checked: boolean;
+  whoCollectsIt: string;
+  obs: string;
+  amount: string;
+  [key: string];
+}
+
+interface IComunitaryCast {
+  institution: string;
+  referent: string;
+  contact: string;
+  obs: string;
+  [key: string];
+}
+
+interface SocialFormData {
+  date1: string;
+  socialWorkAccess: string;
+  cud: string;
+  nextExpiration: string;
+  interviewed: string;
+  phone: string;
+  familyGroup: IFamily[];
+  socialNetwork: IFamily[];
+  familyGenogram: string;
+  obsFamilyType: string;
+  homeOwner: string;
+  homePossession: string;
+  homePossessionExtra: string;
+  wallsMaterial: string;
+  roofMaterial: string;
+  floorMaterial: string;
+  bathAmount: string;
+  bathFlushing: string;
+  bathFlushingExtra: string;
+  bathAdapted: string;
+  services: {
+    Luz: string;
+    Agua: string;
+    Gas: string;
+    Cloacas: string;
+    [key: string]: string;
+  };
+  bedRoomsAmount: string;
+  whereAndWhoSleep: string;
+  enviroment: string;
+  obsAmbient: string;
+  socialSecurity: {
+    AUH: ISocialSecurity;
+    AUHD: ISocialSecurity;
+    SUAF: ISocialSecurity;
+    PNC: ISocialSecurity;
+    [key: string]: ISocialSecurity;
+  };
+  employmentSituation: ILivingGroup[];
+  obsSocioeconomic: string;
+  comunitaryCast: IComunitaryCast[];
+  obsLinkageNetMap: string;
+  comunicWithInstit: string;
+  attendsInterviews: string;
+  obsFamilyParticipation: string;
+  personalCaretaker: string;
+  personalCaretakerName: string;
+  personalCaretakerWhy: string;
+  whoBathedHim: string;
+  restTime: string;
+  eatTime: string;
+  medicsTime: string;
+  haveAccessQualityFood: string;
+  shareEatTimeWithFamily: string;
+  howOrganizeBuyPrepareFood: string;
+  comunication: string;
+  interests: string;
+  expectationsOfInstitution: string;
+  previousTreatments: string;
+  barriersOnInclusion: string;
+  obsRoutine: string;
+  professionalConclusion: string;
+}
+
+interface IDataToMapInputs {
+  name: string;
+  label: string;
+  width: string;
+  [key: string];
+}
