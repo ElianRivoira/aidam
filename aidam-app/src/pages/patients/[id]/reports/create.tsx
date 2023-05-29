@@ -23,13 +23,9 @@ const create = ({ query }: MyPageProps) => {
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [cookieError, setCookieError] = useState(false);
-  const [therapeuticObjetives, setTherapeuticObjetives] = useState<
-    Array<string>
-  >([]);
+  const [therapeuticObjetives, setTherapeuticObjetives] = useState<Array<string>>([]);
   const [objective, setObjective] = useState<string>('');
-  const [therapeuticStrategies, setTherapeuticStrategies] = useState<
-    Array<string>
-  >([]);
+  const [therapeuticStrategies, setTherapeuticStrategies] = useState<Array<string>>([]);
   const [strategy, setStrategy] = useState<string>('');
   const [reportDate, setReportDate] = useState('');
   const [reportPeriod, setReportPeriod] = useState('');
@@ -97,11 +93,8 @@ const create = ({ query }: MyPageProps) => {
 
     function centerHeaders(text: string) {
       const headingText = text;
-      const headingFontWidth =
-        (doc.getStringUnitWidth(headingText) * headingFontSize) /
-        doc.internal.scaleFactor;
-      const headingX =
-        (doc.internal.pageSize.getWidth() - headingFontWidth) / 2;
+      const headingFontWidth = (doc.getStringUnitWidth(headingText) * headingFontSize) / doc.internal.scaleFactor;
+      const headingX = (doc.internal.pageSize.getWidth() - headingFontWidth) / 2;
       doc.setFont('Arial', 'bold');
       doc.setFontSize(headingFontSize);
       doc.text(headingText, headingX, y);
@@ -123,11 +116,7 @@ const create = ({ query }: MyPageProps) => {
       decoration: 'underline',
     });
     y += 10;
-    doc.text(
-      `NOMBRE Y APELLIDO: ${patient.data?.firstName} ${patient.data?.lastName}`,
-      10,
-      y
-    );
+    doc.text(`NOMBRE Y APELLIDO: ${patient.data?.firstName} ${patient.data?.lastName}`, 10, y);
     y += 10;
     doc.text(`FECHA DE NACIMIENTO: ${birthDate}`, 10, y);
     y += 10;
@@ -135,24 +124,20 @@ const create = ({ query }: MyPageProps) => {
     y += 10;
     doc.text(`DIAGNÓSTICO: ${patient.data?.diagnosis}`, 10, y);
     y += 10;
-    
+
     y += 20;
- doc.text(`OBRA SOCIAL: ${patient.data?.socialwork}`, 10, y);
-    doc.text(`AF: ${patient.data?.affiliateNumber}`, 125, y);   centerHeaders('INFORME DE EVUALUACIÓN TERAPÉUTICA');
+    doc.text(`OBRA SOCIAL: ${patient.data?.socialwork}`, 10, y);
+    doc.text(`AF: ${patient.data?.affiliateNumber}`, 125, y);
+    centerHeaders('INFORME DE EVUALUACIÓN TERAPÉUTICA');
     doc.setFont('Arial', 'normal');
     doc.setFontSize(10);
     y += 10;
-    doc.text(
-      'Se realiza la evaluación inicial del área, obteniendo los siguientes resultados:',
-      10,
-      y
-    );
+    doc.text('Se realiza la evaluación inicial del área, obteniendo los siguientes resultados:', 10, y);
     y += 10;
     const maxWidth = 180;
 
     const generalAspectsText =
-      'En relación al accionar del paciente y el encuadre, se puede puntualizar que: ' +
-      generalAspects;
+      'En relación al accionar del paciente y el encuadre, se puede puntualizar que: ' + generalAspects;
 
     const splitText = doc.splitTextToSize(generalAspectsText, maxWidth);
     splitText.forEach((line: string) => {
@@ -162,13 +147,9 @@ const create = ({ query }: MyPageProps) => {
     });
 
     const generalObjectivesText =
-      'En razón a los aspectos específicos del área, según lo evaluado, se observa lo siguiente: ' +
-      generalObjectives;
+      'En razón a los aspectos específicos del área, según lo evaluado, se observa lo siguiente: ' + generalObjectives;
 
-    const splitSecondText = doc.splitTextToSize(
-      generalObjectivesText,
-      maxWidth
-    );
+    const splitSecondText = doc.splitTextToSize(generalObjectivesText, maxWidth);
     splitSecondText.forEach((line: string) => {
       doc.text(line, 10, y);
       y += lineHeight;
@@ -205,16 +186,12 @@ const create = ({ query }: MyPageProps) => {
     doc.setFont('Arial', 'normal');
     doc.setFontSize(10);
 
-    doc.text(
-      'En función de lo evaluado, se proponen los siguientes objetivos específicos de abordaje: ',
-      10,
-      y
-    );
+    doc.text('En función de lo evaluado, se proponen los siguientes objetivos específicos de abordaje: ', 10, y);
 
     y += 10;
     checkPageBreak();
 
-    therapeuticObjetives.forEach((objective) => {
+    therapeuticObjetives.forEach(objective => {
       doc.setFont('Arial');
       doc.setFontSize(10);
       doc.setTextColor(0, 0, 0);
@@ -247,7 +224,7 @@ const create = ({ query }: MyPageProps) => {
 
     y += 10;
 
-    therapeuticStrategies.forEach((strat) => {
+    therapeuticStrategies.forEach(strat => {
       doc.setFont('Arial');
       doc.setFontSize(10);
       doc.setTextColor(0, 0, 0);
@@ -261,15 +238,7 @@ const create = ({ query }: MyPageProps) => {
     const signatureWidth = 70;
     const signatureHeight = 30;
 
-    if (signatureData)
-      doc.addImage(
-        signatureData,
-        'PNG',
-        10,
-        y,
-        signatureWidth,
-        signatureHeight
-      );
+    if (signatureData) doc.addImage(signatureData, 'PNG', 10, y, signatureWidth, signatureHeight);
     doc.text(`${user?.firstName} ${user?.lastName}`, 125, y + 10);
 
     checkPageBreak();
@@ -289,7 +258,7 @@ const create = ({ query }: MyPageProps) => {
 
   const upload = useMutation({
     mutationFn: uploadReport,
-    onSuccess: (editedPatient) => {
+    onSuccess: editedPatient => {
       setSuccessMsg('Informe cargado correctamente');
       setType(1);
       setOpen(true);
@@ -306,7 +275,7 @@ const create = ({ query }: MyPageProps) => {
     keepPreviousData: true,
     queryFn: () => getOnePatient(query.id),
     retry: 1,
-    onError: (error) => {
+    onError: error => {
       setType(2);
       setErrors((error as any).response.data.errors);
       setOpen(true);
@@ -349,7 +318,7 @@ const create = ({ query }: MyPageProps) => {
     <>
       {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
       <div className='md:px-14 px-3 pb-10 mt-11 text-lh md:text-base'>
-      <ArrowBack width={40} route={`/patients/${patient.data?._id}/reports`} />
+        <ArrowBack width={40} route={`/patients/${patient.data?._id}/reports`} />
         <div className='flex w-full justify-between mt-6 mb-5'>
           <h1>
             {patient.data?.firstName} {patient.data?.lastName}
@@ -357,13 +326,9 @@ const create = ({ query }: MyPageProps) => {
           <h1 className='font-medium'>GENERAR INFORME</h1>
         </div>
         <hr className='mb-7' />
-        <h1 className='flex justify-center font-medium'>
-          PLAN TERAPÉUTICO INTEGRAL
-        </h1>
+        <h1 className='flex justify-center font-medium'>PLAN TERAPÉUTICO INTEGRAL</h1>
         <form className='flex flex-col mt-7 gap-2' onSubmit={handleFormSubmit}>
-          <h1 className='mb-2 font-medium'>
-            INFORME DE EVALUACIÓN TERAPÉUTICA:
-          </h1>
+          <h1 className='mb-2 font-medium'>INFORME DE EVALUACIÓN TERAPÉUTICA:</h1>
           <div>
             <label className='font-medium' htmlFor='fecha'>
               Fecha:{' '}
@@ -374,10 +339,9 @@ const create = ({ query }: MyPageProps) => {
               type='date'
               className='border focus:border-none focus:outline-none'
               id='fecha'
-              onChange={(e) => setReportDate(e.target.value)}
+              onChange={e => setReportDate(e.target.value)}
             />
           </div>
-
           <div className='flex'>
             <label className='font-medium' htmlFor='period'>
               Período:{' '}
@@ -389,7 +353,7 @@ const create = ({ query }: MyPageProps) => {
                 firstDateWidth ? 'w-32' : 'w-fit'
               }`}
               required
-              onChange={(e) => {
+              onChange={e => {
                 setReportPeriod(e.target.value);
                 setFirstDateWidth(true);
               }}
@@ -397,21 +361,17 @@ const create = ({ query }: MyPageProps) => {
               <option value='' disabled selected hidden>
                 Seleccione mes de ingreso
               </option>
-              {months.map((month) => (
+              {months.map(month => (
                 <option value={month}>{month}</option>
               ))}
             </select>
 
             <p>{'a Diciembre ' + currentYear}</p>
           </div>
-          <p className='font-medium'>
-            Se realiza la evaluación inicial del área, obteniendo los siguientes
-            resultados
-          </p>
+          <p className='font-medium'>Se realiza la evaluación inicial del área, obteniendo los siguientes resultados</p>
           <div className='flex flex-col'>
             <label className='font-regular' htmlFor='accionar'>
-              En relación al accionar del paciente y el encuadre, se puede
-              puntualizar que:{' '}
+              En relación al accionar del paciente y el encuadre, se puede puntualizar que:{' '}
             </label>
             <textarea
               required
@@ -419,13 +379,12 @@ const create = ({ query }: MyPageProps) => {
               name='accionar'
               className='rounded-xl outline-none p-3 shadow-card'
               placeholder='Detallar aspectos generales observados al comienzo de año, encuadre y ajuste al espacio terapéutico, aspectos conductuales, entre otros.'
-              onChange={(e) => setGeneralAspects(e.target.value)}
+              onChange={e => setGeneralAspects(e.target.value)}
             />
           </div>
           <div className='flex flex-col'>
             <label className='font-regular' htmlFor='observacion'>
-              En razón a los aspectos específicos del área, según lo evaluado,
-              se observa lo siguiente:{' '}
+              En razón a los aspectos específicos del área, según lo evaluado, se observa lo siguiente:{' '}
             </label>
             <textarea
               required
@@ -433,7 +392,7 @@ const create = ({ query }: MyPageProps) => {
               name='observacion'
               className='rounded-xl outline-none p-3 shadow-card'
               placeholder='Completar con los aspectos consignados en el Protocolo de Evaluación pertinentes a cada especialidad y los resultados obtenidos.'
-              onChange={(e) => setGeneralObjectives(e.target.value)}
+              onChange={e => setGeneralObjectives(e.target.value)}
             />
           </div>
           <div className='flex flex-col'>
@@ -446,7 +405,7 @@ const create = ({ query }: MyPageProps) => {
               name='foda'
               className='rounded-xl outline-none p-3 shadow-card h-fit'
               placeholder='Consignar observaciones significativas, fortalezas detectadas, entre otras.'
-              onChange={(e) => setGeneralFODA(e.target.value)}
+              onChange={e => setGeneralFODA(e.target.value)}
             />
           </div>
           <div className='flex mt-2'>
@@ -457,7 +416,7 @@ const create = ({ query }: MyPageProps) => {
               className={`bg-white bg-opacity-20 p-1 focus:border focus:outline-none border rounded-md mr-1 ${
                 !planWidth ? 'w-56' : 'w-fit'
               }`}
-              onChange={(e) => {
+              onChange={e => {
                 setPlanWidth(true);
                 setSelectedPlanType(e.target.value);
               }}
@@ -465,7 +424,7 @@ const create = ({ query }: MyPageProps) => {
               <option value='' disabled selected hidden>
                 Seleccione el tipo de plan
               </option>
-              {planType.map((plan) => (
+              {planType.map(plan => (
                 <>
                   <option value={plan}>{plan}</option>
                 </>
@@ -483,7 +442,7 @@ const create = ({ query }: MyPageProps) => {
               className={`bg-white bg-opacity-20 focus:border focus:outline-none border rounded-md mx-1 ${
                 secondDateWidth ? 'w-32' : 'w-fit'
               }`}
-              onChange={(e) => {
+              onChange={e => {
                 setSecondDateWidth(true);
                 setSecondPeriod(e.target.value);
               }}
@@ -491,7 +450,7 @@ const create = ({ query }: MyPageProps) => {
               <option value='' disabled selected hidden>
                 Mes de inicio de terapias
               </option>
-              {months.map((month) => (
+              {months.map(month => (
                 <option value={month}>{month}</option>
               ))}
             </select>
@@ -500,10 +459,7 @@ const create = ({ query }: MyPageProps) => {
           </div>
           <div className='flex flex-col gap-3 mb-6'>
             <h1 className='font-medium'>OBJETIVOS TERAPÉUTICOS</h1>
-            <p>
-              En función de lo evaluado, se proponen los siguientes objetivos
-              específicos de abordaje:
-            </p>
+            <p>En función de lo evaluado, se proponen los siguientes objetivos específicos de abordaje:</p>
             <div className='flex flex-col gap-2'>
               <div className='flex gap-3'>
                 <input
@@ -511,36 +467,28 @@ const create = ({ query }: MyPageProps) => {
                   type='text'
                   placeholder='Ingrese de a un objetivo aquí'
                   className='px-1 focus:border focus:outline-none border rounded-md w-1/2'
-                  onChange={(e) => setObjective(e.target.value)}
+                  onChange={e => setObjective(e.target.value)}
                 />
                 <Button type='button' onClick={() => setObj(objective)} text='Agregar objetivo' />
               </div>
-              {therapeuticObjetives
-                ? therapeuticObjetives.map((obj) => <li>{obj}</li>)
-                : ''}
+              {therapeuticObjetives ? therapeuticObjetives.map(obj => <li>{obj}</li>) : ''}
             </div>
           </div>
-        </div>
-        <div className='flex flex-col gap-3'>
-          <h1 className='font-medium'>ESTRATEGIAS DE INTERVENCIÓN</h1>
-          <p>
-            Los objetivos planteados se desarrollaran a partir de las siguientes
-            estrategias de intervención:
-          </p>
-          <div className='flex flex-col gap-2'>
-            <div className='flex gap-3'>
-              <input
-                value={strategy}
-                type='text'
-                placeholder='Ingrese de a una estrategia aquí'
-                className='px-1 focus:border focus:outline-none border rounded-md w-1/2'
-                onChange={(e) => setStrategy(e.target.value)}
-              />
-              <Button type='button' onClick={() => setStrat(strategy)} text='Agregar estrategia' />
+          <div className='flex flex-col gap-3'>
+            <h1 className='font-medium'>ESTRATEGIAS DE INTERVENCIÓN</h1>
+            <p>Los objetivos planteados se desarrollaran a partir de las siguientes estrategias de intervención:</p>
+            <div className='flex flex-col gap-2'>
+              <div className='flex gap-3'>
+                <input
+                  value={strategy}
+                  type='text'
+                  placeholder='Ingrese de a una estrategia aquí'
+                  className='px-1 focus:border focus:outline-none border rounded-md w-1/2'
+                  onChange={e => setStrategy(e.target.value)}
+                />
+                <Button type='button' onClick={() => setStrat(strategy)} text='Agregar estrategia' />
               </div>
-              {therapeuticStrategies
-                ? therapeuticStrategies.map((strat) => <li>{strat}</li>)
-                : ''}
+              {therapeuticStrategies ? therapeuticStrategies.map(strat => <li>{strat}</li>) : ''}
             </div>
           </div>
           <div className='flex flex-col mt-20'>
@@ -556,18 +504,13 @@ const create = ({ query }: MyPageProps) => {
               />
             </div>
           </div>
-        </div>
-        <Button type='submit' text='Generar informe' />
-      </form>
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        type={type}
-        errors={errors}
-      >
-        <h1>{successMsg}</h1>
-      </Modal>
-    </div>
+        </form>
+        <Button type='submit' text='Generar informe' classname='mt-4' />
+        <Modal open={open} onClose={() => setOpen(false)} type={type} errors={errors}>
+          <h1>{successMsg}</h1>
+        </Modal>
+      </div>
+    </>
   );
 };
 
@@ -579,9 +522,7 @@ interface MyPageProps {
   };
 }
 
-create.getInitialProps = async ({
-  query,
-}: NextPageContext): Promise<MyPageProps> => {
+create.getInitialProps = async ({ query }: NextPageContext): Promise<MyPageProps> => {
   const castedQuery = query as unknown as MyPageProps['query'];
   return { query: castedQuery };
 };
