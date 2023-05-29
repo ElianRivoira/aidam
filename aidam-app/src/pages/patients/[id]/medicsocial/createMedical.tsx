@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import { NextPageContext } from 'next';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import jsPDF from 'jspdf';
+import SignatureCanvas from 'react-signature-canvas';
 import Navbar from '@/components/navbar/Navbar';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import useMediaQuery from '@/hooks/useMediaQuery';
@@ -299,7 +300,6 @@ const createMedical = ({ query }: MyPageProps) => {
     const { name, value } = e.target;
     setMedicalFormData({ ...medicalFormData, [name]: value });
   };
-
 
   const handleUpdateValue = (index: number, newValue: any) => {
     let newValueStr = String(newValue);
@@ -1087,7 +1087,6 @@ const createMedical = ({ query }: MyPageProps) => {
     }
   };
 
-
   return (
     <>
       <Head>
@@ -1099,15 +1098,22 @@ const createMedical = ({ query }: MyPageProps) => {
           <div className='flex flex-col lgMax:px-4'>
             <div className='flex justify-between items-center my-3 lg:my-7 w-full'>
               <div className='flex lgMax:self-start items-center lg:gap-8 gap-4'>
-                <ArrowBack route={`/patients/${query.id}/medicsocial`} width={useMediaQuery(1024) ? 33 : undefined} />
+                <ArrowBack
+                  route={`/patients/${query.id}/medicsocial`}
+                  width={useMediaQuery(1024) ? 33 : undefined}
+                />
                 <h2 className='text-xg lgMax:text-lm font-medium'>
                   {patient.data?.firstName} {patient.data?.lastName}
                 </h2>
               </div>
-              <h1 className='text-xl2 lgMax:text-xg font-medium'>GENERAR INFORME</h1>
+              <h1 className='text-xl2 lgMax:text-xg font-medium'>
+                GENERAR INFORME
+              </h1>
             </div>
             <hr className='border-black03 w-full' />
-            <h1 className='text-xl2.5 lgMax:text-xl2 font-medium mt-7 mb-8 text-center'>INFORME MÉDICO</h1>
+            <h1 className='text-xl2.5 lgMax:text-xl2 font-medium mt-7 mb-8 text-center'>
+              INFORME MÉDICO
+            </h1>
             <div className='flex flex-col self-center mb-5'>
               <label htmlFor='selectForm' className='text-ln lgMax:text-lb'>
                 Seleccione el tipo de informe
@@ -1116,7 +1122,7 @@ const createMedical = ({ query }: MyPageProps) => {
                 name='selectForm'
                 id='selectForm'
                 value={formType}
-                onChange={e => setFormType(e.target.value)}
+                onChange={(e) => setFormType(e.target.value)}
                 className='outline-none lgMax:text-lb border border-black02 hover:border-aidam80 transition-colors rounded-md p-1 mt-1'
               >
                 <option value='' hidden></option>
@@ -1127,8 +1133,21 @@ const createMedical = ({ query }: MyPageProps) => {
               </select>
             </div>
             {formType === 'hc' ? (
-              <form onSubmit={(e) => generateHCPDF(e, medicalFormData, patient, loggedUser, firmaRef, uploadMed)}>
-                <h3 className='text-xb lgMax:text-ln font-medium'>I - Evaluación de Crecimiento y Desarrollo</h3>
+              <form
+                onSubmit={(e) =>
+                  generateHCPDF(
+                    e,
+                    medicalFormData,
+                    patient,
+                    loggedUser,
+                    firmaRef,
+                    uploadMed
+                  )
+                }
+              >
+                <h3 className='text-xb lgMax:text-ln font-medium'>
+                  I - Evaluación de Crecimiento y Desarrollo
+                </h3>
                 <div className='flex lgMax:flex-col mt-6'>
                   <div className='w-1/3 lgMax:w-full px-4'>
                     <DateInput
@@ -1194,7 +1213,9 @@ const createMedical = ({ query }: MyPageProps) => {
                     />
                   </div>
                   <div className='w-1/3 lgMax:w-full px-4'>
-                    <label className='text-ln lgMax:text-lb font-medium block mb-3'>Desarrollo psicomotor:</label>
+                    <label className='text-ln lgMax:text-lb font-medium block mb-3'>
+                      Desarrollo psicomotor:
+                    </label>
                     <TextArea
                       label='Alimentación:'
                       name='alimentacion'
@@ -1288,7 +1309,9 @@ const createMedical = ({ query }: MyPageProps) => {
                       value={medicalFormData.desarrolloComunicativo}
                       onChange={handleInputChange}
                     />
-                    <label className='text-ln lgMax:text-lb font-medium block mb-3'>Antecedentes conductuales:</label>
+                    <label className='text-ln lgMax:text-lb font-medium block mb-3'>
+                      Antecedentes conductuales:
+                    </label>
                     <TextArea
                       label='Situación estresante en último año:'
                       name='situacionEstresante'
@@ -1307,7 +1330,9 @@ const createMedical = ({ query }: MyPageProps) => {
                       value={medicalFormData.factoresRiesgo}
                       onChange={handleTextAreaChange}
                     />
-                    <label className='text-ln lgMax:text-lb font-medium block mb-3'>Examen físico:</label>
+                    <label className='text-ln lgMax:text-lb font-medium block mb-3'>
+                      Examen físico:
+                    </label>
                     <div className='flex gap-2'>
                       <TextInput
                         label='Peso:'
@@ -1362,7 +1387,9 @@ const createMedical = ({ query }: MyPageProps) => {
                   </div>
                 </div>
                 <div className='w-2/3 lgMax:w-full mt-3 px-4'>
-                  <h3 className='text-xb lgMax:text-ln font-medium'>II - Pruebas de detección estandarizadas:</h3>
+                  <h3 className='text-xb lgMax:text-ln font-medium'>
+                    II - Pruebas de detección estandarizadas:
+                  </h3>
                   <TextArea
                     name='pruebasEstandarizadas'
                     divclass='mb-2'
@@ -1371,7 +1398,9 @@ const createMedical = ({ query }: MyPageProps) => {
                   />
                 </div>
                 <div className='w-2/3 lgMax:w-full mt-3 flex flex-col px-4'>
-                  <h3 className='text-xb lgMax:text-ln font-medium'>III - Evaluación Sensorio - Motora:</h3>
+                  <h3 className='text-xb lgMax:text-ln font-medium'>
+                    III - Evaluación Sensorio - Motora:
+                  </h3>
                   <TextArea
                     label='a) Audición:'
                     name='audicion'
@@ -1431,7 +1460,9 @@ const createMedical = ({ query }: MyPageProps) => {
                 </div>
                 <div className='w-2/3 lgMax:w-full mt-3 flex flex-col px-4'>
                   <div className='flex lgMax:flex-col lg:justify-between lg:items-center'>
-                    <h3 className='text-xb lgMax:text-ln font-medium'>IV - Evaluación Neurocognitiva:</h3>
+                    <h3 className='text-xb lgMax:text-ln font-medium'>
+                      IV - Evaluación Neurocognitiva:
+                    </h3>
                     <DateInput
                       name='dateE'
                       label='Fecha:'
@@ -1449,7 +1480,9 @@ const createMedical = ({ query }: MyPageProps) => {
                 </div>
                 <div className='w-2/3 lgMax:w-full mt-3 flex flex-col px-4'>
                   <div className='flex lgMax:flex-col lg:justify-between lg:items-center'>
-                    <h3 className='text-xb lgMax:text-ln font-medium'>V - Evaluación Neurolingüística:</h3>
+                    <h3 className='text-xb lgMax:text-ln font-medium'>
+                      V - Evaluación Neurolingüística:
+                    </h3>
                     <DateInput
                       name='dateF'
                       label='Fecha:'
@@ -1466,7 +1499,9 @@ const createMedical = ({ query }: MyPageProps) => {
                   />
                 </div>
                 <div className='w-2/3 lgMax:w-full mt-3 flex flex-col px-4'>
-                  <h3 className='text-xb lgMax:text-ln font-medium'>VI - Diagnóstico:</h3>
+                  <h3 className='text-xb lgMax:text-ln font-medium'>
+                    VI - Diagnóstico:
+                  </h3>
                   <TextArea
                     name='diagnostico'
                     divclass='mb-2'
@@ -1475,7 +1510,9 @@ const createMedical = ({ query }: MyPageProps) => {
                   />
                 </div>
                 <div className='w-2/3 lgMax:w-full mt-3 flex flex-col px-4'>
-                  <h3 className='text-xb lgMax:text-ln font-medium'>VII - Sugerencias terapéuticas:</h3>
+                  <h3 className='text-xb lgMax:text-ln font-medium'>
+                    VII - Sugerencias terapéuticas:
+                  </h3>
                   <TextArea
                     name='sugerenciasTerapeuticas'
                     divclass='mb-2'
