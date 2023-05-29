@@ -9,6 +9,7 @@ import ArrowBack from '@/components/ArrowBack';
 import TagInputProf from '@/components/form/TagInputProfessionals';
 import { postPatient } from '@/services/patients';
 import Modal from '@/components/Modal';
+import Button from '@/components/Button';
 
 const create = () => {
   const router = useRouter();
@@ -208,12 +209,7 @@ const create = () => {
               <div className='w-1/4'></div>
               <div className='w-1/4'></div>
               <div className='w-1/4 flex justify-end'>
-                <button
-                  type='submit'
-                  className='border px-10 py-2 rounded-md bg-aidam80 hover:bg-aidam70 transition-colors text-white w-fit self-end'
-                >
-                  Confirmar
-                </button>
+                <Button type='submit' text='Confirmar' classname='px-10 py-2' />
               </div>
             </div>
           </form>

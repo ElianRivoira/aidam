@@ -182,7 +182,7 @@ export const generateHCPDF = (
   y = inputLine(doc, `${loggedUser.data?.firstName} ${loggedUser.data?.lastName}`, 165, y, spacing);
 
   const blobDoc = doc.output('blob');
-  const file = new File([blobDoc], 'Historia clinica fisiatrica.pdf', { type: 'application/pdf' });
+  const file = new File([blobDoc], 'Historia clinica.pdf', { type: 'application/pdf' });
   if (patient.data) {
     const formData = new FormData();
     formData.append('firstName', patient.data.firstName);

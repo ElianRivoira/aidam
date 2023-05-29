@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { NextPageContext } from 'next';
+import { GetServerSideProps, NextPageContext } from 'next';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import SearchBar from '@/components/SearchBar';
@@ -20,6 +20,7 @@ import {
 import ReportItem from '@/components/profile/patient/ReportItem';
 import UploadReportModal from '@/components/profile/patient/UploadReportModal';
 import Modal from '@/components/Modal';
+import Button from '@/components/Button';
 
 const medicSocial = ({ query }: MyPageProps) => {
   const [cookieError, setCookieError] = useState(false);
@@ -129,7 +130,7 @@ const medicSocial = ({ query }: MyPageProps) => {
           searchedReports = patient.data.medicalReports.filter(report => {
             return report.toLowerCase().includes(search.toLowerCase());
           });
-        } else if (reportsType === 'social'){
+        } else if (reportsType === 'social') {
           searchedReports = patient.data.socialReports.filter(report => {
             return report.toLowerCase().includes(search.toLowerCase());
           });
@@ -195,9 +196,7 @@ const medicSocial = ({ query }: MyPageProps) => {
           <div className='flex lgMax:flex-col w-full mt-5'>
             <div className='flex flex-col lg:w-1/2 lgMax:px-4 lg:border-r border-black03 pr-5'>
               <div className='flex lgMax:flex-col lg:items-center justify-between'>
-                <h1 className='text-xl2 font-medium lgMax:my-5'>
-                  INFORMES MÉDICOS
-                </h1>
+                <h1 className='text-xl2 font-medium lgMax:my-5'>INFORMES MÉDICOS</h1>
                 {useMediaQuery(1024) && <hr className='border-black03 mb-4' />}
                 <div className='flex lg:gap-9 lgMax:justify-between'>
                   <Link
@@ -206,15 +205,13 @@ const medicSocial = ({ query }: MyPageProps) => {
                   >
                     Generar Informe
                   </Link>
-                  <button
+                  <Button
                     onClick={() => {
                       setReportType('medical');
                       setOpenReportModal(true);
                     }}
-                    className='flex items-center text-lm font-medium lgMax:font-normal p-2.5 lgMax:py-2 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
-                  >
-                    Subir informe
-                  </button>
+                    text='Subir informe'
+                  />
                 </div>
               </div>
               {!useMediaQuery(1024) && <hr className='border-black03 mt-4' />}
@@ -227,44 +224,37 @@ const medicSocial = ({ query }: MyPageProps) => {
                   reportsType='medical'
                 />
               </div>
-              <div
-                className={`flex w-full mt-8 ${
-                  medicalReports.length ? 'lg:min-h-[300px]' : ''
-                }`}
-              >
+              <div className={`flex w-full mt-8 ${medicalReports.length ? 'lg:min-h-[300px]' : ''}`}>
                 {medicalReports.length ? (
                   <>
                     <div className='w-full px-4'>
                       {medicalReports.map((report, index) => {
-                        console.log(report)
+                        console.log(report);
                         return (
-                        <ReportItem
-                          index={`${report}.medical.${index}`}
-                          report={report}
-                          setType={setType}
-                          setOpen={setOpen}
-                          setDeleteMsg={setDeleteMsg}
-                          setFileNameToDelete={setFileNameToDelete}
-                          width='w-full'
-                          patient={patient.data}
-                          setReportType={setReportType}
-                          type='medical'
-                        />
-                      )})}
+                          <ReportItem
+                            index={`${report}.medical.${index}`}
+                            report={report}
+                            setType={setType}
+                            setOpen={setOpen}
+                            setDeleteMsg={setDeleteMsg}
+                            setFileNameToDelete={setFileNameToDelete}
+                            width='w-full'
+                            patient={patient.data}
+                            setReportType={setReportType}
+                            type='medical'
+                          />
+                        );
+                      })}
                     </div>
                   </>
                 ) : (
-                  <p className='w-full text-center'>
-                    El paciente no posee informes médicos cargados
-                  </p>
+                  <p className='w-full text-center'>El paciente no posee informes médicos cargados</p>
                 )}
               </div>
             </div>
             <div className='flex flex-col lg:w-1/2 lgMax:px-4 pl-5'>
               <div className='flex lgMax:flex-col lg:items-center justify-between'>
-                <h1 className='text-xl2 font-medium lgMax:my-5'>
-                  INFORMES SOCIALES
-                </h1>
+                <h1 className='text-xl2 font-medium lgMax:my-5'>INFORMES SOCIALES</h1>
                 {useMediaQuery(1024) && <hr className='border-black03 mb-4' />}
                 <div className='flex lg:gap-9 lgMax:justify-between'>
                   <Link
@@ -273,15 +263,13 @@ const medicSocial = ({ query }: MyPageProps) => {
                   >
                     Generar Informe
                   </Link>
-                  <button
+                  <Button
                     onClick={() => {
                       setReportType('social');
                       setOpenReportModal(true);
                     }}
-                    className='flex items-center text-lm font-medium lgMax:font-normal p-2.5 lgMax:py-2 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
-                  >
-                    Subir informe
-                  </button>
+                    text='Subir Informe'
+                  />
                 </div>
               </div>
               {!useMediaQuery(1024) && <hr className='border-black03 mt-4' />}
@@ -294,34 +282,31 @@ const medicSocial = ({ query }: MyPageProps) => {
                   reportsType='social'
                 />
               </div>
-              <div
-                className={`flex w-full mt-8 ${
-                  socialReports.length ? 'min-h-[300px]' : ''
-                }`}
-              >
+              <div className={`flex w-full mt-8 ${socialReports.length ? 'min-h-[300px]' : ''}`}>
                 {socialReports.length ? (
                   <>
                     <div className='w-full px-4'>
-                      {socialReports.map((report, index) => (
-                        <ReportItem
-                          index={`${report}.social.${index}`}
-                          report={report}
-                          setType={setType}
-                          setOpen={setOpen}
-                          setDeleteMsg={setDeleteMsg}
-                          setFileNameToDelete={setFileNameToDelete}
-                          width='w-full'
-                          patient={patient.data}
-                          setReportType={setReportType}
-                          type='social'
-                        />
-                      ))}
+                      {socialReports.map((report, index) => {
+                        console.log(report);
+                        return (
+                          <ReportItem
+                            index={`${report}.social.${index}`}
+                            report={report}
+                            setType={setType}
+                            setOpen={setOpen}
+                            setDeleteMsg={setDeleteMsg}
+                            setFileNameToDelete={setFileNameToDelete}
+                            width='w-full'
+                            patient={patient.data}
+                            setReportType={setReportType}
+                            type='social'
+                          />
+                        );
+                      })}
                     </div>
                   </>
                 ) : (
-                  <p className='w-full text-center'>
-                    El paciente no posee informes sociales cargados
-                  </p>
+                  <p className='w-full text-center'>El paciente no posee informes sociales cargados</p>
                 )}
               </div>
             </div>
@@ -357,9 +342,7 @@ interface MyPageProps {
   };
 }
 
-medicSocial.getInitialProps = async ({
-  query,
-}: NextPageContext): Promise<MyPageProps> => {
+medicSocial.getInitialProps = async ({ query }: NextPageContext): Promise<MyPageProps> => {
   const castedQuery = query as unknown as MyPageProps['query'];
   return { query: castedQuery };
 };

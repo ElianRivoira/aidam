@@ -33,6 +33,7 @@ type setterType = {
 };
 import { setCanvasHeight, setCanvasWidth } from '@/utils/canvas';
 import { generateHCPDF } from '@/utils/generatePDF/medicalReports';
+import Button from '@/components/Button';
 
 const createMedical = ({ query }: MyPageProps) => {
   const router = useRouter();
@@ -1533,12 +1534,7 @@ const createMedical = ({ query }: MyPageProps) => {
                   </div>
                 </div>
                 <div className='flex justify-end my-4'>
-                  <button
-                    type='submit'
-                    className='flex items-center text-lm font-medium p-2.5 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
-                  >
-                    Generar Informe
-                  </button>
+                  <Button type='submit' text='Generar Informe' />
                 </div>
               </form>
             ) : formType === 'hcFisiatrica' ? (

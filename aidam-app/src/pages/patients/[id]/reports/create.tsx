@@ -8,6 +8,7 @@ import { getLoggedUser } from '@/services/users';
 import { hasCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
 import Modal from '@/components/Modal';
+import Button from '@/components/Button';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import Navbar from '@/components/navbar/Navbar';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
@@ -512,41 +513,30 @@ const create = ({ query }: MyPageProps) => {
                   className='px-1 focus:border focus:outline-none border rounded-md w-1/2'
                   onChange={(e) => setObjective(e.target.value)}
                 />
-                <button
-                  type='button'
-                  onClick={() => setObj(objective)}
-                  className='flex items-center text-sm font-normal text-white h-7.5 px-2.5 rounded-md bg-aidam80 hover:bg-aidam70 w-fit'
-                >
-                  Agregar objetivo
-                </button>
+                <Button type='button' onClick={() => setObj(objective)} text='Agregar objetivo' />
               </div>
               {therapeuticObjetives
                 ? therapeuticObjetives.map((obj) => <li>{obj}</li>)
                 : ''}
             </div>
           </div>
-          <div className='flex flex-col gap-3'>
-            <h1 className='font-medium'>ESTRATEGIAS DE INTERVENCIÓN</h1>
-            <p>
-              Los objetivos planteados se desarrollaran a partir de las
-              siguientes estrategias de intervención:
-            </p>
-            <div className='flex flex-col gap-2'>
-              <div className='flex gap-3'>
-                <input
-                  value={strategy}
-                  type='text'
-                  placeholder='Ingrese de a una estrategia aquí'
-                  className='px-1 focus:border focus:outline-none border rounded-md w-1/2'
-                  onChange={(e) => setStrategy(e.target.value)}
-                />
-                <button
-                  type='button'
-                  onClick={() => setStrat(strategy)}
-                  className='flex items-center text-sm font-normal text-white h-7.5 px-2.5 rounded-md bg-aidam80 hover:bg-aidam70 w-fit'
-                >
-                  Agregar estrategia
-                </button>
+        </div>
+        <div className='flex flex-col gap-3'>
+          <h1 className='font-medium'>ESTRATEGIAS DE INTERVENCIÓN</h1>
+          <p>
+            Los objetivos planteados se desarrollaran a partir de las siguientes
+            estrategias de intervención:
+          </p>
+          <div className='flex flex-col gap-2'>
+            <div className='flex gap-3'>
+              <input
+                value={strategy}
+                type='text'
+                placeholder='Ingrese de a una estrategia aquí'
+                className='px-1 focus:border focus:outline-none border rounded-md w-1/2'
+                onChange={(e) => setStrategy(e.target.value)}
+              />
+              <Button type='button' onClick={() => setStrat(strategy)} text='Agregar estrategia' />
               </div>
               {therapeuticStrategies
                 ? therapeuticStrategies.map((strat) => <li>{strat}</li>)
@@ -566,23 +556,18 @@ const create = ({ query }: MyPageProps) => {
               />
             </div>
           </div>
-          <button
-            type='submit'
-            className='flex w-fit items-center text-sm font-normal text-white h-7.5 px-2.5 rounded-md bg-aidam80 hover:bg-aidam70'
-          >
-            Generar informe
-          </button>
-        </form>
-        <Modal
-          open={open}
-          onClose={() => setOpen(false)}
-          type={type}
-          errors={errors}
-        >
-          <h1>{successMsg}</h1>
-        </Modal>
-      </div>
-    </>
+        </div>
+        <Button type='submit' text='Generar informe' />
+      </form>
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        type={type}
+        errors={errors}
+      >
+        <h1>{successMsg}</h1>
+      </Modal>
+    </div>
   );
 };
 
