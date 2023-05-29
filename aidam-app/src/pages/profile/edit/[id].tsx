@@ -16,6 +16,7 @@ import professions from '@/utils/professions';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import Navbar from '@/components/navbar/Navbar';
 import profileIcon from '@/assets/icons/profileImage.svg';
+import Button from '@/components/Button';
 
 const editUser = ({ query }: MyPageProps) => {
   const router = useRouter();
@@ -34,9 +35,7 @@ const editUser = ({ query }: MyPageProps) => {
     phone: '',
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setUserInfo({ ...userInfo, [name]: value });
   };
@@ -129,35 +128,23 @@ const editUser = ({ query }: MyPageProps) => {
           };
         })
       );
-      setPathImg(
-        `http://localhost:8000/users/profileimg/${user.data.profileImg}`
-      );
+      setPathImg(`http://localhost:8000/users/profileimg/${user.data.profileImg}`);
     }
   }, [user.isSuccess]);
 
   return (
     <>
       <Head>
-        <title>
-          {loggedUser.data?.admin
-            ? 'AIDAM Admin - Editar usuario'
-            : 'AIDAM - Editar usuario'}
-        </title>
+        <title>{loggedUser.data?.admin ? 'AIDAM Admin - Editar usuario' : 'AIDAM - Editar usuario'}</title>
       </Head>
       <main className='min-h-screen bg-background'>
         {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
         <div className='w-full mt-12 lgMax:mt-4 px-12'>
           <div className='flex items-center w-full'>
             <ArrowBack route={`/profile/${user.data?._id}`} />
-            <h1 className='text-center text-xl4 lgMax:text-xl2 font-semibold mx-auto'>
-              EDITAR USUARIO
-            </h1>
+            <h1 className='text-center text-xl4 lgMax:text-xl2 font-semibold mx-auto'>EDITAR USUARIO</h1>
           </div>
-          <form
-            encType='multipart/form-data'
-            onSubmit={handleSubmit}
-            className='mt-20 lgMax:mt-10 flex flex-col'
-          >
+          <form encType='multipart/form-data' onSubmit={handleSubmit} className='mt-20 lgMax:mt-10 flex flex-col'>
             <div className='flex justify-evenly lgMax:items-center lgMax:flex-col'>
               <div className='flex flex-col w-1/4 lgMax:w-full lgMax:max-w-[500px] gap-9 lgMax:mb-9 items-center'>
                 <Input
@@ -216,11 +203,7 @@ const editUser = ({ query }: MyPageProps) => {
                   {pathImg ? (
                     <img src={pathImg} alt='image' />
                   ) : (
-                    <Image
-                      src={profileIcon}
-                      alt='profile icon'
-                      className='w-full'
-                    />
+                    <Image src={profileIcon} alt='profile icon' className='w-full' />
                   )}
                 </div>
                 <div className='w-full mb-9'>
@@ -233,11 +216,7 @@ const editUser = ({ query }: MyPageProps) => {
                   />
                 </div>
                 {loggedUser.data?.admin && (
-                  <TagInputPatients
-                    tagged={patients}
-                    setTagged={setPatients}
-                    user={user.data}
-                  />
+                  <TagInputPatients tagged={patients} setTagged={setPatients} user={user.data} />
                 )}
               </div>
             </div>
@@ -245,21 +224,11 @@ const editUser = ({ query }: MyPageProps) => {
               <div className='w-1/4'></div>
               <div className='w-1/4'></div>
               <div className='w-1/4 flex justify-end'>
-                <button
-                  type='submit'
-                  className='border px-10 py-2 rounded-md bg-aidam80 hover:bg-aidam70 transition-colors text-white w-fit self-end'
-                >
-                  Confirmar
-                </button>
+                <Button type='submit' text='Confirmar' />
               </div>
             </div>
           </form>
-          <Modal
-            open={open}
-            onClose={() => setOpen(false)}
-            type={type}
-            errors={errors}
-          >
+          <Modal open={open} onClose={() => setOpen(false)} type={type} errors={errors}>
             <h1>Perfil editado satisfactoriamente</h1>
           </Modal>
         </div>
@@ -276,9 +245,7 @@ interface MyPageProps {
   };
 }
 
-editUser.getInitialProps = async ({
-  query,
-}: NextPageContext): Promise<MyPageProps> => {
+editUser.getInitialProps = async ({ query }: NextPageContext): Promise<MyPageProps> => {
   const castedQuery = query as unknown as MyPageProps['query'];
   return { query: castedQuery };
 };

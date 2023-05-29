@@ -8,6 +8,7 @@ import { getLoggedUser } from '@/services/users';
 import { hasCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
 import Modal from '@/components/Modal';
+import Button from '@/components/Button';
 
 const create = ({ query }: MyPageProps) => {
   const router = useRouter();
@@ -503,13 +504,7 @@ const create = ({ query }: MyPageProps) => {
                 className='px-1 focus:border focus:outline-none border rounded-md w-1/2'
                 onChange={(e) => setObjective(e.target.value)}
               />
-              <button
-                type='button'
-                onClick={() => setObj(objective)}
-                className='flex items-center text-sm font-normal text-white h-7.5 px-2.5 rounded-md bg-aidam80 hover:bg-aidam70 w-fit'
-              >
-                Agregar objetivo
-              </button>
+              <Button type='button' onClick={() => setObj(objective)} text='Agregar objetivo' />
             </div>
             {therapeuticObjetives
               ? therapeuticObjetives.map((obj) => <li>{obj}</li>)
@@ -531,13 +526,7 @@ const create = ({ query }: MyPageProps) => {
                 className='px-1 focus:border focus:outline-none border rounded-md w-1/2'
                 onChange={(e) => setStrategy(e.target.value)}
               />
-              <button
-                type='button'
-                onClick={() => setStrat(strategy)}
-                className='flex items-center text-sm font-normal text-white h-7.5 px-2.5 rounded-md bg-aidam80 hover:bg-aidam70 w-fit'
-              >
-                Agregar estrategia
-              </button>
+              <Button type='button' onClick={() => setStrat(strategy)} text='Agregar estrategia' />
             </div>
             {therapeuticStrategies
               ? therapeuticStrategies.map((strat) => <li>{strat}</li>)
@@ -557,12 +546,7 @@ const create = ({ query }: MyPageProps) => {
             />
           </div>
         </div>
-        <button
-          type='submit'
-          className='flex w-fit items-center text-sm font-normal text-white h-7.5 px-2.5 rounded-md bg-aidam80 hover:bg-aidam70'
-        >
-          Generar informe
-        </button>
+        <Button type='submit' text='Generar informe' />
       </form>
       <Modal
         open={open}

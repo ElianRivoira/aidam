@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { hasCookie } from 'cookies-next';
 import { NextPageContext } from 'next';
 import { useRouter } from 'next/router';
 
@@ -15,13 +14,10 @@ import useMediaQuery from '@/hooks/useMediaQuery';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import DesktopCard from '@/components/DesktopCard';
 import CreateObs from '@/components/observations/CreateObs';
-import {
-  deleteObservation,
-  putObservation,
-  postObservation,
-} from '@/services/observations';
+import { deleteObservation, putObservation, postObservation } from '@/services/observations';
 import ObsModal from '@/components/observations/ObsModal';
 import Modal from '@/components/Modal';
+import Button from '@/components/Button';
 
 const Observations = ({ query }: MyPageProps) => {
   const [actualDate, setActualDate] = useState(new Date());
@@ -139,31 +135,17 @@ const Observations = ({ query }: MyPageProps) => {
                     <h1 className='text-xl2 font-medium'>OBSERVACIONES</h1>
                   </div>
                   <div className='lg:w-[45%] xb:w-1/3 flex gap-6 justify-end'>
-                    <button
-                      onClick={() => setOpenCreateObs(true)}
-                      className='flex items-center text-lm font-medium p-2.5 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
-                    >
-                      Crear observación
-                    </button>
-                    <button
-                      onClick={() => setOpenPickDate(true)}
-                      className='flex items-center text-lm font-medium p-2.5 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
-                    >
-                      Buscar observaciones
-                    </button>
+                    <Button onClick={() => setOpenCreateObs(true)} text='Crear observación' />
+                    <Button onClick={() => setOpenPickDate(true)} text='Buscar observaciones' />
                   </div>
                 </div>
                 <hr className='border-black03' />
               </>
             ) : (
               <div className='w-full flex flex-col'>
-                <h1 className='self-start mt-6 text-xl2 font-medium'>
-                  OBSERVACIONES
-                </h1>
+                <h1 className='self-start mt-6 text-xl2 font-medium'>OBSERVACIONES</h1>
                 <h3 className='self-end mb-2 text-sm font-medium'>
-                  {searchDate
-                    ? formatStringDate(searchDate)
-                    : formatStringDate(actualDate)}
+                  {searchDate ? formatStringDate(searchDate) : formatStringDate(actualDate)}
                 </h3>
                 <hr className='border-black03' />
               </div>
@@ -172,18 +154,8 @@ const Observations = ({ query }: MyPageProps) => {
               {useMediaQuery(1024) ? (
                 <>
                   <div className='flex justify-between mt-4 mb-[26px]'>
-                    <button
-                      onClick={() => setOpenCreateObs(true)}
-                      className='flex items-center text-sm font-normal text-white h-7.5 px-2.5 rounded-md bg-aidam80 hover:bg-aidam70'
-                    >
-                      Crear observación
-                    </button>
-                    <button
-                      onClick={() => setOpenPickDate(true)}
-                      className='flex items-center text-sm font-normal text-white h-7.5 px-2.5 rounded-md bg-aidam80 hover:bg-aidam70'
-                    >
-                      Buscar observaciones
-                    </button>
+                    <Button onClick={() => setOpenCreateObs(true)} text='Crear observación' />
+                    <Button onClick={() => setOpenPickDate(true)} text='Buscar observaciones' />
                   </div>
                   <div className='w-full flex flex-col items-center'>
                     {patient.data?.observationsId.map(obs => {
@@ -217,9 +189,7 @@ const Observations = ({ query }: MyPageProps) => {
               ) : (
                 <div className='w-full flex flex-col items-center mt-4'>
                   <div className='w-3/4 mb-8 font-medium text-lm'>
-                    {searchDate
-                      ? formatStringDate(searchDate)
-                      : formatStringDate(actualDate)}
+                    {searchDate ? formatStringDate(searchDate) : formatStringDate(actualDate)}
                   </div>
                   {patient.data?.observationsId.length ? (
                     patient.data?.observationsId.map(obs => {
@@ -235,12 +205,7 @@ const Observations = ({ query }: MyPageProps) => {
                             />
                           );
                         } else {
-                          return (
-                            <p>
-                              El paciente no posee observaciones para la fecha
-                              seleccionada
-                            </p>
-                          );
+                          return <p>El paciente no posee observaciones para la fecha seleccionada</p>;
                         }
                       } else {
                         if (obsDate.getMonth() === actualDate.getMonth()) {
@@ -253,12 +218,7 @@ const Observations = ({ query }: MyPageProps) => {
                             />
                           );
                         } else {
-                          return (
-                            <p>
-                              El paciente no posee observaciones para la fecha
-                              seleccionada
-                            </p>
-                          );
+                          return <p>El paciente no posee observaciones para la fecha seleccionada</p>;
                         }
                       }
                     })
@@ -314,9 +274,7 @@ interface MyPageProps {
   };
 }
 
-Observations.getInitialProps = async ({
-  query,
-}: NextPageContext): Promise<MyPageProps> => {
+Observations.getInitialProps = async ({ query }: NextPageContext): Promise<MyPageProps> => {
   const castedQuery = query as unknown as MyPageProps['query'];
   return { query: castedQuery };
 };

@@ -15,15 +15,12 @@ import Modal from '@/components/Modal';
 import ArrowBack from '@/components/ArrowBack';
 import generatePDF from '@/utils/generatePDF/socialReport';
 import { croquis400x130, croquis562x179, croquis295x94 } from '@/assets/images/base64/croquis';
-import {
-  linkageNetMap296x293,
-  linkageNetMap400x400,
-  linkageNetMap600x595,
-} from '@/assets/images/base64/linkageNetMap';
+import { linkageNetMap296x293, linkageNetMap400x400, linkageNetMap600x595 } from '@/assets/images/base64/linkageNetMap';
 import SetTableData from '@/components/reports/social/SetTableData';
 import { employmentSituation, familiarGroup, socialNet, comunitaryCastMap } from '@/utils/socialReport/componentsData';
 import SocialSecurity from '@/components/reports/social/SocialSecurity';
 import { setCanvasHeight, setCanvasWidth } from '@/utils/canvas';
+import Button from '@/components/Button';
 
 const createSocial = ({ query }: MyPageProps) => {
   const router = useRouter();
@@ -464,6 +461,10 @@ const createSocial = ({ query }: MyPageProps) => {
                         width: setCanvasWidth('croquisRef', screenWidth),
                         height: setCanvasHeight('croquisRef', screenWidth),
                       }}
+                      minWidth={1}
+                      maxWidth={1}
+                      dotSize={1}
+                      velocityFilterWeight={1}
                     />
                   </div>
                   <SetTableData
@@ -707,6 +708,10 @@ const createSocial = ({ query }: MyPageProps) => {
                         width: setCanvasWidth('linkageNetMapRef', screenWidth),
                         height: setCanvasHeight('linkageNetMapRef', screenWidth),
                       }}
+                      minWidth={1}
+                      maxWidth={1}
+                      dotSize={1}
+                      velocityFilterWeight={1}
                     />
                   </div>
                   <div className='lg:w-2/3'>
@@ -912,6 +917,10 @@ const createSocial = ({ query }: MyPageProps) => {
                             width: setCanvasWidth('firmaRef', screenWidth),
                             height: setCanvasHeight('firmaRef', screenWidth),
                           }}
+                          minWidth={1}
+                          maxWidth={1}
+                          dotSize={1}
+                          velocityFilterWeight={1}
                         />
                       </div>
                     </div>
@@ -919,12 +928,7 @@ const createSocial = ({ query }: MyPageProps) => {
                 </div>
               </div>
               <div className='flex justify-end my-4'>
-                <button
-                  type='submit'
-                  className='flex items-center text-lm font-medium p-2.5 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
-                >
-                  Generar Informe
-                </button>
+                <Button type='submit' text='Generar Informe' />
               </div>
             </form>
           </div>
