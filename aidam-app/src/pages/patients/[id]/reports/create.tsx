@@ -9,6 +9,10 @@ import { hasCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
 import Modal from '@/components/Modal';
 import Button from '@/components/Button';
+import useMediaQuery from '@/hooks/useMediaQuery';
+import Navbar from '@/components/navbar/Navbar';
+import NavbarDesktop from '@/components/navbar/NavbarDesktop';
+import ArrowBack from '@/components/ArrowBack';
 
 const create = ({ query }: MyPageProps) => {
   const router = useRouter();
@@ -131,10 +135,10 @@ const create = ({ query }: MyPageProps) => {
     y += 10;
     doc.text(`DIAGNÓSTICO: ${patient.data?.diagnosis}`, 10, y);
     y += 10;
-    doc.text(`OBRA SOCIAL: ${patient.data?.socialwork}`, 10, y);
-    doc.text(`AF: ${patient.data?.affiliateNumber}`, 125, y);
+    
     y += 20;
-    centerHeaders('INFORME DE EVUALUACIÓN TERAPÉUTICA');
+ doc.text(`OBRA SOCIAL: ${patient.data?.socialwork}`, 10, y);
+    doc.text(`AF: ${patient.data?.affiliateNumber}`, 125, y);   centerHeaders('INFORME DE EVUALUACIÓN TERAPÉUTICA');
     doc.setFont('Arial', 'normal');
     doc.setFontSize(10);
     y += 10;
@@ -342,173 +346,179 @@ const create = ({ query }: MyPageProps) => {
   }, []);
 
   return (
-    <div className='md:px-14 px-3 py-10 text-xs md:text-base'>
-      <div className='flex w-full justify-between mt-11 mb-5'>
-        <h1>
-          {patient.data?.firstName} {patient.data?.lastName}
+    <>
+      {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
+      <div className='md:px-14 px-3 pb-10 mt-11 text-lh md:text-base'>
+      <ArrowBack width={40} route={`/patients/${patient.data?._id}/reports`} />
+        <div className='flex w-full justify-between mt-6 mb-5'>
+          <h1>
+            {patient.data?.firstName} {patient.data?.lastName}
+          </h1>
+          <h1 className='font-medium'>GENERAR INFORME</h1>
+        </div>
+        <hr className='mb-7' />
+        <h1 className='flex justify-center font-medium'>
+          PLAN TERAPÉUTICO INTEGRAL
         </h1>
-        <h1 className='font-medium'>GENERAR INFORME</h1>
-      </div>
-      <hr className='mb-7' />
-      <h1 className='flex justify-center font-medium'>
-        PLAN TERAPÉUTICO INTEGRAL
-      </h1>
-      <form className='flex flex-col mt-7 gap-2' onSubmit={handleFormSubmit}>
-        <h1 className='mb-2 font-medium'>INFORME DE EVALUACIÓN TERAPÉUTICA:</h1>
-        <div>
-          <label className='font-medium' htmlFor='fecha'>
-            Fecha:{' '}
-          </label>
-          <input
-            value={reportDate}
-            required
-            type='date'
-            className='border focus:border-none focus:outline-none'
-            id='fecha'
-            onChange={(e) => setReportDate(e.target.value)}
-          />
-        </div>
+        <form className='flex flex-col mt-7 gap-2' onSubmit={handleFormSubmit}>
+          <h1 className='mb-2 font-medium'>
+            INFORME DE EVALUACIÓN TERAPÉUTICA:
+          </h1>
+          <div>
+            <label className='font-medium' htmlFor='fecha'>
+              Fecha:{' '}
+            </label>
+            <input
+              value={reportDate}
+              required
+              type='date'
+              className='border focus:border-none focus:outline-none'
+              id='fecha'
+              onChange={(e) => setReportDate(e.target.value)}
+            />
+          </div>
 
-        <div className='flex'>
-          <label className='font-medium' htmlFor='period'>
-            Período:{' '}
-          </label>
-          <select
-            id='period'
-            name='period'
-            className={`bg-white bg-opacity-20 focus:border focus:outline-none border rounded-md mx-1 ${
-              firstDateWidth ? 'w-32' : 'w-fit'
-            }`}
-            required
-            onChange={(e) => {
-              setReportPeriod(e.target.value);
-              setFirstDateWidth(true);
-            }}
-          >
-            <option value='' disabled selected hidden>
-              Seleccione mes de ingreso
-            </option>
-            {months.map((month) => (
-              <option value={month}>{month}</option>
-            ))}
-          </select>
+          <div className='flex'>
+            <label className='font-medium' htmlFor='period'>
+              Período:{' '}
+            </label>
+            <select
+              id='period'
+              name='period'
+              className={`bg-white bg-opacity-20 focus:border focus:outline-none border rounded-md mx-1 ${
+                firstDateWidth ? 'w-32' : 'w-fit'
+              }`}
+              required
+              onChange={(e) => {
+                setReportPeriod(e.target.value);
+                setFirstDateWidth(true);
+              }}
+            >
+              <option value='' disabled selected hidden>
+                Seleccione mes de ingreso
+              </option>
+              {months.map((month) => (
+                <option value={month}>{month}</option>
+              ))}
+            </select>
 
-          <p>{'a Diciembre ' + currentYear}</p>
-        </div>
-        <p className='font-medium'>
-          Se realiza la evaluación inicial del área, obteniendo los siguientes
-          resultados
-        </p>
-        <div className='flex flex-col'>
-          <label className='font-regular' htmlFor='accionar'>
-            En relación al accionar del paciente y el encuadre, se puede
-            puntualizar que:{' '}
-          </label>
-          <textarea
-            required
-            id='accionar'
-            name='accionar'
-            className='rounded-xl outline-none p-3 shadow-card'
-            placeholder='Detallar aspectos generales observados al comienzo de año, encuadre y ajuste al espacio terapéutico, aspectos conductuales, entre otros.'
-            onChange={(e) => setGeneralAspects(e.target.value)}
-          />
-        </div>
-        <div className='flex flex-col'>
-          <label className='font-regular' htmlFor='observacion'>
-            En razón a los aspectos específicos del área, según lo evaluado, se
-            observa lo siguiente:{' '}
-          </label>
-          <textarea
-            required
-            id='observacion'
-            name='observacion'
-            className='rounded-xl outline-none p-3 shadow-card'
-            placeholder='Completar con los aspectos consignados en el Protocolo de Evaluación pertinentes a cada especialidad y los resultados obtenidos.'
-            onChange={(e) => setGeneralObjectives(e.target.value)}
-          />
-        </div>
-        <div className='flex flex-col'>
-          <label className='font-regular' htmlFor='foda'>
-            Se puede señalar que el paciente:{' '}
-          </label>
-          <textarea
-            required
-            id='foda'
-            name='foda'
-            className='rounded-xl outline-none p-3 shadow-card h-fit'
-            placeholder='Consignar observaciones significativas, fortalezas detectadas, entre otras.'
-            onChange={(e) => setGeneralFODA(e.target.value)}
-          />
-        </div>
-        <div className='flex mt-2'>
-          <select
-            required
-            id='period'
-            name='period'
-            className={`bg-white bg-opacity-20 p-1 focus:border focus:outline-none border rounded-md mr-1 ${
-              !planWidth ? 'w-56' : 'w-fit'
-            }`}
-            onChange={(e) => {
-              setPlanWidth(true);
-              setSelectedPlanType(e.target.value);
-            }}
-          >
-            <option value='' disabled selected hidden>
-              Seleccione el tipo de plan
-            </option>
-            {planType.map((plan) => (
-              <>
-                <option value={plan}>{plan}</option>
-              </>
-            ))}
-          </select>
-        </div>
-        <div className='flex mb-11'>
-          <label className='font-medium' htmlFor='secondPeriod'>
-            Período:
-          </label>
-          <select
-            required
-            id='secondPeriod'
-            name='secondPeriod'
-            className={`bg-white bg-opacity-20 focus:border focus:outline-none border rounded-md mx-1 ${
-              secondDateWidth ? 'w-32' : 'w-fit'
-            }`}
-            onChange={(e) => {
-              setSecondDateWidth(true);
-              setSecondPeriod(e.target.value);
-            }}
-          >
-            <option value='' disabled selected hidden>
-              Mes de inicio de terapias
-            </option>
-            {months.map((month) => (
-              <option value={month}>{month}</option>
-            ))}
-          </select>
-
-          <p>{'a Diciembre ' + currentYear}</p>
-        </div>
-        <div className='flex flex-col gap-3 mb-6'>
-          <h1 className='font-medium'>OBJETIVOS TERAPÉUTICOS</h1>
-          <p>
-            En función de lo evaluado, se proponen los siguientes objetivos
-            específicos de abordaje:
+            <p>{'a Diciembre ' + currentYear}</p>
+          </div>
+          <p className='font-medium'>
+            Se realiza la evaluación inicial del área, obteniendo los siguientes
+            resultados
           </p>
-          <div className='flex flex-col gap-2'>
-            <div className='flex gap-3'>
-              <input
-                value={objective}
-                type='text'
-                placeholder='Ingrese de a un objetivo aquí'
-                className='px-1 focus:border focus:outline-none border rounded-md w-1/2'
-                onChange={(e) => setObjective(e.target.value)}
-              />
-              <Button type='button' onClick={() => setObj(objective)} text='Agregar objetivo' />
+          <div className='flex flex-col'>
+            <label className='font-regular' htmlFor='accionar'>
+              En relación al accionar del paciente y el encuadre, se puede
+              puntualizar que:{' '}
+            </label>
+            <textarea
+              required
+              id='accionar'
+              name='accionar'
+              className='rounded-xl outline-none p-3 shadow-card'
+              placeholder='Detallar aspectos generales observados al comienzo de año, encuadre y ajuste al espacio terapéutico, aspectos conductuales, entre otros.'
+              onChange={(e) => setGeneralAspects(e.target.value)}
+            />
+          </div>
+          <div className='flex flex-col'>
+            <label className='font-regular' htmlFor='observacion'>
+              En razón a los aspectos específicos del área, según lo evaluado,
+              se observa lo siguiente:{' '}
+            </label>
+            <textarea
+              required
+              id='observacion'
+              name='observacion'
+              className='rounded-xl outline-none p-3 shadow-card'
+              placeholder='Completar con los aspectos consignados en el Protocolo de Evaluación pertinentes a cada especialidad y los resultados obtenidos.'
+              onChange={(e) => setGeneralObjectives(e.target.value)}
+            />
+          </div>
+          <div className='flex flex-col'>
+            <label className='font-regular' htmlFor='foda'>
+              Se puede señalar que el paciente:{' '}
+            </label>
+            <textarea
+              required
+              id='foda'
+              name='foda'
+              className='rounded-xl outline-none p-3 shadow-card h-fit'
+              placeholder='Consignar observaciones significativas, fortalezas detectadas, entre otras.'
+              onChange={(e) => setGeneralFODA(e.target.value)}
+            />
+          </div>
+          <div className='flex mt-2'>
+            <select
+              required
+              id='period'
+              name='period'
+              className={`bg-white bg-opacity-20 p-1 focus:border focus:outline-none border rounded-md mr-1 ${
+                !planWidth ? 'w-56' : 'w-fit'
+              }`}
+              onChange={(e) => {
+                setPlanWidth(true);
+                setSelectedPlanType(e.target.value);
+              }}
+            >
+              <option value='' disabled selected hidden>
+                Seleccione el tipo de plan
+              </option>
+              {planType.map((plan) => (
+                <>
+                  <option value={plan}>{plan}</option>
+                </>
+              ))}
+            </select>
+          </div>
+          <div className='flex mb-11'>
+            <label className='font-medium' htmlFor='secondPeriod'>
+              Período:
+            </label>
+            <select
+              required
+              id='secondPeriod'
+              name='secondPeriod'
+              className={`bg-white bg-opacity-20 focus:border focus:outline-none border rounded-md mx-1 ${
+                secondDateWidth ? 'w-32' : 'w-fit'
+              }`}
+              onChange={(e) => {
+                setSecondDateWidth(true);
+                setSecondPeriod(e.target.value);
+              }}
+            >
+              <option value='' disabled selected hidden>
+                Mes de inicio de terapias
+              </option>
+              {months.map((month) => (
+                <option value={month}>{month}</option>
+              ))}
+            </select>
+
+            <p>{'a Diciembre ' + currentYear}</p>
+          </div>
+          <div className='flex flex-col gap-3 mb-6'>
+            <h1 className='font-medium'>OBJETIVOS TERAPÉUTICOS</h1>
+            <p>
+              En función de lo evaluado, se proponen los siguientes objetivos
+              específicos de abordaje:
+            </p>
+            <div className='flex flex-col gap-2'>
+              <div className='flex gap-3'>
+                <input
+                  value={objective}
+                  type='text'
+                  placeholder='Ingrese de a un objetivo aquí'
+                  className='px-1 focus:border focus:outline-none border rounded-md w-1/2'
+                  onChange={(e) => setObjective(e.target.value)}
+                />
+                <Button type='button' onClick={() => setObj(objective)} text='Agregar objetivo' />
+              </div>
+              {therapeuticObjetives
+                ? therapeuticObjetives.map((obj) => <li>{obj}</li>)
+                : ''}
             </div>
-            {therapeuticObjetives
-              ? therapeuticObjetives.map((obj) => <li>{obj}</li>)
-              : ''}
           </div>
         </div>
         <div className='flex flex-col gap-3'>
@@ -527,23 +537,24 @@ const create = ({ query }: MyPageProps) => {
                 onChange={(e) => setStrategy(e.target.value)}
               />
               <Button type='button' onClick={() => setStrat(strategy)} text='Agregar estrategia' />
+              </div>
+              {therapeuticStrategies
+                ? therapeuticStrategies.map((strat) => <li>{strat}</li>)
+                : ''}
             </div>
-            {therapeuticStrategies
-              ? therapeuticStrategies.map((strat) => <li>{strat}</li>)
-              : ''}
           </div>
-        </div>
-        <div className='flex flex-col mt-20'>
-          <p>Firma:</p>
-          <div className='border w-fit border-rose-400'>
-            <SignatureCanvas
-              ref={signatureRef}
-              canvasProps={{
-                width: 300,
-                height: 100,
-                className: 'signature-canvas',
-              }}
-            />
+          <div className='flex flex-col mt-20'>
+            <p>Firma:</p>
+            <div className='border w-fit border-rose-400'>
+              <SignatureCanvas
+                ref={signatureRef}
+                canvasProps={{
+                  width: 300,
+                  height: 100,
+                  className: 'signature-canvas',
+                }}
+              />
+            </div>
           </div>
         </div>
         <Button type='submit' text='Generar informe' />
