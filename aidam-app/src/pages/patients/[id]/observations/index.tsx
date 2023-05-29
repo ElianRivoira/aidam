@@ -192,6 +192,7 @@ const Observations = ({ query }: MyPageProps) => {
                         if (obsDate.getMonth() === searchDate.getMonth()) {
                           return (
                             <ObservationCard
+                              onClick={() => handleOpenObs(obs._id)}
                               obs={obs}
                               key={obs._id}
                               patient={patient.data}
@@ -202,6 +203,7 @@ const Observations = ({ query }: MyPageProps) => {
                         if (obsDate.getMonth() === actualDate.getMonth()) {
                           return (
                             <ObservationCard
+                              onClick={() => handleOpenObs(obs._id)}
                               obs={obs}
                               key={obs._id}
                               patient={patient.data}

@@ -10,11 +10,8 @@ import { useRouter } from 'next/router';
 import { NextPageContext } from 'next';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import jsPDF from 'jspdf';
-import SignatureCanvas from 'react-signature-canvas';
-
 import Navbar from '@/components/navbar/Navbar';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
-import NavbarPatient from '@/components/profile/patient/NavbarPatient';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import { getOnePatient, uploadMedicalReport } from '@/services/patients';
 import {
@@ -30,11 +27,11 @@ import ArrowBack from '@/components/ArrowBack';
 import calculateAge from '@/utils/calculateAge';
 import { FisiatricCheck } from '@/components/reports/fisiatricCheck';
 import { report } from 'process';
-import ReactSignatureCanvas from 'react-signature-canvas';
-
 type setterType = {
   [name: string]: boolean;
 };
+import { setCanvasHeight, setCanvasWidth } from '@/utils/canvas';
+import { generateHCPDF } from '@/utils/generatePDF/medicalReports';
 
 const createMedical = ({ query }: MyPageProps) => {
   const router = useRouter();
@@ -44,6 +41,7 @@ const createMedical = ({ query }: MyPageProps) => {
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [successMsg, setSuccessMsg] = useState('');
+
   const [embarazoValues, setEmbarazoValues] = useState<setterType>({
     checkbox1: false,
     checkbox2: false,
@@ -187,6 +185,10 @@ const createMedical = ({ query }: MyPageProps) => {
   const [observations, setObservations] = useState('');
   const signatureRef = useRef<SignatureCanvas>(null);
   //HC
+
+  const [screenWidth, setScreenWidth] = useState<number | undefined>(undefined);
+  const firmaRef = useRef<SignatureCanvas>(null);
+
   const [medicalFormData, setMedicalFormData] = useState<MedicalFormData>({
     date1: '',
     motivoConsulta: '',
@@ -282,6 +284,12 @@ const createMedical = ({ query }: MyPageProps) => {
     if (type === 1 && !open) router.push(`/patients/${query.id}/medicsocial`);
   }, [open]);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setScreenWidth(window.innerWidth);
+    }
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setMedicalFormData({ ...medicalFormData, [name]: value });
@@ -291,6 +299,7 @@ const createMedical = ({ query }: MyPageProps) => {
     const { name, value } = e.target;
     setMedicalFormData({ ...medicalFormData, [name]: value });
   };
+
 
   const handleUpdateValue = (index: number, newValue: any) => {
     let newValueStr = String(newValue);
@@ -1078,6 +1087,7 @@ const createMedical = ({ query }: MyPageProps) => {
     }
   };
 
+
   return (
     <>
       <Head>
@@ -1085,32 +1095,29 @@ const createMedical = ({ query }: MyPageProps) => {
       </Head>
       <main className='flex flex-col items-center min-h-screen bg-background'>
         {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
-        <div className='w-full lg:px-12 lg:mt-2.5'>
-          <NavbarPatient />
+        <div className='w-full lg:px-12'>
           <div className='flex flex-col lgMax:px-4'>
-            <div className='flex justify-between items-center my-7 w-full'>
-              <div className='flex items-center gap-8'>
-                <ArrowBack route={`/patients/${query.id}/medicsocial`} />
-                <h2 className='text-xg font-medium'>
+            <div className='flex justify-between items-center my-3 lg:my-7 w-full'>
+              <div className='flex lgMax:self-start items-center lg:gap-8 gap-4'>
+                <ArrowBack route={`/patients/${query.id}/medicsocial`} width={useMediaQuery(1024) ? 33 : undefined} />
+                <h2 className='text-xg lgMax:text-lm font-medium'>
                   {patient.data?.firstName} {patient.data?.lastName}
                 </h2>
               </div>
-              <h1 className='text-xl2 font-medium'>GENERAR INFORME</h1>
+              <h1 className='text-xl2 lgMax:text-xg font-medium'>GENERAR INFORME</h1>
             </div>
             <hr className='border-black03 w-full' />
-            <h1 className='text-xl2.5 font-medium mt-7 mb-8 text-center'>
-              INFORME MÉDICO
-            </h1>
+            <h1 className='text-xl2.5 lgMax:text-xl2 font-medium mt-7 mb-8 text-center'>INFORME MÉDICO</h1>
             <div className='flex flex-col self-center mb-5'>
-              <label htmlFor='selectForm' className='text-ln'>
+              <label htmlFor='selectForm' className='text-ln lgMax:text-lb'>
                 Seleccione el tipo de informe
               </label>
               <select
                 name='selectForm'
                 id='selectForm'
                 value={formType}
-                onChange={(e) => setFormType(e.target.value)}
-                className='outline-none border border-black02 hover:border-aidam80 transition-colors rounded-md p-1 mt-1'
+                onChange={e => setFormType(e.target.value)}
+                className='outline-none lgMax:text-lb border border-black02 hover:border-aidam80 transition-colors rounded-md p-1 mt-1'
               >
                 <option value='' hidden></option>
                 <option value='hcFisiatrica'>
@@ -1120,12 +1127,10 @@ const createMedical = ({ query }: MyPageProps) => {
               </select>
             </div>
             {formType === 'hc' ? (
-              <form onSubmit={generatePDF}>
-                <h3 className='text-xb font-medium'>
-                  I - Evaluación de Crecimiento y Desarrollo
-                </h3>
-                <div className='flex mt-6'>
-                  <div className='w-1/3 px-4'>
+              <form onSubmit={(e) => generateHCPDF(e, medicalFormData, patient, loggedUser, firmaRef, uploadMed)}>
+                <h3 className='text-xb lgMax:text-ln font-medium'>I - Evaluación de Crecimiento y Desarrollo</h3>
+                <div className='flex lgMax:flex-col mt-6'>
+                  <div className='w-1/3 lgMax:w-full px-4'>
                     <DateInput
                       label='Fecha:'
                       name='date1'
@@ -1149,14 +1154,14 @@ const createMedical = ({ query }: MyPageProps) => {
                       value={medicalFormData.antecedentesFamiliares}
                       onChange={handleTextAreaChange}
                     />
-                    <label className='text-ln font-medium block mb-3'>
+                    <label className='text-ln lgMax:text-lb font-medium block mb-3'>
                       Antecedentes de embarazo y perinatales:
                     </label>
                     <TextArea
                       label='OEA:'
                       name='oea'
                       divclass='mb-2'
-                      labelclass='font-normal text-lm'
+                      labelclass='font-normal text-lm lgMax:text-ss'
                       minRows={1}
                       value={medicalFormData.oea}
                       onChange={handleTextAreaChange}
@@ -1165,7 +1170,7 @@ const createMedical = ({ query }: MyPageProps) => {
                       label='Tamiz metabólico:'
                       name='tamizMetabólico'
                       divclass='mb-2'
-                      labelclass='font-normal text-lm'
+                      labelclass='font-normal text-lm lgMax:text-ss'
                       minRows={1}
                       value={medicalFormData.tamizMetabólico}
                       onChange={handleTextAreaChange}
@@ -1174,7 +1179,7 @@ const createMedical = ({ query }: MyPageProps) => {
                       label='Factores pronósticos negativos:'
                       name='factoresNegativos'
                       divclass='mb-2'
-                      labelclass='font-normal text-lm'
+                      labelclass='font-normal text-lm lgMax:text-ss'
                       minRows={1}
                       value={medicalFormData.factoresNegativos}
                       onChange={handleTextAreaChange}
@@ -1183,20 +1188,18 @@ const createMedical = ({ query }: MyPageProps) => {
                       label='Evaluaciones y terapias conductuales o educativas complementarias y/o alternativas:'
                       name='evaluacionesComplementarias'
                       divclass='mb-2'
-                      placeholder='Ingrese las evalueaciones y terapias complementarias'
+                      placeholder='Ingrese las evaluaciones y terapias complementarias'
                       value={medicalFormData.evaluacionesComplementarias}
                       onChange={handleTextAreaChange}
                     />
                   </div>
-                  <div className='w-1/3 px-4'>
-                    <label className='text-ln font-medium block mb-3'>
-                      Desarrollo psicomotor:
-                    </label>
+                  <div className='w-1/3 lgMax:w-full px-4'>
+                    <label className='text-ln lgMax:text-lb font-medium block mb-3'>Desarrollo psicomotor:</label>
                     <TextArea
                       label='Alimentación:'
                       name='alimentacion'
                       divclass='mb-2'
-                      labelclass='font-normal text-lm'
+                      labelclass='font-normal text-lm lgMax:text-ss'
                       minRows={1}
                       value={medicalFormData.alimentacion}
                       onChange={handleTextAreaChange}
@@ -1205,7 +1208,7 @@ const createMedical = ({ query }: MyPageProps) => {
                       label='Sueño:'
                       name='sueño'
                       divclass='mb-2'
-                      labelclass='font-normal text-lm'
+                      labelclass='font-normal text-lm lgMax:text-ss'
                       minRows={1}
                       value={medicalFormData.sueño}
                       onChange={handleTextAreaChange}
@@ -1214,7 +1217,7 @@ const createMedical = ({ query }: MyPageProps) => {
                       label='Motricidad gruesa:'
                       name='motricidadGruesa'
                       divclass='mb-2'
-                      labelclass='font-normal text-lm'
+                      labelclass='font-normal text-lm lgMax:text-ss'
                       minRows={1}
                       value={medicalFormData.motricidadGruesa}
                       onChange={handleTextAreaChange}
@@ -1223,7 +1226,7 @@ const createMedical = ({ query }: MyPageProps) => {
                       label='Motricidad fina:'
                       name='motricidadFina'
                       divclass='mb-2'
-                      labelclass='font-normal text-lm'
+                      labelclass='font-normal text-lm lgMax:text-ss'
                       minRows={1}
                       value={medicalFormData.motricidadFina}
                       onChange={handleTextAreaChange}
@@ -1232,7 +1235,7 @@ const createMedical = ({ query }: MyPageProps) => {
                       label='Control de esfínteres:'
                       name='controlEsfinteres'
                       divclass='mb-2'
-                      labelclass='font-normal text-lm'
+                      labelclass='font-normal text-lm lgMax:text-ss'
                       minRows={1}
                       value={medicalFormData.controlEsfinteres}
                       onChange={handleTextAreaChange}
@@ -1241,7 +1244,7 @@ const createMedical = ({ query }: MyPageProps) => {
                       label='Temperamento:'
                       name='temperamento'
                       divclass='mb-2'
-                      labelclass='font-normal text-lm'
+                      labelclass='font-normal text-lm lgMax:text-ss'
                       minRows={1}
                       value={medicalFormData.temperamento}
                       onChange={handleTextAreaChange}
@@ -1264,7 +1267,7 @@ const createMedical = ({ query }: MyPageProps) => {
                       onChange={handleTextAreaChange}
                     />
                   </div>
-                  <div className='w-1/3 px-4'>
+                  <div className='w-1/3 lgMax:w-full px-4'>
                     <TextArea
                       label='Desarrollo social:'
                       name='desarrolloSocial'
@@ -1285,14 +1288,12 @@ const createMedical = ({ query }: MyPageProps) => {
                       value={medicalFormData.desarrolloComunicativo}
                       onChange={handleInputChange}
                     />
-                    <label className='text-ln font-medium block mb-3'>
-                      Antecedentes conductuales:
-                    </label>
+                    <label className='text-ln lgMax:text-lb font-medium block mb-3'>Antecedentes conductuales:</label>
                     <TextArea
                       label='Situación estresante en último año:'
                       name='situacionEstresante'
                       divclass='mb-2'
-                      labelclass='font-normal text-lm'
+                      labelclass='font-normal text-lm lgMax:text-ss'
                       minRows={2}
                       value={medicalFormData.situacionEstresante}
                       onChange={handleTextAreaChange}
@@ -1301,14 +1302,12 @@ const createMedical = ({ query }: MyPageProps) => {
                       label='Factores de riesgo identificados:'
                       name='factoresRiesgo'
                       divclass='mb-2'
-                      labelclass='font-normal text-lm'
+                      labelclass='font-normal text-lm lgMax:text-ss'
                       minRows={2}
                       value={medicalFormData.factoresRiesgo}
                       onChange={handleTextAreaChange}
                     />
-                    <label className='text-ln font-medium block mb-3'>
-                      Examen físico:
-                    </label>
+                    <label className='text-ln lgMax:text-lb font-medium block mb-3'>Examen físico:</label>
                     <div className='flex gap-2'>
                       <TextInput
                         label='Peso:'
@@ -1362,10 +1361,8 @@ const createMedical = ({ query }: MyPageProps) => {
                     />
                   </div>
                 </div>
-                <div className='w-2/3 mt-3'>
-                  <h3 className='text-xb font-medium'>
-                    II - Pruebas de detección estandarizadas:
-                  </h3>
+                <div className='w-2/3 lgMax:w-full mt-3 px-4'>
+                  <h3 className='text-xb lgMax:text-ln font-medium'>II - Pruebas de detección estandarizadas:</h3>
                   <TextArea
                     name='pruebasEstandarizadas'
                     divclass='mb-2'
@@ -1373,17 +1370,8 @@ const createMedical = ({ query }: MyPageProps) => {
                     onChange={handleTextAreaChange}
                   />
                 </div>
-                <div className='w-2/3 mt-3 flex flex-col'>
-                  <h3 className='text-xb font-medium'>
-                    III - Evaluación Sensorio - Motora:
-                  </h3>
-                  <DateInput
-                    name='dateA'
-                    label='Fecha:'
-                    divclass='self-end'
-                    value={medicalFormData.dateA}
-                    onChange={handleInputChange}
-                  />
+                <div className='w-2/3 lgMax:w-full mt-3 flex flex-col px-4'>
+                  <h3 className='text-xb lgMax:text-ln font-medium'>III - Evaluación Sensorio - Motora:</h3>
                   <TextArea
                     label='a) Audición:'
                     name='audicion'
@@ -1392,10 +1380,10 @@ const createMedical = ({ query }: MyPageProps) => {
                     onChange={handleTextAreaChange}
                   />
                   <DateInput
-                    name='dateB'
+                    name='dateA'
                     label='Fecha:'
                     divclass='self-end'
-                    value={medicalFormData.dateB}
+                    value={medicalFormData.dateA}
                     onChange={handleInputChange}
                   />
                   <TextArea
@@ -1406,10 +1394,10 @@ const createMedical = ({ query }: MyPageProps) => {
                     onChange={handleTextAreaChange}
                   />
                   <DateInput
-                    name='dateC'
+                    name='dateB'
                     label='Fecha:'
                     divclass='self-end'
-                    value={medicalFormData.dateC}
+                    value={medicalFormData.dateB}
                     onChange={handleInputChange}
                   />
                   <TextArea
@@ -1420,10 +1408,10 @@ const createMedical = ({ query }: MyPageProps) => {
                     onChange={handleTextAreaChange}
                   />
                   <DateInput
-                    name='dateD'
+                    name='dateC'
                     label='Fecha:'
                     divclass='self-end'
-                    value={medicalFormData.dateD}
+                    value={medicalFormData.dateC}
                     onChange={handleInputChange}
                   />
                   <TextArea
@@ -1433,16 +1421,21 @@ const createMedical = ({ query }: MyPageProps) => {
                     value={medicalFormData.evaluacionMotora}
                     onChange={handleTextAreaChange}
                   />
+                  <DateInput
+                    name='dateD'
+                    label='Fecha:'
+                    divclass='self-end'
+                    value={medicalFormData.dateD}
+                    onChange={handleInputChange}
+                  />
                 </div>
-                <div className='w-2/3 mt-3 flex flex-col'>
-                  <div className='flex justify-between items-center'>
-                    <h3 className='text-xb font-medium'>
-                      IV - Evaluación Neurocognitiva:
-                    </h3>
+                <div className='w-2/3 lgMax:w-full mt-3 flex flex-col px-4'>
+                  <div className='flex lgMax:flex-col lg:justify-between lg:items-center'>
+                    <h3 className='text-xb lgMax:text-ln font-medium'>IV - Evaluación Neurocognitiva:</h3>
                     <DateInput
                       name='dateE'
                       label='Fecha:'
-                      divclass='self-end'
+                      divclass='lg:self-end'
                       value={medicalFormData.dateE}
                       onChange={handleInputChange}
                     />
@@ -1454,15 +1447,13 @@ const createMedical = ({ query }: MyPageProps) => {
                     onChange={handleTextAreaChange}
                   />
                 </div>
-                <div className='w-2/3 mt-3 flex flex-col'>
-                  <div className='flex justify-between items-center'>
-                    <h3 className='text-xb font-medium'>
-                      V - Evaluación Neurolingüística:
-                    </h3>
+                <div className='w-2/3 lgMax:w-full mt-3 flex flex-col px-4'>
+                  <div className='flex lgMax:flex-col lg:justify-between lg:items-center'>
+                    <h3 className='text-xb lgMax:text-ln font-medium'>V - Evaluación Neurolingüística:</h3>
                     <DateInput
                       name='dateF'
                       label='Fecha:'
-                      divclass='self-end'
+                      divclass='lg:self-end'
                       value={medicalFormData.dateF}
                       onChange={handleInputChange}
                     />
@@ -1474,8 +1465,8 @@ const createMedical = ({ query }: MyPageProps) => {
                     onChange={handleTextAreaChange}
                   />
                 </div>
-                <div className='w-2/3 mt-3 flex flex-col'>
-                  <h3 className='text-xb font-medium'>VI - Diagnóstico:</h3>
+                <div className='w-2/3 lgMax:w-full mt-3 flex flex-col px-4'>
+                  <h3 className='text-xb lgMax:text-ln font-medium'>VI - Diagnóstico:</h3>
                   <TextArea
                     name='diagnostico'
                     divclass='mb-2'
@@ -1483,16 +1474,26 @@ const createMedical = ({ query }: MyPageProps) => {
                     onChange={handleTextAreaChange}
                   />
                 </div>
-                <div className='w-2/3 mt-3 flex flex-col'>
-                  <h3 className='text-xb font-medium'>
-                    VII - Sugerencias terapéuticas:
-                  </h3>
+                <div className='w-2/3 lgMax:w-full mt-3 flex flex-col px-4'>
+                  <h3 className='text-xb lgMax:text-ln font-medium'>VII - Sugerencias terapéuticas:</h3>
                   <TextArea
                     name='sugerenciasTerapeuticas'
                     divclass='mb-2'
                     value={medicalFormData.sugerenciasTerapeuticas}
                     onChange={handleTextAreaChange}
                   />
+                </div>
+                <div className='flex flex-col mt-20 px-4'>
+                  <p>Firma:</p>
+                  <div className='border rounded-md w-fit border-aidam80'>
+                    <SignatureCanvas
+                      ref={firmaRef}
+                      canvasProps={{
+                        width: setCanvasWidth('firmaRef', screenWidth),
+                        height: setCanvasHeight('firmaRef', screenWidth),
+                      }}
+                    />
+                  </div>
                 </div>
                 <div className='flex justify-end my-4'>
                   <button
