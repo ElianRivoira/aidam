@@ -44,31 +44,6 @@ const Login = () => {
     }
   }, [open]);
 
-  // --------------
-  // const [deferredPrompt, setDeferredPrompt] = useState<Event | null>(null);
-
-  // useEffect(() => {
-  //   window.addEventListener('beforeinstallprompt', (e) => {
-  //     e.preventDefault();
-  //     setDeferredPrompt(e);
-  //   });
-  // }, []);
-
-  // function handleInstallClick() {
-  //   if (deferredPrompt) {
-  //     deferredPrompt.prompt();
-  //     deferredPrompt.userChoice.then((choiceResult: any) => {
-  //       if (choiceResult.outcome === 'accepted') {
-  //         console.log('User accepted the install prompt');
-  //       } else {
-  //         console.log('User dismissed the install prompt');
-  //       }
-  //       setDeferredPrompt(null);
-  //     });
-  //   }
-  // }
-  // --------------
-
   return (
     <>
       <Head>

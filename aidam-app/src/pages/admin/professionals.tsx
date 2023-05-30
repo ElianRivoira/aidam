@@ -11,6 +11,8 @@ import ProfessionalsModal from '@/components/admin/ProfessionalsModal';
 import Modal from '@/components/Modal';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import MobileUsersCard from '@/components/MobileUsersCard';
+import Button from '@/components/Button';
+
 
 const professionals = () => {
   const [activeUsers, setActiveUsers] = useState<User[]>();
@@ -57,12 +59,7 @@ const professionals = () => {
               setSearch={setSearch}
               setActiveUsers={setActiveUsers}
             />
-            <button
-              onClick={toggleModal}
-              className='h-10 bg-aidam80 hover:bg-aidam70 transition-colors text-lb text-white font-semibold rounded-md p-4 flex items-center'
-            >
-              Dar de alta
-            </button>
+            <Button onClick={toggleModal} text='Dar de alta' classname='px-4 h-10' />
           </div>
         </div>
 

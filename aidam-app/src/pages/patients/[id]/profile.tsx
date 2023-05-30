@@ -27,6 +27,7 @@ import Modal from '@/components/Modal';
 import PickCertificateModal from '@/components/profile/patient/PickCertificateModal';
 import { getLoggedUser } from '@/services/users';
 import { handleDownloadCertificate } from '@/utils/handleDownload';
+import Button from '@/components/Button';
 
 const Profile = ({ query }: MyPageProps) => {
   const [birthDate, setBirthDate] = useState('');
@@ -119,12 +120,7 @@ const Profile = ({ query }: MyPageProps) => {
               <div className='flex justify-between items-center mt-8'>
                 <ArrowBack route='/patients' />
                 <div className='flex gap-12 relative z-0'>
-                  <button
-                    onClick={() => setOpenCertificateModal(true)}
-                    className='text-lm font-medium text-white px-4 py-2.5 h-fit rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
-                  >
-                    Certificado
-                  </button>
+                  <Button onClick={() => setOpenCertificateModal(true)} text='Certificado' />
                   {patient.data && loggedUser.data?.admin ? (
                     <DotsMenu
                       handleDelete={() => delPatient.mutate(patient.data._id)}
@@ -159,12 +155,7 @@ const Profile = ({ query }: MyPageProps) => {
                   <div className='flex flex-col px-2.5 mb-4 lg:w-1/3'>
                     <div className='flex justify-between items-center mb-4'>
                       <p className='font-semibold'>DIAGNÓSTICO</p>
-                      <button
-                        onClick={() => setOpenCertificateModal(true)}
-                        className='text-xs font-normal text-white px-4 py-2.5 rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
-                      >
-                        Certificado
-                      </button>
+                      <Button onClick={() => setOpenCertificateModal(true)} text='Certificado' />
                     </div>
                     <div className='text-sm'>{patient.data?.diagnosis}</div>
                   </div>

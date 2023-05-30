@@ -14,6 +14,7 @@ import { deleteReport, getOnePatient, uploadReport } from '@/services/patients';
 import ReportItem from '@/components/profile/patient/ReportItem';
 import UploadReportModal from '@/components/profile/patient/UploadReportModal';
 import Modal from '@/components/Modal';
+import Button from '@/components/Button';
 
 const Reports = ({ query }: MyPageProps) => {
   const [cookieError, setCookieError] = useState(false);
@@ -152,12 +153,7 @@ const Reports = ({ query }: MyPageProps) => {
                 >
                   Generar Informe
                 </Link>
-                <button
-                  onClick={() => setOpenReportModal(true)}
-                  className='flex items-center text-lm font-medium lgMax:font-normal p-2.5 lgMax:py-2 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
-                >
-                  Subir informe
-                </button>
+                <Button onClick={() => setOpenReportModal(true)} text='Subir informe' />
               </div>
             </div>
             {!useMediaQuery(1024) && <hr className='border-black03 mt-4' />}

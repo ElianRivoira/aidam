@@ -11,6 +11,7 @@ import ArrowBack from '@/components/ArrowBack';
 import { getOnePatient, putPatient } from '@/services/patients';
 import Modal from '@/components/Modal';
 import TagInputProf from '@/components/form/TagInputProfessionals';
+import Button from '@/components/Button';
 
 const editPatient = ({ query }: MyPageProps) => {
   const router = useRouter();
@@ -124,14 +125,8 @@ const editPatient = ({ query }: MyPageProps) => {
         <NavbarDesktop />
         <div className='w-full mt-12 px-12 mb-4'>
           <ArrowBack route={`/patients/${query.id}/profile`} />
-          <h1 className='text-center text-xl4 font-semibold'>
-            EDITAR PACIENTE
-          </h1>
-          <form
-            encType='multipart/form-data'
-            onSubmit={handleSubmit}
-            className='mt-20 flex flex-col'
-          >
+          <h1 className='text-center text-xl4 font-semibold'>EDITAR PACIENTE</h1>
+          <form encType='multipart/form-data' onSubmit={handleSubmit} className='mt-20 flex flex-col'>
             <div className='flex justify-evenly'>
               <div className='flex flex-col w-1/4 gap-9 items-center'>
                 <Input
@@ -157,14 +152,14 @@ const editPatient = ({ query }: MyPageProps) => {
                   onChange={e => handleChange(e)}
                   value={patientInfo.dni}
                   placeholder='12345678'
-                  />
+                />
                 <Input
                   label='Fecha de Nacimiento'
                   name='birth'
                   type='date'
                   onChange={e => handleChange(e)}
                   value={patientInfo.birth}
-                  />
+                />
                 <Input
                   label='Dirección'
                   name='adress'
@@ -240,32 +235,18 @@ const editPatient = ({ query }: MyPageProps) => {
                   value={certificate?.name}
                   onChange={e => handleFile(e)}
                 />
-                <TagInputProf
-                  tagged={professionals}
-                  setTagged={setProfessionals}
-                  patient={patient.data}
-                />
+                <TagInputProf tagged={professionals} setTagged={setProfessionals} patient={patient.data} />
               </div>
             </div>
             <div className='flex justify-evenly mt-10'>
               <div className='w-1/4'></div>
               <div className='w-1/4'></div>
               <div className='w-1/4 flex justify-end'>
-                <button
-                  type='submit'
-                  className='border px-10 py-2 rounded-md bg-aidam80 hover:bg-aidam70 transition-colors text-white w-fit self-end'
-                >
-                  Confirmar
-                </button>
+                <Button type='submit' text='Confirmar' classname='px-10 py-2' />
               </div>
             </div>
           </form>
-          <Modal
-            open={open}
-            onClose={() => setOpen(false)}
-            type={type}
-            errors={errors}
-          >
+          <Modal open={open} onClose={() => setOpen(false)} type={type} errors={errors}>
             <h1>Paciente editado satisfactoriamente</h1>
           </Modal>
         </div>
@@ -282,9 +263,7 @@ interface MyPageProps {
   };
 }
 
-editPatient.getInitialProps = async ({
-  query,
-}: NextPageContext): Promise<MyPageProps> => {
+editPatient.getInitialProps = async ({ query }: NextPageContext): Promise<MyPageProps> => {
   const castedQuery = query as unknown as MyPageProps['query'];
   return { query: castedQuery };
 };
