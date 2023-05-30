@@ -206,7 +206,7 @@ const create = ({ query }: MyPageProps) => {
             <p className='font-medium text-ln'>
               Se realiza la evaluación inicial del área, obteniendo los siguientes resultados
             </p>
-            <div className='flex flex-col'>
+            <div className='flex flex-col lg:w-2/3 w-full'>
               <TextArea
                 label='En relación al accionar del paciente y el encuadre, se puede puntualizar que:'
                 name='accionar'
@@ -216,17 +216,15 @@ const create = ({ query }: MyPageProps) => {
                 value={generalAspects}
                 onChange={e => setGeneralAspects(e.target.value)}
               />
-            </div>
-            <TextArea
-              label='En razón a los aspectos específicos del área, según lo evaluado, se observa lo siguiente:'
-              name='observacion'
-              divclass='mb-4'
-              labelclass='font-normal text-lb'
-              placeholder='Completar con los aspectos consignados en el Protocolo de Evaluación pertinentes a cada especialidad y los resultados obtenidos.'
-              value={generalObjectives}
-              onChange={e => setGeneralObjectives(e.target.value)}
-            />
-            <div className='flex flex-col'>
+              <TextArea
+                label='En razón a los aspectos específicos del área, según lo evaluado, se observa lo siguiente:'
+                name='observacion'
+                divclass='mb-4'
+                labelclass='font-normal text-lb'
+                placeholder='Completar con los aspectos consignados en el Protocolo de Evaluación pertinentes a cada especialidad y los resultados obtenidos.'
+                value={generalObjectives}
+                onChange={e => setGeneralObjectives(e.target.value)}
+              />
               <TextArea
                 label='Se puede señalar que el paciente:'
                 name='foda'
@@ -333,8 +331,8 @@ const create = ({ query }: MyPageProps) => {
                 />
               </div>
             </div>
-          </form>
           <Button type='submit' text='Generar informe' classname='mt-4' />
+          </form>
           <Modal open={open} onClose={() => setOpen(false)} type={type} errors={errors}>
             <h1>{successMsg}</h1>
           </Modal>

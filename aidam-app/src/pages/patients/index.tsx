@@ -60,11 +60,7 @@ const patients = () => {
   return (
     <>
       <Head>
-        <title>
-          {loggedUser.data?.admin
-            ? 'AIDAM Admin - Pacientes'
-            : 'AIDAM - Pacientes'}
-        </title>
+        <title>{loggedUser.data?.admin ? 'AIDAM Admin - Pacientes' : 'AIDAM - Pacientes'}</title>
       </Head>
       {useMediaQuery(1024) ? (
         <main className='bg-background'>
@@ -73,42 +69,30 @@ const patients = () => {
             <SearchBar search={search} setSearch={setSearch} searchQuery={searchedPatients} />
           </div>
           <div className='m-3.5 flex flex-col items-center'>
-            {loggedUser.data?.admin
-              ? // si es admin
-                searchedPatients.data?.map((patient, index) => (
-                  <MobileCard
-                    key={index}
-                    patient={patient}
-                    user={loggedUser.data}
-                  />
-                ))
-              : // si no es admin
-              search.length > 0
-              ? // si hay texto a buscar
-                searchedPatients.data?.map(
-                  (patient, index) =>
-                    loggedUser.data && (
-                      <MobileCard
-                        key={index}
-                        patient={patient}
-                        user={loggedUser.data}
-                      />
-                    )
-                )
-              : // si no hay texto a buscar traigo los pacientes asignados al usuario
-                loggedUser.data?.patientsId.map((patient, index) => (
-                  <MobileCard
-                    key={index}
-                    patient={patient}
-                    user={loggedUser.data}
-                  />
-                ))}
+            {loggedUser.data?.admin ? (
+              // si es admin
+              searchedPatients.data?.map((patient, index) => (
+                <MobileCard key={index} patient={patient} user={loggedUser.data} />
+              ))
+            ) : // si no es admin
+            search.length > 0 ? (
+              // si hay texto a buscar
+              searchedPatients.data?.map(
+                (patient, index) =>
+                  loggedUser.data && <MobileCard key={index} patient={patient} user={loggedUser.data} />
+              )
+            ) : (
+              // si no hay texto a buscar traigo los pacientes asignados al usuario
+              loggedUser.data?.patientsId.map((patient, index) => (
+                <MobileCard key={index} patient={patient} user={loggedUser.data} />
+              ))
+            )}
           </div>
         </main>
       ) : (
         <>
           <main className='min-h-screen bg-background'>
-          <NavbarDesktop />
+            <NavbarDesktop />
             <div className='flex justify-end mt-7 w-full'>
               <div className='w-[70%] flex justify-between items-center mr-12'>
                 <SearchBar search={search} setSearch={setSearch} searchQuery={searchedPatients} />
@@ -125,29 +109,18 @@ const patients = () => {
             <div className='mx-12 mt-14'>
               {loggedUser.data?.admin
                 ? // si es admin
-                  searchedPatients.data?.map((patient, index) => (
-                    <DesktopCard key={index} patient={patient} />
-                  ))
+                  searchedPatients.data?.map((patient, index) => <DesktopCard key={index} patient={patient} />)
                 : // si no es admin
                 search.length > 0
                 ? // si hay texto a buscar
-                  searchedPatients.data?.map((patient, index) => (
-                    <DesktopCard key={index} patient={patient} />
-                  ))
+                  searchedPatients.data?.map((patient, index) => <DesktopCard key={index} patient={patient} />)
                 : // si no hay texto a buscar traigo los pacientes asignados al usuario
-                  loggedUser.data?.patientsId.map((patient, index) => (
-                    <DesktopCard key={index} patient={patient} />
-                  ))}
+                  loggedUser.data?.patientsId.map((patient, index) => <DesktopCard key={index} patient={patient} />)}
             </div>
           </main>
         </>
       )}
-      <Modal
-        open={open}
-        onClose={() => router.push('/login')}
-        type={type}
-        errors={errors}
-      >
+      <Modal open={open} onClose={() => router.push('/login')} type={type} errors={errors}>
         <h1></h1>
       </Modal>
     </>

@@ -55,7 +55,7 @@ const Input: React.FC<inputProps> = ({
                   ? 'border-exito'
                   : 'border-error'
                 : 'border-black02'
-            } p-1.5 outline-none ${value ? '' : 'hover:border-aidam80'}`}
+            } p-1.5 outline-none ${value ? '' : 'hover:border-aidam80'} transition-colors`}
             required
             pattern={pattern}
           ></input>
