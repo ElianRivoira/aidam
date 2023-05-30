@@ -237,10 +237,9 @@ const medicSocial = ({ query }: MyPageProps) => {
                   <>
                     <div className='w-full px-4'>
                       {medicalReports.map((report, index) => {
-                        console.log(report);
                         return (
                           <ReportItem
-                            index={`${report}.medical.${index}`}
+                            index={`medicalReport.${index}`}
                             report={report}
                             setType={setType}
                             setOpen={setOpen}
@@ -299,10 +298,9 @@ const medicSocial = ({ query }: MyPageProps) => {
                   <>
                     <div className='w-full px-4'>
                       {socialReports.map((report, index) => {
-                        console.log(report);
                         return (
                           <ReportItem
-                            index={`${report}.social.${index}`}
+                            index={`socialReport-${index}`}
                             report={report}
                             setType={setType}
                             setOpen={setOpen}

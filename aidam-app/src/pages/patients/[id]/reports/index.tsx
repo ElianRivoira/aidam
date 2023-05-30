@@ -110,7 +110,6 @@ const Reports = ({ query }: MyPageProps) => {
         });
       }
       if (searchedReports.length) {
-        console.log(searchedReports, 'ASD');
         setReports(searchedReports);
       } else {
         setReports(patient.data.reports);
@@ -190,11 +189,10 @@ const Reports = ({ query }: MyPageProps) => {
                   ) : reports.length ? (
                     <>
                       <div className={`w-1/2 flex flex-col items-center ${reports ? 'border-r border-black03' : ''}`}>
-                        {reports.slice(0, Math.ceil(reports.length / 2)).map(report => {
-                          console.log('report dentro del map half1', report);
+                        {reports.slice(0, Math.ceil(reports.length / 2)).map((report, index) => {
                           return (
                             <ReportItem
-                              index={report}
+                              index={`report.half1.${index}`}
                               report={report}
                               setType={setType}
                               setOpen={setOpen}
@@ -206,9 +204,9 @@ const Reports = ({ query }: MyPageProps) => {
                         })}
                       </div>
                       <div className='w-1/2 flex flex-col items-center'>
-                        {reports.slice(Math.ceil(reports.length / 2)).map(report => (
+                        {reports.slice(Math.ceil(reports.length / 2)).map((report, index) => (
                           <ReportItem
-                            index={report}
+                            index={`report.half2.${index}`}
                             report={report}
                             setType={setType}
                             setOpen={setOpen}
