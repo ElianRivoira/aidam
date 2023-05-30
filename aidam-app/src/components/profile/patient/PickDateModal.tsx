@@ -8,14 +8,18 @@ interface PickDateModalProps {
   open: boolean;
   onClose: () => void;
   setDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+  onChange: (searchDate: Date, patient: Patient | undefined) => void;
   date: Date;
+  patient: Patient | undefined;
 }
 
 const PickDateModal: React.FC<PickDateModalProps> = ({
   open,
   onClose,
   setDate,
+  onChange,
   date,
+  patient,
 }) => {
   if (!open) return null;
 
@@ -25,6 +29,7 @@ const PickDateModal: React.FC<PickDateModalProps> = ({
     const numberMonth = Number(month) - 1;
     const date = new Date(numberYear, numberMonth);
     setDate(date);
+    onChange(date, patient);
   };
 
   return (
