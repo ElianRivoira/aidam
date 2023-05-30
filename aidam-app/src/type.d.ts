@@ -349,3 +349,19 @@ interface PhysiatricFormData {
   objectives: string;
   observations: string;
 }
+
+interface TherapistFormData {
+  therapeuticObjetives: string[];
+  objective: string;
+  therapeuticStrategies: string[];
+  strategy: string;
+  reportDate: string;
+  reportPeriod: string;
+  generalAspects: string;
+  generalObjectives: string;
+  generalFODA: string;
+  selectedPlanType: string;
+  secondPeriod: string;
+  currentDate: Date;
+  currentYear: number
+}
