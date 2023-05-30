@@ -55,7 +55,6 @@ const ReportItem: React.FC<ReportItemProps> = ({
           alt='icono de archivo'
           className='w-8'
         />
-        <span>*</span>
         <p
           className='text-lb w-full ml-1'
           onClick={() => handleDownloadReport(report, type)}

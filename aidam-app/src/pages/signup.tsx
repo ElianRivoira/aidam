@@ -156,13 +156,13 @@ const Signup = () => {
             </div>
             <button
               type='submit'
-              className='w-[165px] h-8 mt-6 rounded-md bg-aidam80 text-white font-normal text-sm hover:bg-aidam70 active:shadow-active'
+              className='w-[165px] h-8 mt-6 rounded-md bg-aidam80 text-white font-normal text-sm hover:bg-aidam70 active:shadow-active transition-colors'
             >
               Registrarse
             </button>
             <Link
               href={'/login'}
-              className='font-normal text-sm text-aidam mt-4 hover:text-aidam70'
+              className='font-normal text-sm text-aidam mt-4 hover:text-aidam80 transition-colors'
             >
               ¿Ya tenés cuenta? Iniciá sesión
             </Link>
