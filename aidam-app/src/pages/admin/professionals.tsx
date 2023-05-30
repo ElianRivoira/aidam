@@ -9,6 +9,8 @@ import DesktopCard from '@/components/DesktopCard';
 import { getAllUsers } from '@/services/users';
 import ProfessionalsModal from '@/components/admin/ProfessionalsModal';
 import Modal from '@/components/Modal';
+import useMediaQuery from '@/hooks/useMediaQuery';
+import MobileUsersCard from '@/components/MobileUsersCard';
 
 const professionals = () => {
   const [activeUsers, setActiveUsers] = useState<User[]>();
@@ -28,13 +30,13 @@ const professionals = () => {
     queryKey: ['users'],
     queryFn: getAllUsers,
     retry: 1,
-    onSuccess: data => {
-      const activeUsrs = data.filter(user => user.status === true);
-      const inactiveUsrs = data.filter(user => user.status === false);
+    onSuccess: (data) => {
+      const activeUsrs = data.filter((user) => user.status === true);
+      const inactiveUsrs = data.filter((user) => user.status === false);
       setActiveUsers(activeUsrs);
       setInactiveUsers(inactiveUsrs);
     },
-    onError: error => {
+    onError: (error) => {
       setType(2);
       setErrors((error as any).response.data.errors);
       setOpen(true);
@@ -64,12 +66,22 @@ const professionals = () => {
           </div>
         </div>
 
-        <div className='mx-12'>
-          {activeUsers?.map((user, index) => {
-            if (user.admin) return null;
-            else return <DesktopCard user={user} key={index} />;
-          })}
-        </div>
+        {useMediaQuery(1024) ? (
+          <div className='mx-12'>
+            {activeUsers?.map((user, index) => {
+              if (!user.admin)
+                return <MobileUsersCard user={user} key={index} />;
+              else return null;
+            })}
+          </div>
+        ) : (
+          <div className='mx-12'>
+            {activeUsers?.map((user, index) => {
+              if (!user.admin) return <DesktopCard user={user} key={index} />;
+              else return null;
+            })}
+          </div>
+        )}
 
         {openModal && (
           <ProfessionalsModal
