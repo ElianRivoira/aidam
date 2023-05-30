@@ -41,7 +41,7 @@ const Observations = ({ query }: MyPageProps) => {
     keepPreviousData: true,
     queryFn: () => getOnePatient(query.id),
     retry: 1,
-    onError: error => {
+    onError: (error) => {
       setType(2);
       setErrors((error as any).response.data.errors);
       setOpen(true);
@@ -54,7 +54,7 @@ const Observations = ({ query }: MyPageProps) => {
 
   const postObs = useMutation({
     mutationFn: postObservation,
-    onSuccess: newObservation => {
+    onSuccess: (newObservation) => {
       setSuccessMsg('Observación creada satisfactoriamente');
       setType(1);
       setOpen(true);
@@ -68,7 +68,7 @@ const Observations = ({ query }: MyPageProps) => {
 
   const putObs = useMutation({
     mutationFn: putObservation,
-    onSuccess: newobs => {
+    onSuccess: (newobs) => {
       setSuccessMsg('Observación modificada satisfactoriamente');
       setType(1);
       setOpen(true);
@@ -82,7 +82,7 @@ const Observations = ({ query }: MyPageProps) => {
 
   const deleteObs = useMutation({
     mutationFn: deleteObservation,
-    onSuccess: newobs => {
+    onSuccess: (newobs) => {
       setSuccessMsg('Observación eliminada correctamente');
       setType(1);
       setOpen(true);
