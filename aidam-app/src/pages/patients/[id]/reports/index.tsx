@@ -36,20 +36,20 @@ const Reports = ({ query }: MyPageProps) => {
     queryFn: () => getOnePatient(query.id),
     retry: 1,
     refetchOnWindowFocus: false,
-    onError: error => {
+    onError: (error) => {
       setType(2);
       setErrors((error as any).response.data.errors);
       setOpen(true);
       setCookieError(true);
     },
-    onSuccess: patient => {
+    onSuccess: (patient) => {
       setReports(patient.reports);
-    }
+    },
   });
 
   const upload = useMutation({
     mutationFn: uploadReport,
-    onSuccess: editedPatient => {
+    onSuccess: (editedPatient) => {
       setSuccessMsg('Informe cargado correctamente');
       onCloseReportModal();
       setType(1);
@@ -99,22 +99,26 @@ const Reports = ({ query }: MyPageProps) => {
       upload.mutate({ id: patient.data._id, form: formData });
     }
   };
-  
+
   const setSearchedReports = (search: string, reportsType?: string) => {
+    let searchedReports: string[] = [];
     if (patient.data) {
-      let searchedReports: string[] = [];
       if (search.length) {
-        searchedReports = patient.data.reports.filter(report => {
+        searchedReports = patient.data.reports.filter((report) => {
           return report.toLowerCase().includes(search.toLowerCase());
         });
       }
       if (searchedReports.length) {
+        console.log(searchedReports, 'ASD');
         setReports(searchedReports);
       } else {
         setReports(patient.data.reports);
       }
     }
-  }
+  };
+
+
+  
 
   const handleDelete = (fileName: string) => {
     delReport.mutate({ id: patient.data?._id, fileName });
@@ -168,7 +172,7 @@ const Reports = ({ query }: MyPageProps) => {
                 <>
                   {reports.length ? (
                     <div className='w-full px-4'>
-                      {reports.map(report => (
+                      {reports.map((report) => (
                         <ReportItem
                           index={report}
                           report={report}
@@ -198,7 +202,7 @@ const Reports = ({ query }: MyPageProps) => {
                       >
                         {reports
                           .slice(0, Math.ceil(reports.length / 2))
-                          .map(report => {
+                          .map((report) => {
                             console.log('report dentro del map half1', report);
                             return (
                               <ReportItem
@@ -216,7 +220,7 @@ const Reports = ({ query }: MyPageProps) => {
                       <div className='w-1/2 flex flex-col items-center'>
                         {reports
                           .slice(Math.ceil(reports.length / 2))
-                          .map(report => (
+                          .map((report) => (
                             <ReportItem
                               index={report}
                               report={report}
