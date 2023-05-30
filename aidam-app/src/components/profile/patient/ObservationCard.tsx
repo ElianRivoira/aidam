@@ -17,7 +17,7 @@ const ObservationCard: React.FC<ObsProps> = ({ obs, patient, onClick }) => {
   return (
     <div className='flex w-full rounded-2xl p-3 pr-5 shadow-card max-w-md mb-[26px]'>
       <button onClick={onClick} className='flex flex-col w-full'>
-        <h1 className='text-lb font-semibold block'>
+        <h1 className='text-lb font-semibold block text-start'>
           {obs.title}
         </h1>
         <div className='flex mt-5 items-center'>
