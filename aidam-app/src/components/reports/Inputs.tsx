@@ -255,6 +255,7 @@ export const TextInput: React.FC<InputProps> = ({
   divclass,
   labelclass,
   inputclass,
+  placeholder,
   required,
 }) => {
   return (
@@ -272,6 +273,7 @@ export const TextInput: React.FC<InputProps> = ({
         type='text'
         name={name}
         id={name}
+        placeholder={placeholder}
         value={value}
         onChange={onChange}
         className={`${inputclass} ${inputclass?.includes('w-') ? '' : 'w-full flex-1'} ${

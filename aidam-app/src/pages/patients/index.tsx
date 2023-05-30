@@ -107,8 +107,8 @@ const patients = () => {
         </main>
       ) : (
         <>
-          <NavbarDesktop />
           <main className='min-h-screen bg-background'>
+          <NavbarDesktop />
             <div className='flex justify-end mt-7 w-full'>
               <div className='w-[70%] flex justify-between items-center mr-12'>
                 <SearchBar search={search} setSearch={setSearch} searchQuery={searchedPatients} />

@@ -299,3 +299,53 @@ interface IDataToMapInputs {
   width: string;
   [key: string];
 }
+
+type setterType = {
+  [name: string]: boolean;
+};
+
+interface PhysiatricFormData {
+  reportDate: string;
+  embarazoValues: setterType;
+  embarazoOptional: string;
+  partoValues: setterType;
+  recienNacido: setterType;
+  recienNacidoOptional: string;
+  hitosDeDesarrollo: {
+    name: string;
+    value: number;
+  }[];
+  complementario: setterType;
+  cirugia: string;
+  conducta: setterType;
+  conductaOptional: string;
+  lenguaje: setterType;
+  lenguajeOptional: string;
+  vision: setterType;
+  visionOptional: string;
+  audicion: setterType;
+  audicionOptional: string;
+  comprension: setterType;
+  esfinteres: setterType;
+  alimentacion: setterType;
+  alimentacionOptional: string;
+  sueño: setterType;
+  sueñoOptional: string;
+  primaria: setterType;
+  secundaria: setterType;
+  adaptacion: setterType;
+  lectoEscritura: setterType;
+  obsLectoescritura: string;
+  diagEtiologico: string;
+  diagFuncional: string;
+  gmfcs: string;
+  marcha: setterType;
+  equipamiento: setterType;
+  fim: string;
+  barthel: string;
+  otraEscala: string;
+  medActual: string;
+  inter: string;
+  objectives: string;
+  observations: string;
+}
