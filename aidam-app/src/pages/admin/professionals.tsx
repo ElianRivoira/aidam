@@ -47,8 +47,8 @@ const professionals = () => {
       <Head>
         <title>AIDAM Admin - Profesionales</title>
       </Head>
-      <NavbarDesktop />
       <main className='min-h-screen bg-background'>
+      <NavbarDesktop />
         <div className='flex justify-end mt-7 w-full mb-14'>
           <div className='w-[70%] flex justify-between items-center mr-12'>
             <SearchBar
