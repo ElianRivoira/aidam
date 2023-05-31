@@ -12,7 +12,7 @@ import Modal from '@/components/Modal';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import MobileUsersCard from '@/components/MobileUsersCard';
 import Button from '@/components/Button';
-
+import Navbar from '@/components/navbar/Navbar';
 
 const professionals = () => {
   const [activeUsers, setActiveUsers] = useState<User[]>();
@@ -51,20 +51,44 @@ const professionals = () => {
         <title>AIDAM Admin - Profesionales</title>
       </Head>
       <main className='min-h-screen bg-background'>
-      <NavbarDesktop />
-        <div className='flex justify-end mt-7 w-full mb-14'>
-          <div className='w-[70%] flex justify-between items-center mr-12'>
-            <SearchBar
-              search={search}
-              setSearch={setSearch}
-              setActiveUsers={setActiveUsers}
-            />
-            <Button onClick={toggleModal} text='Dar de alta' classname='px-4 h-10' />
-          </div>
-        </div>
+        {useMediaQuery(1024) ? (
+          <>
+            <Navbar />
+            <div className='p-2 flex justify-around w-fit'>
+              <SearchBar
+                search={search}
+                setSearch={setSearch}
+                setActiveUsers={setActiveUsers}
+              />
+              <Button
+                onClick={toggleModal}
+                text='Dar de alta'
+                classname='px-3 h-10 ml-2'
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            <NavbarDesktop />{' '}
+            <div className='flex justify-end mt-7 w-full mb-14'>
+              <div className='w-[70%] flex justify-between items-center mr-12'>
+                <SearchBar
+                  search={search}
+                  setSearch={setSearch}
+                  setActiveUsers={setActiveUsers}
+                />
+                <Button
+                  onClick={toggleModal}
+                  text='Dar de alta'
+                  classname='px-4 h-10'
+                />
+              </div>
+            </div>
+          </>
+        )}
 
         {useMediaQuery(1024) ? (
-          <div className='mx-12'>
+          <div className='mx-2'>
             {activeUsers?.map((user, index) => {
               if (!user.admin)
                 return <MobileUsersCard user={user} key={index} />;

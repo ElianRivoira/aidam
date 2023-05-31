@@ -45,7 +45,13 @@ const Menu: React.FC<MenuProps> = ({ isOpen, setIsOpen, handleLogout }) => {
       >
         <div>
           <div className='flex justify-between items-center mb-5'>
-            <Image src={aidamTexto} alt='aidam' width={128} height={40} quality={100} />
+            <Image
+              src={aidamTexto}
+              alt='aidam'
+              width={128}
+              height={40}
+              quality={100}
+            />
             <Image
               src={x}
               alt='aidam'
@@ -55,16 +61,23 @@ const Menu: React.FC<MenuProps> = ({ isOpen, setIsOpen, handleLogout }) => {
           </div>
           <hr className='w-full border-black03' />
           <ul className='flex flex-col'>
-            <MenuOption href={`/profile/${user?._id}`} logo={profileLogo}>
-              Mi Perfil
-            </MenuOption>
+            {user?.admin ? (
+              <MenuOption href={`/admin/professionals`} logo={profileLogo}>
+                Profesionales
+              </MenuOption>
+            ) : (
+              <MenuOption href={`/profile/${user?._id}`} logo={profileLogo}>
+                Mi Perfil
+              </MenuOption>
+            )}
             <MenuOption href='/patients' logo={pacientesLogo}>
               Mis Pacientes
             </MenuOption>
           </ul>
         </div>
         <div className='flex px-4 w-full justify-center'>
-          <button className='flex bg-redLogout hover:bg-redLogout/[0.9] w-full text-white h-8 items-center justify-center rounded-[3px] text-sm'
+          <button
+            className='flex bg-redLogout hover:bg-redLogout/[0.9] w-full text-white h-8 items-center justify-center rounded-[3px] text-sm'
             onClick={handleLogout}
           >
             <Image src={logout} alt='logout' className='mr-1' />
