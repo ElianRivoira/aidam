@@ -37,8 +37,10 @@ const validateLoggedUser = [
   },
 ];
 
+
 const validateLoggedAdmin = [
   cookie('session').custom((value, { req }) => {
+    
     if (!req.session.token) {
       throw new Error('Debe estar logueado en la aplicación');
     } else {
@@ -57,4 +59,9 @@ const validateLoggedAdmin = [
   },
 ];
 
-export { validateSignUp, validateLogin, validateLoggedUser, validateLoggedAdmin };
+export {
+  validateSignUp,
+  validateLogin,
+  validateLoggedUser,
+  validateLoggedAdmin,
+};

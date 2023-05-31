@@ -10,7 +10,6 @@ import patientService from '../../models/patient-service';
 import { NotFoundError } from '../../errors/not-found-error';
 import INames from '../../interfaces/INames';
 
-
 const httpRegisterUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -105,6 +104,9 @@ async function httpUserLogin(req: Request, res: Response) {
   try {
     const response = await userService.userLogin({ email, password });
 
+    if (!response.user.status)
+      throw new Error("Todavía no estas dado de alta en la aplicación");
+
     if (req.session) {
       req.session.token = response?.token;
     }
@@ -145,8 +147,16 @@ const httpPutUser = async (req: Request, res: Response) => {
     throw new RequestValidationError(errors.array());
   }
   try {
-    const { email, phone, firstName, lastName, license, profession, _id, patients } =
-      req.body;
+    const {
+      email,
+      phone,
+      firstName,
+      lastName,
+      license,
+      profession,
+      _id,
+      patients,
+    } = req.body;
 
     const user = await userService.getLoggedUser(_id);
 
@@ -219,7 +229,7 @@ const httpUnassignPatient = async (req: Request, res: Response) => {
       );
     }
 
-    res.send({user: data, patientName});
+    res.send({ user: data, patientName });
   } catch (e) {
     console.error(e);
     throw new ServerError(e);

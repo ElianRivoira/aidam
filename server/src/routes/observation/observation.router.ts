@@ -6,7 +6,7 @@ import { validateLoggedUser } from '../../middlewares/userValidators';
 
 const router = express.Router();
 
-router.post('/', validateLoggedUser, validateObs, observationController.httpPostObservation);
+router.post('/', validateObsOwner, validateObs, observationController.httpPostObservation);
 
 router.get('/:id', validateLoggedUser, observationController.httpGetObservation);
 

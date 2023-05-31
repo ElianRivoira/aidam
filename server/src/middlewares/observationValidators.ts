@@ -19,9 +19,8 @@ const validateObsOwner = [
       const { user } = validateToken(req.session.token);
       if (user.admin) return true;
       const obsId = value;
-      console.log('HOLA', user.observationsId)
       if (user.observationsId?.includes(obsId)) return true;
-      else throw new Error('No posee permisos para editar o eliminar esta observación');
+      else throw new Error('No posee permisos para crear, editar o eliminar esta observación');
     }
   }),
   (req: Request, res: Response, next: NextFunction) => {

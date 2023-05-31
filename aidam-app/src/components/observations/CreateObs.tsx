@@ -24,14 +24,14 @@ const CreateObs: React.FC<CreateObsProps> = ({
   if (!open) return null;
   const titleRef = useRef<HTMLInputElement>(null);
   const obsRef = useRef<HTMLTextAreaElement>(null);
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (titleRef.current && obsRef.current && patient) {
-      const now = new Date()
-      const hours = now.getHours()
-      const minutes = now.getMinutes()
-      const dateObs = new Date(`${date}T${hours}:${minutes}:00`)
+      const now = new Date();
+      const hours = now.getHours();
+      const dateObs = new Date(`${date}T${hours}:${10}:00`);
+
       postObs.mutate({
         title: titleRef.current.value,
         date: dateObs,
@@ -70,9 +70,10 @@ const CreateObs: React.FC<CreateObsProps> = ({
             <input
               type='date'
               value={date}
-              onChange={e => {
-                console.log(e.target.value)
-                setDate(e.target.value)}}
+              onChange={(e) => {
+                console.log(e.target.value);
+                setDate(e.target.value);
+              }}
               id='title'
               name='title'
               placeholder='Título'
@@ -87,12 +88,12 @@ const CreateObs: React.FC<CreateObsProps> = ({
               placeholder='Describa su observación'
               className='p-1.5 border border-black02 rounded-md resize-none outline-none focus:border-aidam hover:border-aidam80 transition-colors'
             ></textarea>
-        <button
-          type='submit'
-          className='border rounded-md w-full bg-aidam80 text-white h-10 hover:bg-aidam70 active:shadow-active transition-colors'
-        >
-          Crear
-        </button>
+            <button
+              type='submit'
+              className='border rounded-md w-full bg-aidam80 text-white h-10 hover:bg-aidam70 active:shadow-active transition-colors'
+            >
+              Crear
+            </button>
           </form>
         </div>
       </div>
