@@ -1,7 +1,8 @@
+import { NextFunction, Request, Response } from 'express';
 import { body, param, validationResult } from 'express-validator';
+
 import { validateToken } from '../utils/tokens';
 import { RequestValidationError } from '../errors/request-validation-error';
-import { NextFunction, Request, Response } from 'express';
 
 const validateObs = [
   body('title').notEmpty().withMessage('El título de la observación es requerido'),

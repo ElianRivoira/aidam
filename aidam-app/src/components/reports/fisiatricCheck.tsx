@@ -30,8 +30,8 @@ export const FisiatricCheck: React.FC<InputProps> = ({
     }
   };
   return (
-    <div className='w-2/3'>
-      {title ? <h3 className='font-bold'>{title}: </h3> : ''}
+    <div className='lg:w-2/3'>
+      {title && <h3 className='font-bold'>{title}: </h3>}
       <div className='flex flex-wrap w-full gap-2'>
         {array
           ? array.map((type, index) => {
@@ -45,7 +45,6 @@ export const FisiatricCheck: React.FC<InputProps> = ({
                     checked={booleanObject[`checkbox${iString}`]}
                     onChange={onChangeCheck}
                   />
-                  
                 </label>
               );
               i++;
@@ -53,18 +52,18 @@ export const FisiatricCheck: React.FC<InputProps> = ({
             })
           : ''}
       </div>
-      {inputText ? (
-        <label htmlFor='patologia' className='flex gap-2 w-full'>
+      {inputText && (
+        <label htmlFor={inputText} className='flex gap-2 w-full mt-1'>
           <p>{inputText}:</p>
           <input
             type='text'
+            name={inputText}
+            id={inputText}
             placeholder={placeholder}
-            className='px-1 w-full'
+            className='px-1 w-full border border-slate-300 hover:border-aidam80 rounded-md transition-colors outline-none'
             onChange={handleChange}
           />
         </label>
-      ) : (
-        ''
       )}
     </div>
   );

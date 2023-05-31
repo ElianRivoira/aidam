@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { GetServerSideProps, NextPageContext } from 'next';
+import { NextPageContext } from 'next';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import SearchBar from '@/components/SearchBar';
+// import SearchBar from '@/components/SearchBar';
 import Navbar from '@/components/navbar/Navbar';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import NavbarPatient from '@/components/profile/patient/NavbarPatient';
@@ -21,14 +21,15 @@ import ReportItem from '@/components/profile/patient/ReportItem';
 import UploadReportModal from '@/components/profile/patient/UploadReportModal';
 import Modal from '@/components/Modal';
 import Button from '@/components/Button';
+import Spinner from '@/components/Spinner';
 
 const medicSocial = ({ query }: MyPageProps) => {
   const [cookieError, setCookieError] = useState(false);
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
-  const [searchMedicals, setSearchMedicals] = useState('');
-  const [searchSocials, setSearchSocials] = useState('');
+  // const [searchMedicals, setSearchMedicals] = useState('');
+  // const [searchSocials, setSearchSocials] = useState('');
   const [openReportModal, setOpenReportModal] = useState(false);
   const [newReport, setNewReport] = useState<File | null>(null);
   const [successMsg, setSuccessMsg] = useState('');
@@ -122,29 +123,29 @@ const medicSocial = ({ query }: MyPageProps) => {
     setNewReport(null);
   };
 
-  const setSearchedReports = (search: string, reportsType?: string) => {
-    if (patient.data) {
-      let searchedReports: string[] = [];
-      if (search.length) {
-        if (reportsType === 'medical') {
-          searchedReports = patient.data.medicalReports.filter(report => {
-            return report.toLowerCase().includes(search.toLowerCase());
-          });
-        } else if (reportsType === 'social') {
-          searchedReports = patient.data.socialReports.filter(report => {
-            return report.toLowerCase().includes(search.toLowerCase());
-          });
-        }
-      }
-      if (searchedReports.length) {
-        reportsType === 'medical' && setMedicalReports(searchedReports);
-        reportsType === 'social' && setSocialReports(searchedReports);
-      } else {
-        reportsType === 'medical' && setMedicalReports(patient.data.medicalReports);
-        reportsType === 'social' && setSocialReports(patient.data.socialReports);
-      }
-    }
-  };
+  // const setSearchedReports = (search: string, reportsType?: string) => {
+  //   if (patient.data) {
+  //     let searchedReports: string[] = [];
+  //     if (search.length) {
+  //       if (reportsType === 'medical') {
+  //         searchedReports = patient.data.medicalReports.filter(report => {
+  //           return report.toLowerCase().includes(search.toLowerCase());
+  //         });
+  //       } else if (reportsType === 'social') {
+  //         searchedReports = patient.data.socialReports.filter(report => {
+  //           return report.toLowerCase().includes(search.toLowerCase());
+  //         });
+  //       }
+  //     }
+  //     if (searchedReports.length) {
+  //       reportsType === 'medical' && setMedicalReports(searchedReports);
+  //       reportsType === 'social' && setSocialReports(searchedReports);
+  //     } else {
+  //       reportsType === 'medical' && setMedicalReports(patient.data.medicalReports);
+  //       reportsType === 'social' && setSocialReports(patient.data.socialReports);
+  //     }
+  //   }
+  // };
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
@@ -193,7 +194,10 @@ const medicSocial = ({ query }: MyPageProps) => {
         {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
         <div className='w-full lg:px-12 lg:mt-2.5'>
           <NavbarPatient />
-          <div className='flex lgMax:flex-col w-full mt-5'>
+          <h2 className='text-lm font-medium text-start flex items-center mt-2'>
+            {patient.data?.firstName} {patient.data?.lastName}
+          </h2>
+          <div className='flex lgMax:flex-col w-full'>
             <div className='flex flex-col lg:w-1/2 lgMax:px-4 lg:border-r border-black03 pr-5'>
               <div className='flex lgMax:flex-col lg:items-center justify-between'>
                 <h1 className='text-xl2 font-medium lgMax:my-5'>INFORMES MÉDICOS</h1>
@@ -215,7 +219,7 @@ const medicSocial = ({ query }: MyPageProps) => {
                 </div>
               </div>
               {!useMediaQuery(1024) && <hr className='border-black03 mt-4' />}
-              <div className='flex justify-center lg:w-2/3 w-full mt-5 self-center'>
+              {/* <div className='flex justify-center lg:w-2/3 w-full mt-5 self-center'>
                 <SearchBar
                   search={searchMedicals}
                   setSearch={setSearchMedicals}
@@ -223,16 +227,19 @@ const medicSocial = ({ query }: MyPageProps) => {
                   searchFn={setSearchedReports}
                   reportsType='medical'
                 />
-              </div>
+              </div> */}
               <div className={`flex w-full mt-8 ${medicalReports.length ? 'lg:min-h-[300px]' : ''}`}>
-                {medicalReports.length ? (
+                {patient.isFetching ? (
+                  <div className='h-14 flex justify-center w-full'>
+                    <Spinner />
+                  </div>
+                ) : medicalReports.length ? (
                   <>
                     <div className='w-full px-4'>
                       {medicalReports.map((report, index) => {
-                        console.log(report);
                         return (
                           <ReportItem
-                            index={`${report}.medical.${index}`}
+                            index={`medicalReport.${index}`}
                             report={report}
                             setType={setType}
                             setOpen={setOpen}
@@ -273,7 +280,7 @@ const medicSocial = ({ query }: MyPageProps) => {
                 </div>
               </div>
               {!useMediaQuery(1024) && <hr className='border-black03 mt-4' />}
-              <div className='flex justify-center lg:w-2/3 w-full mt-5 self-center'>
+              {/* <div className='flex justify-center lg:w-2/3 w-full mt-5 self-center'>
                 <SearchBar
                   search={searchSocials}
                   setSearch={setSearchSocials}
@@ -281,16 +288,19 @@ const medicSocial = ({ query }: MyPageProps) => {
                   searchFn={setSearchedReports}
                   reportsType='social'
                 />
-              </div>
+              </div> */}
               <div className={`flex w-full mt-8 ${socialReports.length ? 'min-h-[300px]' : ''}`}>
-                {socialReports.length ? (
+                {patient.isFetching ? (
+                  <div className='h-14 flex justify-center w-full'>
+                    <Spinner />
+                  </div>
+                ) : socialReports.length ? (
                   <>
                     <div className='w-full px-4'>
                       {socialReports.map((report, index) => {
-                        console.log(report);
                         return (
                           <ReportItem
-                            index={`${report}.social.${index}`}
+                            index={`socialReport-${index}`}
                             report={report}
                             setType={setType}
                             setOpen={setOpen}

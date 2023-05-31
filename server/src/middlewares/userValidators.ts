@@ -1,5 +1,6 @@
-import { body, cookie, validationResult } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
+import { body, cookie, validationResult } from 'express-validator';
+
 import { RequestValidationError } from '../errors/request-validation-error';
 import { validateToken } from '../utils/tokens';
 

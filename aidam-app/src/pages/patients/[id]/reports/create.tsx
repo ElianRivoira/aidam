@@ -1,18 +1,22 @@
-import { getOnePatient, uploadReport } from '@/services/patients';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { NextPageContext } from 'next';
 import React, { useEffect, useRef, useState } from 'react';
-import SignatureCanvas from 'react-signature-canvas';
-import jsPDF from 'jspdf';
-import { getLoggedUser } from '@/services/users';
-import { hasCookie } from 'cookies-next';
+import { NextPageContext } from 'next';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
+import { hasCookie } from 'cookies-next';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import SignatureCanvas from 'react-signature-canvas';
+
+import { getOnePatient, uploadReport } from '@/services/patients';
+import { getLoggedUser } from '@/services/users';
 import Modal from '@/components/Modal';
 import Button from '@/components/Button';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import Navbar from '@/components/navbar/Navbar';
 import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import ArrowBack from '@/components/ArrowBack';
+import { DateInput, TextArea } from '@/components/reports/Inputs';
+import { setCanvasHeight, setCanvasWidth } from '@/utils/canvas';
+import { generateTRPDF } from '@/utils/generatePDF/therapistReport';
 
 const create = ({ query }: MyPageProps) => {
   const router = useRouter();
@@ -23,14 +27,10 @@ const create = ({ query }: MyPageProps) => {
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [cookieError, setCookieError] = useState(false);
-  const [therapeuticObjetives, setTherapeuticObjetives] = useState<
-    Array<string>
-  >([]);
-  const [objective, setObjective] = useState<string>('');
-  const [therapeuticStrategies, setTherapeuticStrategies] = useState<
-    Array<string>
-  >([]);
-  const [strategy, setStrategy] = useState<string>('');
+  const [therapeuticObjetives, setTherapeuticObjetives] = useState<Array<string>>([]);
+  const [objective, setObjective] = useState('');
+  const [therapeuticStrategies, setTherapeuticStrategies] = useState<Array<string>>([]);
+  const [strategy, setStrategy] = useState('');
   const [reportDate, setReportDate] = useState('');
   const [reportPeriod, setReportPeriod] = useState('');
   const [generalAspects, setGeneralAspects] = useState('');
@@ -39,8 +39,9 @@ const create = ({ query }: MyPageProps) => {
   const [selectedPlanType, setSelectedPlanType] = useState('');
   const [secondPeriod, setSecondPeriod] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [screenWidth, setScreenWidth] = useState<number | undefined>(undefined);
 
-  const signatureRef = useRef<SignatureCanvas>(null);
+  const firmaRef = useRef<SignatureCanvas>(null);
 
   const [months, setMonths] = useState([
     'Enero',
@@ -64,232 +65,15 @@ const create = ({ query }: MyPageProps) => {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    let birthDate;
-    if (patient.data?.birth) {
-      birthDate = new Date(patient.data?.birth);
-      birthDate = birthDate.toLocaleString().split(',');
-      birthDate = birthDate[0];
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setScreenWidth(window.innerWidth);
     }
-
-    let signatureData;
-    if (signatureRef.current) {
-      signatureData = signatureRef.current.toDataURL();
-    }
-
-    let y = 10;
-
-    const doc = new jsPDF();
-    doc.setFont('Arial');
-    doc.setFontSize(10);
-    const lineHeight = 10;
-    const spacing = 6;
-    const headingFontSize = 14;
-
-    function checkPageBreak() {
-      const pageHeight = doc.internal.pageSize.getHeight();
-      if (y > pageHeight - lineHeight) {
-        doc.addPage();
-        y = 10;
-      }
-    }
-
-    function centerHeaders(text: string) {
-      const headingText = text;
-      const headingFontWidth =
-        (doc.getStringUnitWidth(headingText) * headingFontSize) /
-        doc.internal.scaleFactor;
-      const headingX =
-        (doc.internal.pageSize.getWidth() - headingFontWidth) / 2;
-      doc.setFont('Arial', 'bold');
-      doc.setFontSize(headingFontSize);
-      doc.text(headingText, headingX, y);
-    }
-
-    centerHeaders('PLAN TERAPÉUTICO INTEGRAL');
-    y += 10;
-    doc.setFontSize(10);
-    doc.text(`FECHA: ${reportDate}`, 10, y);
-    y += 10;
-    doc.text(`PERÍODO: ${reportPeriod} a Diciembre ${currentYear}`, 10, y);
-    y += 10;
-    doc.text(`ESPECIALIDAD: ${user?.profession}`, 10, y);
-    y += 10;
-    doc.text(`PROFESIONAL: ${user?.firstName} ${user?.lastName}`, 10, y);
-    y += 10;
-    doc.textWithLink(`DATOS DEL PACIENTE:`, 10, y, {
-      url: '',
-      decoration: 'underline',
-    });
-    y += 10;
-    doc.text(
-      `NOMBRE Y APELLIDO: ${patient.data?.firstName} ${patient.data?.lastName}`,
-      10,
-      y
-    );
-    y += 10;
-    doc.text(`FECHA DE NACIMIENTO: ${birthDate}`, 10, y);
-    y += 10;
-    doc.text(`DNI: ${patient.data?.dni}`, 10, y);
-    y += 10;
-    doc.text(`DIAGNÓSTICO: ${patient.data?.diagnosis}`, 10, y);
-    y += 10;
-    
-    y += 20;
- doc.text(`OBRA SOCIAL: ${patient.data?.socialwork}`, 10, y);
-    doc.text(`AF: ${patient.data?.affiliateNumber}`, 125, y);   centerHeaders('INFORME DE EVUALUACIÓN TERAPÉUTICA');
-    doc.setFont('Arial', 'normal');
-    doc.setFontSize(10);
-    y += 10;
-    doc.text(
-      'Se realiza la evaluación inicial del área, obteniendo los siguientes resultados:',
-      10,
-      y
-    );
-    y += 10;
-    const maxWidth = 180;
-
-    const generalAspectsText =
-      'En relación al accionar del paciente y el encuadre, se puede puntualizar que: ' +
-      generalAspects;
-
-    const splitText = doc.splitTextToSize(generalAspectsText, maxWidth);
-    splitText.forEach((line: string) => {
-      doc.text(line, 10, y);
-      y += lineHeight;
-      checkPageBreak();
-    });
-
-    const generalObjectivesText =
-      'En razón a los aspectos específicos del área, según lo evaluado, se observa lo siguiente: ' +
-      generalObjectives;
-
-    const splitSecondText = doc.splitTextToSize(
-      generalObjectivesText,
-      maxWidth
-    );
-    splitSecondText.forEach((line: string) => {
-      doc.text(line, 10, y);
-      y += lineHeight;
-      checkPageBreak();
-    });
-
-    const generalFODAText = 'Se puede señalar  que el paciente: ' + generalFODA;
-
-    const splitThirdText = doc.splitTextToSize(generalFODAText, maxWidth);
-    splitThirdText.forEach((line: string) => {
-      doc.text(line, 10, y);
-      y += lineHeight;
-      checkPageBreak();
-    });
-
-    y += 10;
-
-    centerHeaders(selectedPlanType);
-
-    y += 10;
-
-    doc.setFontSize(10);
-
-    doc.text(`PERÍODO: ${secondPeriod} a Diciembre 2023`, 10, y);
-
-    y += 10;
-
-    doc.setFontSize(14);
-
-    doc.text('OBJETIVOS TERAPÉUTICOS', 10, y);
-
-    y += 10;
-
-    doc.setFont('Arial', 'normal');
-    doc.setFontSize(10);
-
-    doc.text(
-      'En función de lo evaluado, se proponen los siguientes objetivos específicos de abordaje: ',
-      10,
-      y
-    );
-
-    y += 10;
-    checkPageBreak();
-
-    therapeuticObjetives.forEach((objective) => {
-      doc.setFont('Arial');
-      doc.setFontSize(10);
-      doc.setTextColor(0, 0, 0);
-      doc.text(`\u2022 ${objective}`, 10, y, { align: 'justify' });
-      checkPageBreak();
-      y += spacing;
-    });
-
-    y += 10;
-
-    doc.setFontSize(14);
-    checkPageBreak();
-
-    doc.setFont('Arial', 'bold');
-
-    doc.text('ESTRATEGIAS DE INTERVENCIÓN', 10, y);
-
-    y += 10;
-    checkPageBreak();
-
-    doc.setFont('Arial', 'normal');
-    doc.setFontSize(10);
-
-    doc.text(
-      'Los objetivos planteados se desarrollaran a partir de las siguientes estrategias de intervención: ',
-      10,
-      y
-    );
-    checkPageBreak();
-
-    y += 10;
-
-    therapeuticStrategies.forEach((strat) => {
-      doc.setFont('Arial');
-      doc.setFontSize(10);
-      doc.setTextColor(0, 0, 0);
-      doc.text(`\u2022 ${strat}`, 10, y, { align: 'justify' });
-      checkPageBreak();
-      y += spacing;
-    });
-
-    y += 10;
-    checkPageBreak();
-    const signatureWidth = 70;
-    const signatureHeight = 30;
-
-    if (signatureData)
-      doc.addImage(
-        signatureData,
-        'PNG',
-        10,
-        y,
-        signatureWidth,
-        signatureHeight
-      );
-    doc.text(`${user?.firstName} ${user?.lastName}`, 125, y + 10);
-
-    checkPageBreak();
-
-    const blobDoc = doc.output('blob');
-    const file = new File([blobDoc], `${selectedPlanType}`, {
-      type: 'application/pdf',
-    });
-    if (patient.data) {
-      const formData = new FormData();
-      formData.append('firstName', patient.data.firstName);
-      formData.append('lastName', patient.data.lastName);
-      formData.append('report', file as Blob);
-      upload.mutate({ id: patient.data._id, form: formData });
-    }
-  };
+  }, []);
 
   const upload = useMutation({
     mutationFn: uploadReport,
-    onSuccess: (editedPatient) => {
+    onSuccess: editedPatient => {
       setSuccessMsg('Informe cargado correctamente');
       setType(1);
       setOpen(true);
@@ -306,7 +90,7 @@ const create = ({ query }: MyPageProps) => {
     keepPreviousData: true,
     queryFn: () => getOnePatient(query.id),
     retry: 1,
-    onError: (error) => {
+    onError: error => {
       setType(2);
       setErrors((error as any).response.data.errors);
       setOpen(true);
@@ -345,229 +129,216 @@ const create = ({ query }: MyPageProps) => {
     }
   }, []);
 
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    generateTRPDF(e, patient, user, firmaRef, upload, {
+      therapeuticObjetives,
+      objective,
+      therapeuticStrategies,
+      strategy,
+      reportDate,
+      reportPeriod,
+      generalAspects,
+      generalObjectives,
+      generalFODA,
+      selectedPlanType,
+      secondPeriod,
+      currentDate,
+      currentYear,
+    });
+  };
+
   return (
     <>
-      {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
-      <div className='md:px-14 px-3 pb-10 mt-11 text-lh md:text-base'>
-      <ArrowBack width={40} route={`/patients/${patient.data?._id}/reports`} />
-        <div className='flex w-full justify-between mt-6 mb-5'>
-          <h1>
-            {patient.data?.firstName} {patient.data?.lastName}
-          </h1>
-          <h1 className='font-medium'>GENERAR INFORME</h1>
-        </div>
-        <hr className='mb-7' />
-        <h1 className='flex justify-center font-medium'>
-          PLAN TERAPÉUTICO INTEGRAL
-        </h1>
-        <form className='flex flex-col mt-7 gap-2' onSubmit={handleFormSubmit}>
-          <h1 className='mb-2 font-medium'>
-            INFORME DE EVALUACIÓN TERAPÉUTICA:
-          </h1>
-          <div>
-            <label className='font-medium' htmlFor='fecha'>
-              Fecha:{' '}
-            </label>
-            <input
-              value={reportDate}
-              required
-              type='date'
-              className='border focus:border-none focus:outline-none'
-              id='fecha'
-              onChange={(e) => setReportDate(e.target.value)}
-            />
-          </div>
-
-          <div className='flex'>
-            <label className='font-medium' htmlFor='period'>
-              Período:{' '}
-            </label>
-            <select
-              id='period'
-              name='period'
-              className={`bg-white bg-opacity-20 focus:border focus:outline-none border rounded-md mx-1 ${
-                firstDateWidth ? 'w-32' : 'w-fit'
-              }`}
-              required
-              onChange={(e) => {
-                setReportPeriod(e.target.value);
-                setFirstDateWidth(true);
-              }}
-            >
-              <option value='' disabled selected hidden>
-                Seleccione mes de ingreso
-              </option>
-              {months.map((month) => (
-                <option value={month}>{month}</option>
-              ))}
-            </select>
-
-            <p>{'a Diciembre ' + currentYear}</p>
-          </div>
-          <p className='font-medium'>
-            Se realiza la evaluación inicial del área, obteniendo los siguientes
-            resultados
-          </p>
-          <div className='flex flex-col'>
-            <label className='font-regular' htmlFor='accionar'>
-              En relación al accionar del paciente y el encuadre, se puede
-              puntualizar que:{' '}
-            </label>
-            <textarea
-              required
-              id='accionar'
-              name='accionar'
-              className='rounded-xl outline-none p-3 shadow-card'
-              placeholder='Detallar aspectos generales observados al comienzo de año, encuadre y ajuste al espacio terapéutico, aspectos conductuales, entre otros.'
-              onChange={(e) => setGeneralAspects(e.target.value)}
-            />
-          </div>
-          <div className='flex flex-col'>
-            <label className='font-regular' htmlFor='observacion'>
-              En razón a los aspectos específicos del área, según lo evaluado,
-              se observa lo siguiente:{' '}
-            </label>
-            <textarea
-              required
-              id='observacion'
-              name='observacion'
-              className='rounded-xl outline-none p-3 shadow-card'
-              placeholder='Completar con los aspectos consignados en el Protocolo de Evaluación pertinentes a cada especialidad y los resultados obtenidos.'
-              onChange={(e) => setGeneralObjectives(e.target.value)}
-            />
-          </div>
-          <div className='flex flex-col'>
-            <label className='font-regular' htmlFor='foda'>
-              Se puede señalar que el paciente:{' '}
-            </label>
-            <textarea
-              required
-              id='foda'
-              name='foda'
-              className='rounded-xl outline-none p-3 shadow-card h-fit'
-              placeholder='Consignar observaciones significativas, fortalezas detectadas, entre otras.'
-              onChange={(e) => setGeneralFODA(e.target.value)}
-            />
-          </div>
-          <div className='flex mt-2'>
-            <select
-              required
-              id='period'
-              name='period'
-              className={`bg-white bg-opacity-20 p-1 focus:border focus:outline-none border rounded-md mr-1 ${
-                !planWidth ? 'w-56' : 'w-fit'
-              }`}
-              onChange={(e) => {
-                setPlanWidth(true);
-                setSelectedPlanType(e.target.value);
-              }}
-            >
-              <option value='' disabled selected hidden>
-                Seleccione el tipo de plan
-              </option>
-              {planType.map((plan) => (
-                <>
-                  <option value={plan}>{plan}</option>
-                </>
-              ))}
-            </select>
-          </div>
-          <div className='flex mb-11'>
-            <label className='font-medium' htmlFor='secondPeriod'>
-              Período:
-            </label>
-            <select
-              required
-              id='secondPeriod'
-              name='secondPeriod'
-              className={`bg-white bg-opacity-20 focus:border focus:outline-none border rounded-md mx-1 ${
-                secondDateWidth ? 'w-32' : 'w-fit'
-              }`}
-              onChange={(e) => {
-                setSecondDateWidth(true);
-                setSecondPeriod(e.target.value);
-              }}
-            >
-              <option value='' disabled selected hidden>
-                Mes de inicio de terapias
-              </option>
-              {months.map((month) => (
-                <option value={month}>{month}</option>
-              ))}
-            </select>
-
-            <p>{'a Diciembre ' + currentYear}</p>
-          </div>
-          <div className='flex flex-col gap-3 mb-6'>
-            <h1 className='font-medium'>OBJETIVOS TERAPÉUTICOS</h1>
-            <p>
-              En función de lo evaluado, se proponen los siguientes objetivos
-              específicos de abordaje:
-            </p>
-            <div className='flex flex-col gap-2'>
-              <div className='flex gap-3'>
-                <input
-                  value={objective}
-                  type='text'
-                  placeholder='Ingrese de a un objetivo aquí'
-                  className='px-1 focus:border focus:outline-none border rounded-md w-1/2'
-                  onChange={(e) => setObjective(e.target.value)}
-                />
-                <Button type='button' onClick={() => setObj(objective)} text='Agregar objetivo' />
-              </div>
-              {therapeuticObjetives
-                ? therapeuticObjetives.map((obj) => <li>{obj}</li>)
-                : ''}
+      <Head>
+        <title>{`AIDAM - Generar informe`}</title>
+      </Head>
+      <main className='flex flex-col items-center min-h-screen bg-background'>
+        {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
+        <div className='w-full md:px-14 px-4 pb-10 text-lh md:text-base'>
+          <div className='flex justify-between items-center my-3 lg:my-7 w-full'>
+            <div className='flex lgMax:self-start items-center lg:gap-8 gap-4'>
+              <ArrowBack width={40} route={`/patients/${patient.data?._id}/reports`} />
+              <h2 className='text-xg lgMax:text-lm font-medium'>
+                {patient.data?.firstName} {patient.data?.lastName}
+              </h2>
             </div>
+            <h1 className='text-xl2 lgMax:text-xg font-medium'>GENERAR INFORME</h1>
           </div>
-        </div>
-        <div className='flex flex-col gap-3'>
-          <h1 className='font-medium'>ESTRATEGIAS DE INTERVENCIÓN</h1>
-          <p>
-            Los objetivos planteados se desarrollaran a partir de las siguientes
-            estrategias de intervención:
-          </p>
-          <div className='flex flex-col gap-2'>
-            <div className='flex gap-3'>
-              <input
-                value={strategy}
-                type='text'
-                placeholder='Ingrese de a una estrategia aquí'
-                className='px-1 focus:border focus:outline-none border rounded-md w-1/2'
-                onChange={(e) => setStrategy(e.target.value)}
+          <hr className='mb-7 border-black03 w-full' />
+          <h1 className='text-xl2.5 font-medium mt-7 mb-8 text-center'>PLAN TERAPÉUTICO INTEGRAL</h1>
+          <form className='flex flex-col mt-7 gap-2' onSubmit={handleFormSubmit}>
+            <h1 className='mb-2 font-medium'>INFORME DE EVALUACIÓN TERAPÉUTICA:</h1>
+            <div>
+              <DateInput
+                label='Fecha:'
+                name='reportDate'
+                divclass='mb-8'
+                value={reportDate}
+                onChange={e => setReportDate(e.target.value)}
               />
-              <Button type='button' onClick={() => setStrat(strategy)} text='Agregar estrategia' />
-              </div>
-              {therapeuticStrategies
-                ? therapeuticStrategies.map((strat) => <li>{strat}</li>)
-                : ''}
             </div>
-          </div>
-          <div className='flex flex-col mt-20'>
-            <p>Firma:</p>
-            <div className='border w-fit border-rose-400'>
-              <SignatureCanvas
-                ref={signatureRef}
-                canvasProps={{
-                  width: 300,
-                  height: 100,
-                  className: 'signature-canvas',
+            <div className='flex'>
+              <label className='font-medium' htmlFor='period'>
+                Período:{' '}
+              </label>
+              <select
+                id='period'
+                name='period'
+                className={`bg-white bg-opacity-20 focus:border focus:outline-none border border-slate-300 hover:border-aidam80 rounded-md mx-1 ${
+                  firstDateWidth ? 'w-32' : 'w-fit'
+                }`}
+                required
+                onChange={e => {
+                  setReportPeriod(e.target.value);
+                  setFirstDateWidth(true);
                 }}
+              >
+                <option value='' hidden>
+                  Seleccione mes de ingreso
+                </option>
+                {months.map(month => (
+                  <option value={month}>{month}</option>
+                ))}
+              </select>
+
+              <p>{'a Diciembre ' + currentYear}</p>
+            </div>
+            <p className='font-medium text-ln'>
+              Se realiza la evaluación inicial del área, obteniendo los siguientes resultados
+            </p>
+            <div className='flex flex-col lg:w-2/3 w-full'>
+              <TextArea
+                label='En relación al accionar del paciente y el encuadre, se puede puntualizar que:'
+                name='accionar'
+                divclass='mb-4'
+                labelclass='font-normal text-lb'
+                placeholder='Detallar aspectos generales observados al comienzo de año, encuadre y ajuste al espacio terapéutico, aspectos conductuales, entre otros.'
+                value={generalAspects}
+                onChange={e => setGeneralAspects(e.target.value)}
+              />
+              <TextArea
+                label='En razón a los aspectos específicos del área, según lo evaluado, se observa lo siguiente:'
+                name='observacion'
+                divclass='mb-4'
+                labelclass='font-normal text-lb'
+                placeholder='Completar con los aspectos consignados en el Protocolo de Evaluación pertinentes a cada especialidad y los resultados obtenidos.'
+                value={generalObjectives}
+                onChange={e => setGeneralObjectives(e.target.value)}
+              />
+              <TextArea
+                label='Se puede señalar que el paciente:'
+                name='foda'
+                divclass='mb-4'
+                labelclass='font-normal text-lb'
+                placeholder='Consignar observaciones significativas, fortalezas detectadas, entre otras.'
+                value={generalFODA}
+                onChange={e => setGeneralFODA(e.target.value)}
               />
             </div>
-          </div>
+            <div className='flex mt-2'>
+              <select
+                required
+                id='period'
+                name='period'
+                value={selectedPlanType}
+                className={`bg-white bg-opacity-20 p-0.5 focus:border focus:outline-none border border-slate-300 hover:border-aidam80 rounded-md mr-1 ${
+                  !planWidth ? 'w-56' : 'w-fit'
+                }`}
+                onChange={e => {
+                  setPlanWidth(true);
+                  setSelectedPlanType(e.target.value);
+                }}
+              >
+                <option value='' hidden>
+                  Seleccione el tipo de plan
+                </option>
+                {planType.map(plan => (
+                  <>
+                    <option value={plan}>{plan}</option>
+                  </>
+                ))}
+              </select>
+            </div>
+            <div className='flex mb-11'>
+              <label className='font-medium' htmlFor='secondPeriod'>
+                Período:
+              </label>
+              <select
+                required
+                id='secondPeriod'
+                name='secondPeriod'
+                className={`bg-white bg-opacity-20 focus:border focus:outline-none border rounded-md mx-1 ${
+                  secondDateWidth ? 'w-32' : 'w-fit'
+                }`}
+                onChange={e => {
+                  setSecondDateWidth(true);
+                  setSecondPeriod(e.target.value);
+                }}
+              >
+                <option value='' hidden>
+                  Mes de inicio de terapias
+                </option>
+                {months.map(month => (
+                  <option value={month}>{month}</option>
+                ))}
+              </select>
+
+              <p>{'a Diciembre ' + currentYear}</p>
+            </div>
+            <div className='flex flex-col gap-3 mb-6'>
+              <h1 className='font-medium'>OBJETIVOS TERAPÉUTICOS</h1>
+              <p>En función de lo evaluado, se proponen los siguientes objetivos específicos de abordaje:</p>
+              <div className='flex flex-col gap-2'>
+                <div className='flex gap-3'>
+                  <input
+                    value={objective}
+                    type='text'
+                    placeholder='Ingrese de a un objetivo aquí'
+                    className='px-1 focus:border focus:outline-none border border-slate-300 hover:border-aidam80 rounded-md w-1/2'
+                    onChange={e => setObjective(e.target.value)}
+                  />
+                  <Button type='button' onClick={() => setObj(objective)} text='Agregar objetivo' />
+                </div>
+                {therapeuticObjetives ? therapeuticObjetives.map(obj => <li>{obj}</li>) : ''}
+              </div>
+            </div>
+            <div className='flex flex-col gap-3'>
+              <h1 className='font-medium'>ESTRATEGIAS DE INTERVENCIÓN</h1>
+              <p>Los objetivos planteados se desarrollaran a partir de las siguientes estrategias de intervención:</p>
+              <div className='flex flex-col gap-2'>
+                <div className='flex gap-3'>
+                  <input
+                    value={strategy}
+                    type='text'
+                    placeholder='Ingrese de a una estrategia aquí'
+                    className='px-1 focus:border focus:outline-none border border-slate-300 hover:border-aidam80 rounded-md w-1/2'
+                    onChange={e => setStrategy(e.target.value)}
+                  />
+                  <Button type='button' onClick={() => setStrat(strategy)} text='Agregar estrategia' />
+                </div>
+                {therapeuticStrategies ? therapeuticStrategies.map(strat => <li>{strat}</li>) : ''}
+              </div>
+            </div>
+            <div className='flex flex-col mt-20'>
+              <p>Firma:</p>
+              <div className='border w-fit rounded-md border-aidam80'>
+                <SignatureCanvas
+                  ref={firmaRef}
+                  canvasProps={{
+                    width: setCanvasWidth('firmaRef', screenWidth),
+                    height: setCanvasHeight('firmaRef', screenWidth),
+                  }}
+                />
+              </div>
+            </div>
+          <Button type='submit' text='Generar informe' classname='mt-4' />
+          </form>
+          <Modal open={open} onClose={() => setOpen(false)} type={type} errors={errors}>
+            <h1>{successMsg}</h1>
+          </Modal>
         </div>
-        <Button type='submit' text='Generar informe' />
-      </form>
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        type={type}
-        errors={errors}
-      >
-        <h1>{successMsg}</h1>
-      </Modal>
-    </div>
+      </main>
+    </>
   );
 };
 
@@ -579,9 +350,7 @@ interface MyPageProps {
   };
 }
 
-create.getInitialProps = async ({
-  query,
-}: NextPageContext): Promise<MyPageProps> => {
+create.getInitialProps = async ({ query }: NextPageContext): Promise<MyPageProps> => {
   const castedQuery = query as unknown as MyPageProps['query'];
   return { query: castedQuery };
 };

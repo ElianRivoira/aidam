@@ -13,14 +13,7 @@ interface CreateObsProps {
   setDate: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const CreateObs: React.FC<CreateObsProps> = ({
-  open,
-  onClose,
-  postObs,
-  patient,
-  date,
-  setDate,
-}) => {
+const CreateObs: React.FC<CreateObsProps> = ({ open, onClose, postObs, patient, date, setDate }) => {
   if (!open) return null;
   const titleRef = useRef<HTMLInputElement>(null);
   const obsRef = useRef<HTMLTextAreaElement>(null);
@@ -31,7 +24,6 @@ const CreateObs: React.FC<CreateObsProps> = ({
       const now = new Date();
       const hours = now.getHours();
       const dateObs = new Date(`${date}T${hours}:${10}:00`);
-
       postObs.mutate({
         title: titleRef.current.value,
         date: dateObs,
@@ -43,19 +35,14 @@ const CreateObs: React.FC<CreateObsProps> = ({
 
   return (
     <>
-      <div
-        onClick={onClose}
-        className='fixed top-0 left-0 right-0 bottom-0 bg-black/[.75] z-50'
-      />
+      <div onClick={onClose} className='fixed top-0 left-0 right-0 bottom-0 bg-black/[.75] z-50' />
       <div className='fixed top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 bg-white p-4 w-full lg:w-[40%] max-w-[530px] z-50 rounded-md flex flex-col items-center'>
         <button className='w-fit self-end' onClick={onClose}>
           <Image src={x} alt='salir' />
         </button>
         <div className='flex flex-col px-3.5 w-full'>
           <div className='w-full flex flex-col'>
-            <h1 className='self-center mb-6 text-xl2 font-medium'>
-              Nueva observación
-            </h1>
+            <h1 className='self-center mb-6 text-xl2 font-medium'>Nueva observación</h1>
             <hr className='border-black03' />
           </div>
           <form onSubmit={handleSubmit} className='my-6 flex flex-col gap-3'>
@@ -70,8 +57,7 @@ const CreateObs: React.FC<CreateObsProps> = ({
             <input
               type='date'
               value={date}
-              onChange={(e) => {
-                console.log(e.target.value);
+              onChange={e => {
                 setDate(e.target.value);
               }}
               id='title'

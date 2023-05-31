@@ -40,7 +40,6 @@ const ReportItem: React.FC<ReportItemProps> = ({
     setfileExtension(extension);
     patient &&
       setFileName(report.split(`${patient.firstName}_${patient.lastName}`)[1]);
-      // console.log(report)
   }, []);
 
   return (
@@ -56,7 +55,6 @@ const ReportItem: React.FC<ReportItemProps> = ({
           alt='icono de archivo'
           className='w-8'
         />
-        <span>-</span>
         <p
           className='text-lb w-full ml-1'
           onClick={() => handleDownloadReport(report, type)}

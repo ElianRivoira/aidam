@@ -90,7 +90,7 @@ export const DateInput: React.FC<InputProps> = ({ onChange, value, name, label, 
         id={name}
         value={value}
         onChange={onChange}
-        className='outline-none lgMax:text-lb border border-background hover:border-aidam80 rounded-md transition-colors'
+        className='outline-none lgMax:text-lb border border-slate-300 hover:border-aidam80 rounded-md transition-colors'
       />
     </div>
   );
@@ -255,6 +255,7 @@ export const TextInput: React.FC<InputProps> = ({
   divclass,
   labelclass,
   inputclass,
+  placeholder,
   required,
 }) => {
   return (
@@ -272,6 +273,7 @@ export const TextInput: React.FC<InputProps> = ({
         type='text'
         name={name}
         id={name}
+        placeholder={placeholder}
         value={value}
         onChange={onChange}
         className={`${inputclass} ${inputclass?.includes('w-') ? '' : 'w-full flex-1'} ${

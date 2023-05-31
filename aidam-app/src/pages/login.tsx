@@ -76,18 +76,18 @@ const Login = () => {
               />
             </div>
             <div className='flex flex-col'>
-              <Link href={'/recover'} className='text-xs text-aidam mb-3 self-center'>
+              <Link href={'/recover'} className='text-xs text-aidam hover:text-aidam80 mb-3 self-center'>
                 ¿Olvidaste tu contraseña?
               </Link>
               <button
                 type='submit'
-                className='bg-aidam80 text-white w-44 h-8 rounded-md text-sm mb-3'
+                className='bg-aidam80 text-white w-44 h-8 rounded-md text-sm mb-3 transition-colors active:shadow-active hover:bg-aidam70'
               >
                 Iniciar Sesión
               </button>
               <Link
                 href={'/signup'}
-                className='text-aidam text-sm mb-4 self-center'
+                className='text-aidam hover:text-aidam80 text-sm mb-4 self-center'
               >
                 Registrarse
               </Link>
