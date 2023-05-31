@@ -206,7 +206,7 @@ export const generateHCFPDF = (
     },
     unknown
   >,
-  data: PhysiatricFormData,
+  data: PhysiatricFormData
 ) => {
   e.preventDefault();
   let birthDate;
@@ -346,7 +346,7 @@ export const generateHCFPDF = (
   checkPageBreak();
   doc.text(`CIRUGÍAS:`, 10, y);
   y += 6;
-  y = textArea(doc, data.cirugia, x, y, 5, undefined, )
+  y = textArea(doc, data.cirugia, x, y, 5, undefined);
   centerHeaders('ESTADO ACTUAL', doc, headingFontSize, y);
   y += 10;
   doc.text(`Conducta:`, 10, y);
@@ -591,13 +591,15 @@ export const generateHCFPDF = (
   doc.text(`${loggedUser.data?.firstName} ${loggedUser.data?.lastName}`, 125, y + 10);
 
   const blobDoc = doc.output('blob');
-  const file = new File([blobDoc], 'Historia clinica fisiatrica.pdf', {
-    type: 'application/pdf',
-  });
+  const file = new File(
+    [blobDoc],
+    `Historia clinica fisiatrica.pdf_${loggedUser.data?.firstName} ${loggedUser.data?.lastName}`,
+    {
+      type: 'application/pdf',
+    }
+  );
   if (patient.data) {
     const formData = new FormData();
-    formData.append('firstName', patient.data.firstName);
-    formData.append('lastName', patient.data.lastName);
     formData.append('report', file as Blob);
     uploadMed.mutate({ id: patient.data._id, form: formData });
   }

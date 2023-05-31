@@ -70,14 +70,13 @@ export const uploadReport = multer({
   storage: multer.diskStorage({
     destination: REPORT_DIR,
     filename: (req, file, cb) => {
-      const { firstName, lastName } = req.body;
       const date = new Date()
         .toLocaleString()
         .split(',')[0]
         .replaceAll('/', '-');
         const fileBasename = file.originalname.split('.')[0];
         const fileExtension = path.extname(file.originalname);
-      cb(null, `${firstName}_${lastName} ${fileBasename} - (${date})${fileExtension}`);
+      cb(null, `${fileBasename} - (${date})${fileExtension}`);
     },
   }),
   fileFilter: (req, file, cb) => {
@@ -95,14 +94,13 @@ export const uploadMedicalReport = multer({
   storage: multer.diskStorage({
     destination: MEDICAL_REPORT_DIR,
     filename: (req, file, cb) => {
-      const { firstName, lastName } = req.body;
       const date = new Date()
         .toLocaleString()
         .split(',')[0]
         .replaceAll('/', '-');
         const fileBasename = file.originalname.split('.')[0];
         const fileExtension = path.extname(file.originalname);
-      cb(null, `${firstName}_${lastName} ${fileBasename} - (${date})${fileExtension}`);
+      cb(null, `${fileBasename} - (${date})${fileExtension}`);
     },
   }),
   fileFilter: (req, file, cb) => {
@@ -120,14 +118,13 @@ export const uploadSocialReport = multer({
   storage: multer.diskStorage({
     destination: SOCIAL_REPORT_DIR,
     filename: (req, file, cb) => {
-      const { firstName, lastName } = req.body;
       const date = new Date()
         .toLocaleString()
         .split(',')[0]
         .replaceAll('/', '-');
         const fileBasename = file.originalname.split('.')[0];
         const fileExtension = path.extname(file.originalname);
-      cb(null, `${firstName}_${lastName} ${fileBasename} - (${date})${fileExtension}`);
+      cb(null, `${fileBasename} - (${date})${fileExtension}`);
     },
   }),
   fileFilter: (req, file, cb) => {
