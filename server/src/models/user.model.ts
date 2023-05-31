@@ -26,6 +26,7 @@ export interface UserDoc extends mongoose.Document {
   profession: string;
   phone: number;
   admin: boolean;
+  status: boolean;
   lastThreeTasks: [String];
   lastLoginDate: Date;
   observationsId: Array<ObservationDoc['_id']>;
