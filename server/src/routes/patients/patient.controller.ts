@@ -114,10 +114,8 @@ const httpEditPatient = async (req: any, res: Response, next: NextFunction): Pro
 
     const { user } = validateToken(req.session.token);
     const loggedUser = await userService.getLoggedUser(user.id);
-
     if (loggedUser) {
-      if (loggedUser.admin) return;
-      else if (!loggedUser.patientsId.includes(req.params.id))
+      if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
         throw new BadRequestError('No posee permisos para editar este paciente');
     }
 
@@ -243,8 +241,7 @@ const httpDeleteCertificate = async (req: Request, res: Response) => {
     const { user } = validateToken(req.session?.token);
     const loggedUser = await userService.getLoggedUser(user.id);
     if (loggedUser) {
-      if (loggedUser.admin) return;
-      else if (!loggedUser.patientsId.includes(req.params.id))
+      if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
         throw new BadRequestError('No posee permisos para editar este paciente');
     }
     const { fileName } = req.body;
@@ -277,8 +274,7 @@ const httpUploadReport = async (req: Request, res: Response) => {
     const { user } = validateToken(req.session?.token);
     const loggedUser = await userService.getLoggedUser(user.id);
     if (loggedUser) {
-      if (loggedUser.admin) return;
-      else if (!loggedUser.patientsId.includes(req.params.id))
+      if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
         throw new BadRequestError('No posee permisos para editar este paciente');
     }
 
@@ -301,8 +297,7 @@ const httpUploadMedicalReport = async (req: Request, res: Response) => {
     const { user } = validateToken(req.session?.token);
     const loggedUser = await userService.getLoggedUser(user.id);
     if (loggedUser) {
-      if (loggedUser.admin) return;
-      else if (!loggedUser.patientsId.includes(req.params.id))
+      if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
         throw new BadRequestError('No posee permisos para editar este paciente');
     }
     const filename = req.file && req.file.filename;
@@ -332,8 +327,7 @@ const httpUploadSocialReport = async (req: Request, res: Response) => {
     const { user } = validateToken(req.session?.token);
     const loggedUser = await userService.getLoggedUser(user.id);
     if (loggedUser) {
-      if (loggedUser.admin) return;
-      else if (!loggedUser.patientsId.includes(req.params.id))
+      if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
         throw new BadRequestError('No posee permisos para editar este paciente');
     }
     const filename = req.file && req.file.filename;
@@ -364,10 +358,8 @@ const httpDeleteReport = async (req: Request, res: Response) => {
     const { user } = validateToken(req.session?.token);
     const loggedUser = await userService.getLoggedUser(user.id);
     if (loggedUser) {
-      if (loggedUser.admin) return;
-      else if (!loggedUser.patientsId.includes(req.params.id)) {
+      if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
         throw new BadRequestError('No posee permisos para editar este paciente');
-      }
     }
     const { fileName } = req.body;
 
@@ -399,8 +391,7 @@ const httpDeleteMedicalReport = async (req: Request, res: Response) => {
     const { user } = validateToken(req.session?.token);
     const loggedUser = await userService.getLoggedUser(user.id);
     if (loggedUser) {
-      if (loggedUser.admin) return;
-      else if (!loggedUser.patientsId.includes(req.params.id))
+      if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
         throw new BadRequestError('No posee permisos para editar este paciente');
     }
     const { fileName } = req.body;
@@ -433,8 +424,7 @@ const httpDeleteSocialReport = async (req: Request, res: Response) => {
     const { user } = validateToken(req.session?.token);
     const loggedUser = await userService.getLoggedUser(user.id);
     if (loggedUser) {
-      if (loggedUser.admin) return;
-      else if (!loggedUser.patientsId.includes(req.params.id))
+      if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
         throw new BadRequestError('No posee permisos para editar este paciente');
     }
     const { fileName } = req.body;

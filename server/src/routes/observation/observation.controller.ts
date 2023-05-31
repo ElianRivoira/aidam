@@ -20,9 +20,10 @@ const httpPostObservation = async (req: Request, res: Response) => {
     if (req.session?.token) {
       const { user } = validateToken(req.session.token);
       const loggedUser = await userService.getLoggedUser(user.id);
-
-      if (!loggedUser.patientsId.includes(patientId))
-        throw new BadRequestError('No posee permisos para crear una observación en este paciente');
+      if (loggedUser) {
+        if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
+          throw new BadRequestError('No posee permisos para crear una observación en este paciente');
+      }
 
       const obs = await observationService.postObservation({
         title: title,
@@ -78,9 +79,10 @@ const httpPutObservation = async (req: Request, res: Response) => {
     if (req.session?.token) {
       const { user } = validateToken(req.session.token);
       const loggedUser = await userService.getLoggedUser(user.id);
-
-      if (!loggedUser.observationsId.includes(obsId))
-        throw new BadRequestError('No posee permisos para editar o eliminar esta observación');
+      if (loggedUser) {
+        if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
+          throw new BadRequestError('No posee permisos para crear una observación en este paciente');
+      }
 
       const obs = await observationService.putObservation(obsId, text);
       performTask(loggedUser._id, 'Editó observación');
@@ -110,8 +112,8 @@ const httpDeleteObservation = async (req: Request, res: Response) => {
       const patient = await patientService.getOnePatient(patientId);
 
       if (loggedUser) {
-        if (!loggedUser.observationsId.includes(obsId))
-          throw new BadRequestError('No posee permisos para editar o eliminar esta observación');
+        if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
+          throw new BadRequestError('No posee permisos para crear una observación en este paciente');
 
         const observationToDelete = obsId;
         const index = loggedUser.observationsId.indexOf(observationToDelete);
