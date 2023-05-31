@@ -1,3 +1,5 @@
+import { Document, Types } from 'mongoose';
+
 import User, { UserAttrs, UserDoc } from './user.model';
 import { Password } from '../services/password';
 import { generateToken, recoverPasswordToken } from '../utils/tokens';
@@ -29,10 +31,7 @@ async function userLogin(user: LoginAttrs): Promise<LoginResponse> {
     if (match) {
       const now = new Date();
       loggedUser.lastLoginDate = now;
-      await User.findOneAndUpdate(
-        { _id: loggedUser._id },
-        { $set: { lastLoginDate: now } }
-      );
+      await User.findOneAndUpdate({ _id: loggedUser._id }, { $set: { lastLoginDate: now } });
       const tokenPayload = {
         id: loggedUser._id,
         firstName: loggedUser.firstName,
@@ -53,11 +52,24 @@ async function userLogin(user: LoginAttrs): Promise<LoginResponse> {
   }
 }
 
-const getLoggedUser = async (id: String) => {
-  const user = await User.findById(id, { password: 0, __v: 0 }).populate({
-    path: 'patientsId',
-    options: { populate: { path: 'professionalsId' } },
-  });
+const getLoggedUser = async (id: String, populate?: boolean) => {
+  let user:
+    | (Document<unknown, {}, UserDoc> &
+        Omit<
+          UserDoc & {
+            _id: Types.ObjectId;
+          },
+          never
+        >)
+    | null = null;
+  if (populate) {
+    user = await User.findById(id, { password: 0, __v: 0 }).populate({
+      path: 'patientsId',
+      options: { populate: { path: 'professionalsId' } },
+    });
+  } else {
+    user = await User.findById(id, { password: 0, __v: 0 })
+  }
   if (!user) throw new NotFoundError('El usuario no existe');
   return user;
 };
@@ -74,11 +86,7 @@ const exists = async (email: string): Promise<UserDoc | null> => {
 
 const registerUser = async (id: string) => {
   try {
-    const result = await User.findOneAndUpdate(
-      { _id: id },
-      { status: true },
-      { new: true }
-    );
+    const result = await User.findOneAndUpdate({ _id: id }, { status: true }, { new: true });
     if (!result) {
       throw new NotFoundError('El usuario no existe');
     }
@@ -130,9 +138,7 @@ const searchUser = async (name: string | INames): Promise<UserDoc[]> => {
           $and: [
             {
               firstName: {
-                $regex: `.*${firstName1}${
-                  firstName2 ? ` ${firstName2}` : ''
-                }.*`,
+                $regex: `.*${firstName1}${firstName2 ? ` ${firstName2}` : ''}.*`,
                 $options: 'i',
               },
             },
@@ -163,13 +169,7 @@ const searchUser = async (name: string | INames): Promise<UserDoc[]> => {
   return findedUsers;
 };
 
-const putUser = async (
-  id: string,
-  data?: object,
-  patientId?: string,
-  pull?: boolean,
-  profileImg?: string,
-) => {
+const putUser = async (id: string, data?: object, patientId?: string, pull?: boolean, profileImg?: string) => {
   const findAndUpdate = () => {
     if (pull) {
       return User.findByIdAndUpdate(
@@ -226,11 +226,7 @@ const changePassword = async (email: string, password: string) => {
     let newHashedPassword;
     let user;
     newHashedPassword = await Password.toHash(password);
-    user = await User.findOneAndUpdate(
-      { email },
-      { password: newHashedPassword },
-      { new: true }
-    );
+    user = await User.findOneAndUpdate({ email }, { password: newHashedPassword }, { new: true });
     if (user) {
       message = 'Tu contraseña ha cambiado';
     } else {

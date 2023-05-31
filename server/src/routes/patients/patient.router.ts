@@ -1,7 +1,7 @@
 const express = require('express');
 const patientController = require('./patient.controller');
 import { uploadCertificate, uploadMedicalReport, uploadReport, uploadSocialReport } from '../../middlewares/multer';
-import { validatePatient, validatePatientOwner } from '../../middlewares/patientValidators';
+import { validatePatient } from '../../middlewares/patientValidators';
 import {
   validateLoggedAdmin,
   validateLoggedUser,
@@ -51,7 +51,7 @@ patientRouter.post(
 patientRouter.put(
   '/:id',
   [
-    validatePatientOwner,
+    validateLoggedUser,
     uploadCertificate.single('certificate'),
     validatePatient,
   ],
@@ -66,49 +66,49 @@ patientRouter.put(
 
 patientRouter.put(
   '/delete/certificate/:id',
-  validatePatientOwner,
+  validateLoggedAdmin,
   patientController.httpDeleteCertificate
 );
 
 patientRouter.put(
   '/uploadReport/:id',
-  [validatePatientOwner, uploadReport.single('report')],
+  [validateLoggedUser, uploadReport.single('report')],
   patientController.httpUploadReport
 );
 
 patientRouter.put(
   '/uploadReport/medical/:id',
-  [validatePatientOwner, uploadMedicalReport.single('report')],
+  [validateLoggedUser, uploadMedicalReport.single('report')],
   patientController.httpUploadMedicalReport
 );
 
 patientRouter.put(
   '/uploadReport/social/:id',
-  [validatePatientOwner, uploadSocialReport.single('report')],
+  [validateLoggedUser, uploadSocialReport.single('report')],
   patientController.httpUploadSocialReport
 );
 
 patientRouter.put(
   '/delete/report/:id',
-  validatePatientOwner,
+  validateLoggedUser,
   patientController.httpDeleteReport
 );
 
 patientRouter.put(
   '/delete/report/medical/:id',
-  validatePatientOwner,
+  validateLoggedUser,
   patientController.httpDeleteMedicalReport
 );
 
 patientRouter.put(
   '/delete/report/social/:id',
-  validatePatientOwner,
+  validateLoggedUser,
   patientController.httpDeleteSocialReport
 );
 
 patientRouter.delete(
   '/:id',
-  validatePatientOwner,
+  validateLoggedAdmin,
   patientController.httpDeletePatient
 );
 

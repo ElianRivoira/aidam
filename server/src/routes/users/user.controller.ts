@@ -126,7 +126,7 @@ const httpGetUser = async (req: Request, res: Response) => {
 
   if (req.session?.token) {
     const { user } = validateToken(req.session.token);
-    const loggedUser = await userService.getLoggedUser(user.id);
+    const loggedUser = await userService.getLoggedUser(user.id, true);
     res.send(loggedUser);
   }
 };
@@ -158,7 +158,7 @@ const httpPutUser = async (req: Request, res: Response) => {
       patients,
     } = req.body;
 
-    const user = await userService.getLoggedUser(_id);
+    const user = await userService.getLoggedUser(_id, true);
 
     const profileImg = req.file?.filename;
 
