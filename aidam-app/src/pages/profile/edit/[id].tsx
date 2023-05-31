@@ -128,7 +128,7 @@ const editUser = ({ query }: MyPageProps) => {
           };
         })
       );
-      setPathImg(`http://localhost:8000/users/profileimg/${user.data.profileImg}`);
+      user.data.profileImg && setPathImg(`http://localhost:8000/users/profileimg/${user.data.profileImg}`);
     }
   }, [user.isSuccess]);
 

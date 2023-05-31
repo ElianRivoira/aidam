@@ -16,19 +16,24 @@ import UploadReportModal from '@/components/profile/patient/UploadReportModal';
 import Modal from '@/components/Modal';
 import Button from '@/components/Button';
 import Spinner from '@/components/Spinner';
+import PickDateModal from '@/components/profile/patient/PickDateModal';
 
 const Reports = ({ query }: MyPageProps) => {
   const [cookieError, setCookieError] = useState(false);
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
-  const [search, setSearch] = useState('');
+  // const [search, setSearch] = useState('');
   const [reports, setReports] = useState<string[]>([]);
   const [openReportModal, setOpenReportModal] = useState(false);
   const [newReport, setNewReport] = useState<File | null>(null);
   const [successMsg, setSuccessMsg] = useState('');
   const [deleteMsg, setDeleteMsg] = useState('');
   const [fileNameToDelete, setFileNameToDelete] = useState('');
+  const [actualDate, setActualDate] = useState(new Date());
+  const [searchDate, setSearchDate] = useState<Date>();
+  const [openPickDate, setOpenPickDate] = useState(false);
+  const [filteredReports, setFilteredReports] = useState<string[]>([]);
   const router = useRouter();
 
   const patient = useQuery({
@@ -44,7 +49,7 @@ const Reports = ({ query }: MyPageProps) => {
       setCookieError(true);
     },
     onSuccess: patient => {
-      setReports(patient.reports);
+      filterReports(actualDate, patient);
     },
   });
 
@@ -127,6 +132,16 @@ const Reports = ({ query }: MyPageProps) => {
     } else if (type === 2 && !open && cookieError) router.push('/login');
   }, [open]);
 
+  const filterReports = (searchDate: Date, patient: Patient | undefined) => {
+    const filtered = patient?.reports.filter(report => {
+      const reportDate = report.split(' - ')[1];
+      const reportMonth = Number(reportDate.split('-')[1]);
+      if (reportMonth === searchDate.getMonth() + 1) return true;
+    });
+    // filtered && filtered.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    filtered && setFilteredReports(filtered);
+  };
+
   return (
     <>
       <Head>
@@ -151,6 +166,7 @@ const Reports = ({ query }: MyPageProps) => {
                   Generar Informe
                 </Link>
                 <Button onClick={() => setOpenReportModal(true)} text='Subir informe' />
+                <Button onClick={() => setOpenPickDate(true)} text='Buscar informes' />
               </div>
             </div>
             {!useMediaQuery(1024) && <hr className='border-black03 mt-4' />}
@@ -161,21 +177,27 @@ const Reports = ({ query }: MyPageProps) => {
                     <div className='h-14 flex justify-center w-full'>
                       <Spinner />
                     </div>
-                  ) : reports.length ? (
-                    <div className='w-full px-4'>
-                      {reports.map(report => (
-                        <ReportItem
-                          index={report}
-                          report={report}
-                          setType={setType}
-                          setOpen={setOpen}
-                          setDeleteMsg={setDeleteMsg}
-                          setFileNameToDelete={setFileNameToDelete}
-                          width='w-full'
-                          patient={patient.data}
-                        />
-                      ))}
-                    </div>
+                  ) : patient.data?.reports.length ? (
+                    filteredReports.length ? (
+                      <div className='w-full px-4'>
+                        {filteredReports.map(report => (
+                          <ReportItem
+                            index={report}
+                            report={report}
+                            setType={setType}
+                            setOpen={setOpen}
+                            setDeleteMsg={setDeleteMsg}
+                            setFileNameToDelete={setFileNameToDelete}
+                            width='w-full'
+                            patient={patient.data}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <p className='w-full text-center'>
+                        El paciente no posee informes cargados para la fecha seleccionada
+                      </p>
+                    )
                   ) : (
                     <p className='w-full text-center'>El paciente no posee informes cargados</p>
                   )}
@@ -186,10 +208,14 @@ const Reports = ({ query }: MyPageProps) => {
                     <div className='h-14 flex justify-center w-full'>
                       <Spinner />
                     </div>
-                  ) : reports.length ? (
+                  ) : patient.data?.reports.length ? filteredReports.length ? (
                     <>
-                      <div className={`w-1/2 flex flex-col items-center ${reports ? 'border-r border-black03' : ''}`}>
-                        {reports.slice(0, Math.ceil(reports.length / 2)).map((report, index) => {
+                      <div
+                        className={`w-1/2 flex flex-col items-center ${
+                          filteredReports ? 'border-r border-black03' : ''
+                        }`}
+                      >
+                        {filteredReports.slice(0, Math.ceil(filteredReports.length / 2)).map((report, index) => {
                           return (
                             <ReportItem
                               index={`report.half1.${index}`}
@@ -204,7 +230,7 @@ const Reports = ({ query }: MyPageProps) => {
                         })}
                       </div>
                       <div className='w-1/2 flex flex-col items-center'>
-                        {reports.slice(Math.ceil(reports.length / 2)).map((report, index) => (
+                        {filteredReports.slice(Math.ceil(filteredReports.length / 2)).map((report, index) => (
                           <ReportItem
                             index={`report.half2.${index}`}
                             report={report}
@@ -218,6 +244,10 @@ const Reports = ({ query }: MyPageProps) => {
                       </div>
                     </>
                   ) : (
+                    <p className='w-full text-center'>
+                      El paciente no posee informes cargados para la fecha seleccionada
+                    </p>
+                  ) : (
                     <p className='w-full text-center'>El paciente no posee informes cargados</p>
                   )}
                 </>
@@ -225,6 +255,14 @@ const Reports = ({ query }: MyPageProps) => {
             </div>
           </div>
         </div>
+        <PickDateModal
+          open={openPickDate}
+          onClose={() => setOpenPickDate(false)}
+          date={searchDate ? searchDate : actualDate}
+          onChange={filterReports}
+          setDate={setSearchDate}
+          patient={patient.data}
+        />
         <UploadReportModal
           open={openReportModal}
           onClose={onCloseReportModal}

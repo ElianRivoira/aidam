@@ -8,32 +8,24 @@ import { RequestValidationError } from '../../errors/request-validation-error';
 import INames from '../../interfaces/INames';
 import { ServerError } from '../../errors/server-error';
 import path from 'path';
+import { validateToken } from '../../utils/tokens';
+import { BadRequestError } from '../../errors/bad-request-error';
 
-const httpGetAllPatientsFromTherapist = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const httpGetAllPatientsFromTherapist = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     throw new RequestValidationError(errors.array());
   }
   try {
-    const patients = await patientService.getAllPatientsFromTherapist(
-      req.params.id
-    );
+    const patients = await patientService.getAllPatientsFromTherapist(req.params.id);
     res.status(200).send(patients);
   } catch (e) {
     next(e);
   }
 };
 
-const httpGetAllPatients = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const httpGetAllPatients = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -74,11 +66,7 @@ const httpPostPatient = async (req: any, res: Response): Promise<void> => {
     professionalsArray.forEach(async (prof: string) => {
       const findedProf = await userService.searchUser(prof);
       await userService.putUser(findedProf[0]._id, undefined, patient._id);
-      await patientService.putPatient(
-        patient._id,
-        undefined,
-        findedProf[0]._id
-      );
+      await patientService.putPatient(patient._id, undefined, findedProf[0]._id);
     });
 
     res.status(201).send(patient);
@@ -88,11 +76,7 @@ const httpPostPatient = async (req: any, res: Response): Promise<void> => {
   }
 };
 
-const httpGetOnePatient = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const httpGetOnePatient = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -106,11 +90,7 @@ const httpGetOnePatient = async (
   }
 };
 
-const httpEditPatient = async (
-  req: any,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const httpEditPatient = async (req: any, res: Response, next: NextFunction): Promise<void> => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -131,6 +111,15 @@ const httpEditPatient = async (
       professionals,
     } = req.body;
     const filename = req.file && req.file.filename;
+
+    const { user } = validateToken(req.session.token);
+    const loggedUser = await userService.getLoggedUser(user.id);
+
+    if (loggedUser) {
+      if (loggedUser.admin) return;
+      else if (!loggedUser.patientsId.includes(req.params.id))
+        throw new BadRequestError('No posee permisos para editar este paciente');
+    }
 
     const editedPatient = await patientService.putPatient(
       req.params.id,
@@ -156,16 +145,8 @@ const httpEditPatient = async (
     if (editedPatient) {
       professionalsArray.forEach(async (prof: INames) => {
         const findedProf = await userService.searchUser(prof);
-        await userService.putUser(
-          findedProf[0]._id,
-          undefined,
-          editedPatient._id
-        );
-        await patientService.putPatient(
-          editedPatient._id,
-          undefined,
-          findedProf[0]._id
-        );
+        await userService.putUser(findedProf[0]._id, undefined, editedPatient._id);
+        await patientService.putPatient(editedPatient._id, undefined, findedProf[0]._id);
       });
     }
 
@@ -176,11 +157,7 @@ const httpEditPatient = async (
   }
 };
 
-const httpDeletePatient = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const httpDeletePatient = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -191,6 +168,7 @@ const httpDeletePatient = async (
     res.status(200).send(patient);
   } catch (e) {
     console.error(e);
+    throw new ServerError(e);
   }
 };
 
@@ -207,18 +185,8 @@ const httpUnassignProf = async (req: Request, res: Response) => {
 
     if (patient) {
       const findedProf = await userService.searchUser(profName);
-      await userService.putUser(
-        findedProf[0]._id,
-        undefined,
-        patient._id,
-        true
-      );
-      await patientService.putPatient(
-        patient._id,
-        undefined,
-        findedProf[0]._id,
-        true
-      );
+      await userService.putUser(findedProf[0]._id, undefined, patient._id, true);
+      await patientService.putPatient(patient._id, undefined, findedProf[0]._id, true);
     }
 
     res.send({ patient, profName });
@@ -259,9 +227,7 @@ const httpDownloadCertificate = async (req: Request, res: Response) => {
     // res.setHeader('Content-Disposition', `attachment; filename=${responseFileName}`);
 
     // res.sendFile(filePath);
-    res.send(
-      `http://localhost:8000/download/certificate/${patient?.certificate[0]}`
-    );
+    res.send(`http://localhost:8000/download/certificate/${patient?.certificate[0]}`);
   } catch (e) {
     console.error(e);
     throw new ServerError(e);
@@ -274,28 +240,26 @@ const httpDeleteCertificate = async (req: Request, res: Response) => {
     throw new RequestValidationError(errors.array());
   }
   try {
+    const { user } = validateToken(req.session?.token);
+    const loggedUser = await userService.getLoggedUser(user.id);
+    if (loggedUser) {
+      if (loggedUser.admin) return;
+      else if (!loggedUser.patientsId.includes(req.params.id))
+        throw new BadRequestError('No posee permisos para editar este paciente');
+    }
     const { fileName } = req.body;
 
     const patient = await patientService.getOnePatient(req.params.id);
 
     if (patient) {
-      const filePath = path.join(
-        __dirname,
-        `../../../certificates/${fileName}`
-      );
+      const filePath = path.join(__dirname, `../../../certificates/${fileName}`);
 
       fs.unlink(`${filePath}`, err => {
         if (err) throw new ServerError(err);
         console.log('El archivo fue eliminado exitosamente');
       });
 
-      await patientService.putPatient(
-        patient._id,
-        undefined,
-        null,
-        true,
-        fileName
-      );
+      await patientService.putPatient(patient._id, undefined, null, true, fileName);
     }
 
     res.send(patient);
@@ -310,18 +274,17 @@ const httpUploadReport = async (req: Request, res: Response) => {
     throw new RequestValidationError(errors.array());
   }
   try {
-    const filename = req.file && req.file.filename;
-    const { firstName, lastName, dni } = req.body;
-    console.log(req.body);
+    const { user } = validateToken(req.session?.token);
+    const loggedUser = await userService.getLoggedUser(user.id);
+    if (loggedUser) {
+      if (loggedUser.admin) return;
+      else if (!loggedUser.patientsId.includes(req.params.id))
+        throw new BadRequestError('No posee permisos para editar este paciente');
+    }
 
-    const editedPatient = await patientService.putPatient(
-      req.params.id,
-      undefined,
-      null,
-      false,
-      undefined,
-      filename
-    );
+    const filename = req.file && req.file.filename;
+
+    const editedPatient = await patientService.putPatient(req.params.id, undefined, null, false, undefined, filename);
 
     res.send(editedPatient);
   } catch (e) {
@@ -335,9 +298,14 @@ const httpUploadMedicalReport = async (req: Request, res: Response) => {
     throw new RequestValidationError(errors.array());
   }
   try {
+    const { user } = validateToken(req.session?.token);
+    const loggedUser = await userService.getLoggedUser(user.id);
+    if (loggedUser) {
+      if (loggedUser.admin) return;
+      else if (!loggedUser.patientsId.includes(req.params.id))
+        throw new BadRequestError('No posee permisos para editar este paciente');
+    }
     const filename = req.file && req.file.filename;
-    const { firstName, lastName, dni } = req.body;
-    console.log(req.body);
 
     const editedPatient = await patientService.putPatient(
       req.params.id,
@@ -361,9 +329,14 @@ const httpUploadSocialReport = async (req: Request, res: Response) => {
     throw new RequestValidationError(errors.array());
   }
   try {
+    const { user } = validateToken(req.session?.token);
+    const loggedUser = await userService.getLoggedUser(user.id);
+    if (loggedUser) {
+      if (loggedUser.admin) return;
+      else if (!loggedUser.patientsId.includes(req.params.id))
+        throw new BadRequestError('No posee permisos para editar este paciente');
+    }
     const filename = req.file && req.file.filename;
-    const { firstName, lastName, dni } = req.body;
-    console.log(req.body);
 
     const editedPatient = await patientService.putPatient(
       req.params.id,
@@ -388,6 +361,14 @@ const httpDeleteReport = async (req: Request, res: Response) => {
     throw new RequestValidationError(errors.array());
   }
   try {
+    const { user } = validateToken(req.session?.token);
+    const loggedUser = await userService.getLoggedUser(user.id);
+    if (loggedUser) {
+      if (loggedUser.admin) return;
+      else if (!loggedUser.patientsId.includes(req.params.id)) {
+        throw new BadRequestError('No posee permisos para editar este paciente');
+      }
+    }
     const { fileName } = req.body;
 
     const patient = await patientService.getOnePatient(req.params.id);
@@ -400,14 +381,7 @@ const httpDeleteReport = async (req: Request, res: Response) => {
         console.log('El archivo fue eliminado exitosamente');
       });
 
-      await patientService.putPatient(
-        patient._id,
-        undefined,
-        null,
-        true,
-        undefined,
-        fileName
-      );
+      await patientService.putPatient(patient._id, undefined, null, true, undefined, fileName);
     }
 
     res.send(patient);
@@ -422,30 +396,26 @@ const httpDeleteMedicalReport = async (req: Request, res: Response) => {
     throw new RequestValidationError(errors.array());
   }
   try {
+    const { user } = validateToken(req.session?.token);
+    const loggedUser = await userService.getLoggedUser(user.id);
+    if (loggedUser) {
+      if (loggedUser.admin) return;
+      else if (!loggedUser.patientsId.includes(req.params.id))
+        throw new BadRequestError('No posee permisos para editar este paciente');
+    }
     const { fileName } = req.body;
 
     const patient = await patientService.getOnePatient(req.params.id);
 
     if (patient) {
-      const filePath = path.join(
-        __dirname,
-        `../../../medicalReports/${fileName}`
-      );
+      const filePath = path.join(__dirname, `../../../medicalReports/${fileName}`);
 
       fs.unlink(`${filePath}`, err => {
         if (err) throw new ServerError(err);
         console.log('El archivo fue eliminado exitosamente');
       });
 
-      await patientService.putPatient(
-        patient._id,
-        undefined,
-        null,
-        true,
-        undefined,
-        undefined,
-        fileName
-      );
+      await patientService.putPatient(patient._id, undefined, null, true, undefined, undefined, fileName);
     }
 
     res.send(patient);
@@ -460,31 +430,26 @@ const httpDeleteSocialReport = async (req: Request, res: Response) => {
     throw new RequestValidationError(errors.array());
   }
   try {
+    const { user } = validateToken(req.session?.token);
+    const loggedUser = await userService.getLoggedUser(user.id);
+    if (loggedUser) {
+      if (loggedUser.admin) return;
+      else if (!loggedUser.patientsId.includes(req.params.id))
+        throw new BadRequestError('No posee permisos para editar este paciente');
+    }
     const { fileName } = req.body;
 
     const patient = await patientService.getOnePatient(req.params.id);
 
     if (patient) {
-      const filePath = path.join(
-        __dirname,
-        `../../../socialReports/${fileName}`
-      );
+      const filePath = path.join(__dirname, `../../../socialReports/${fileName}`);
 
       fs.unlink(`${filePath}`, err => {
         if (err) throw new ServerError(err);
         console.log('El archivo fue eliminado exitosamente');
       });
 
-      await patientService.putPatient(
-        patient._id,
-        undefined,
-        null,
-        true,
-        undefined,
-        undefined,
-        undefined,
-        fileName
-      );
+      await patientService.putPatient(patient._id, undefined, null, true, undefined, undefined, undefined, fileName);
     }
 
     res.send(patient);
