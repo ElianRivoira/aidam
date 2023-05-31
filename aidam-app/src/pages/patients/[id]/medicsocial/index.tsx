@@ -194,7 +194,7 @@ const medicSocial = ({ query }: MyPageProps) => {
         {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
         <div className='w-full lg:px-12 lg:mt-2.5'>
           <NavbarPatient />
-          <h2 className='text-lm font-medium text-start flex items-center mt-2'>
+          <h2 className='text-lm font-medium text-start flex items-center mt-2 lgMax:px-4'>
             {patient.data?.firstName} {patient.data?.lastName}
           </h2>
           <div className='flex lgMax:flex-col w-full'>
