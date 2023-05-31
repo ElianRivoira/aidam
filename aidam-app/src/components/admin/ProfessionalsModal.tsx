@@ -33,7 +33,7 @@ const ProfessionalsModal: React.FC<Props> = ({
         </div>
         <span className='hidden sm:inline-block sm:align-middle sm:h-screen'></span>
         <div className='inline-block align-bottom bg-[#FCFCFC] rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full'>
-          <div className='text-center text-3xl font-bold mt-6'>
+          <div className='text-center text-3xl font-bold md:mt-6 mt-10'>
             PROFESIONALES
           </div>
           <button
@@ -44,27 +44,28 @@ const ProfessionalsModal: React.FC<Props> = ({
             <Image src={x} alt='x' />
           </button>
           <div className='flex flex-col px-4 mt-7 mb-4'>
-            {inactiveUsers.length
-              ? inactiveUsers.map((user) => (
-                  <div className='flex justify-between mb-2 px-4 py-6 rounded-2xl bg-white border drop-shadow-xl'>
-                    <div className='ml-4'>
-                      {user.firstName.toUpperCase()}{' '}
-                      {user.lastName.toUpperCase()}{' '}
-                    </div>
-                    <div className='flex'>
-                      <button
-                        className='mr-6'
-                        onClick={() => handleRegisterUser(user._id)}
-                      >
-                        <Image src={ok} alt=':)' />
-                      </button>
-                      <button onClick={() => handleDeleteUser(user._id)}>
-                        <Image src={x} alt='x' />
-                      </button>
-                    </div>
+            {inactiveUsers.length ? (
+              inactiveUsers.map((user) => (
+                <div className='flex justify-between mb-2 px-4 py-6 rounded-2xl bg-white border drop-shadow-xl'>
+                  <div className='md:ml-4'>
+                    {user.firstName.toUpperCase()} {user.lastName.toUpperCase()}{' '}
                   </div>
-                ))
-              : <h3 className='text-center'>No hay usuarios para dar de alta.</h3>}
+                  <div className='flex pl-4 md:pl-0'>
+                    <button
+                      className='mr-6'
+                      onClick={() => handleRegisterUser(user._id)}
+                    >
+                      <Image src={ok} alt=':)' />
+                    </button>
+                    <button onClick={() => handleDeleteUser(user._id)}>
+                      <Image src={x} alt='x' />
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <h3 className='text-center'>No hay usuarios para dar de alta.</h3>
+            )}
           </div>
         </div>
       </div>

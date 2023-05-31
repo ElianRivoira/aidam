@@ -20,7 +20,7 @@ const MobileUsersCard: React.FC<CardProps> = ({ user }) => {
       href={`/profile/${user._id}`}
       className='flex flex-col w-full rounded-2xl px-3 py-2 shadow-card max-w-md mb-4'
     >
-      <div className='flex mt-2 mb-2 '>
+      <div className='flex mt-2 mb-1 '>
         <div className='w-1/2'>
           <div className='text-xs text-grey8 font-medium'>
             Nombre y Apellido
@@ -38,7 +38,7 @@ const MobileUsersCard: React.FC<CardProps> = ({ user }) => {
         <div className='text-xs text-grey8 font-medium'>Última conexión</div>
         <div className='text-sm'>{lastConnectionString}</div>
       </div>
-      <div className='mb-2'>
+      <div className='mb-1'>
         <div className='text-xs text-grey8 font-medium'>Última Acción</div>
         <div className='font-semibold text-sm'>
           {user.lastThreeTasks.length > 0 ? (
