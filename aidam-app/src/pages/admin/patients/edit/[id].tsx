@@ -121,14 +121,14 @@ const editPatient = ({ query }: MyPageProps) => {
       <Head>
         <title>AIDAM Admin - Editar paciente</title>
       </Head>
-      <main className='min-h-screen pt-12 bg-background'>
+      <main className='min-h-screen pt-6 lg:pt-12 bg-background'>
         {/* <NavbarDesktop /> */}
-        <div className='w-full px-12 mb-4'>
+        <div className='w-full px-6 lg:px-12 mb-4'>
           <ArrowBack route={`/patients/${query.id}/profile`} />
-          <h1 className='text-center text-xl4 font-semibold'>EDITAR PACIENTE</h1>
+          <h1 className='text-center text-xl4 font-semibold lgMax:mt-3'>EDITAR PACIENTE</h1>
           <form encType='multipart/form-data' onSubmit={handleSubmit} className='mt-20 flex flex-col'>
-            <div className='flex justify-evenly'>
-              <div className='flex flex-col w-1/4 gap-9 items-center'>
+            <div className='flex lgMax:flex-col justify-evenly'>
+              <div className='flex flex-col w-full lg:w-1/4 gap-5 lgMax:mb-5 items-center'>
                 <Input
                   label='Nombre'
                   name='firstName'
@@ -169,7 +169,7 @@ const editPatient = ({ query }: MyPageProps) => {
                   placeholder='Ejemplo 1234'
                 />
               </div>
-              <div className='flex flex-col w-1/4 gap-9 items-center'>
+              <div className='flex flex-col w-full lg:w-1/4 gap-5 lgMax:mb-5 items-center'>
                 <Input
                   label='Obra Social'
                   name='socialwork'
@@ -211,7 +211,7 @@ const editPatient = ({ query }: MyPageProps) => {
                   placeholder='Trastorno ...'
                 />
               </div>
-              <div className='flex flex-col w-1/4 gap-9 items-center'>
+              <div className='flex flex-col w-full lg:w-1/4 gap-5 lgMax:mb-5 items-center'>
                 <Input
                   label='Correo Electrónico'
                   name='email'
@@ -238,7 +238,7 @@ const editPatient = ({ query }: MyPageProps) => {
                 <TagInputProf tagged={professionals} setTagged={setProfessionals} patient={patient.data} />
               </div>
             </div>
-            <div className='flex justify-evenly mt-10'>
+            <div className='flex justify-between lg:justify-evenly mt-10'>
               <div className='w-1/4'></div>
               <div className='w-1/4'></div>
               <div className='w-1/4 flex justify-end'>

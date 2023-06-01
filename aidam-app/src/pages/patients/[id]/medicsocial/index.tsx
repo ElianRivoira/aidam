@@ -218,7 +218,7 @@ const medicSocial = ({ query }: MyPageProps) => {
                 <div className='flex lg:gap-9 lgMax:justify-between'>
                   <Link
                     href={`/patients/${query.id}/medicsocial/createMedical`}
-                    className='flex items-center text-lm font-medium lgMax:font-normal p-2.5 lgMax:py-2 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
+                    className='flex items-center text-center text-lm font-medium lgMax:font-normal p-2.5 lgMax:py-2 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
                   >
                     Generar Informe
                   </Link>
@@ -277,7 +277,7 @@ const medicSocial = ({ query }: MyPageProps) => {
                 <div className='flex lg:gap-9 lgMax:justify-between'>
                   <Link
                     href={`/patients/${query.id}/medicsocial/createSocial`}
-                    className='flex items-center text-lm font-medium lgMax:font-normal p-2.5 lgMax:py-2 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
+                    className='flex items-center text-center text-lm font-medium lgMax:font-normal p-2.5 lgMax:py-2 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
                   >
                     Generar Informe
                   </Link>
