@@ -68,7 +68,7 @@ const getLoggedUser = async (id: String, populate?: boolean) => {
       options: { populate: { path: 'professionalsId' } },
     });
   } else {
-    user = await User.findById(id, { password: 0, __v: 0 })
+    user = await User.findById(id, { password: 0, __v: 0 });
   }
   if (!user) throw new NotFoundError('El usuario no existe');
   return user;
@@ -131,7 +131,7 @@ const searchUser = async (name: string | INames): Promise<UserDoc[]> => {
   if (name === '*') {
     findedUsers = await User.find({ status: true });
   } else if (typeof name === 'object') {
-    const { firstName1, firstName2, lastName1, lastName2 } = name;
+    const { firstName1, firstName2, lastName1, lastName2, id } = name;
     findedUsers = await User.find({
       $and: [
         {
@@ -147,6 +147,9 @@ const searchUser = async (name: string | INames): Promise<UserDoc[]> => {
                 $regex: `.*${lastName1}${lastName2 ? ` ${lastName2}` : ''}.*`,
                 $options: 'i',
               },
+            },
+            {
+              _id: id,
             },
           ],
         },

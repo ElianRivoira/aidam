@@ -62,15 +62,15 @@ const Menu: React.FC<MenuProps> = ({ isOpen, setIsOpen, handleLogout }) => {
           <hr className='w-full border-black03' />
           <ul className='flex flex-col'>
             {user?.admin ? (
-              <MenuOption href={`/admin/professionals`} logo={profileLogo}>
+              <MenuOption href={`/admin/professionals`} logo={profileLogo} setIsOpen={setIsOpen}>
                 Profesionales
               </MenuOption>
             ) : (
-              <MenuOption href={`/profile/${user?._id}`} logo={profileLogo}>
+              <MenuOption href={`/profile/${user?._id}`} logo={profileLogo} setIsOpen={setIsOpen}>
                 Mi Perfil
               </MenuOption>
             )}
-            <MenuOption href='/patients' logo={pacientesLogo}>
+            <MenuOption href='/patients' logo={pacientesLogo} setIsOpen={setIsOpen}>
               Mis Pacientes
             </MenuOption>
           </ul>

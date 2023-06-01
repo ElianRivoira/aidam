@@ -54,7 +54,7 @@ const professionals = () => {
         {useMediaQuery(1024) ? (
           <>
             {/* <Navbar /> */}
-            <div className='p-2 px-3.5 flex justify-between w-full'>
+            <div className='px-3.5 mb-10 flex justify-between w-full'>
               <SearchBar
                 search={search}
                 setSearch={setSearch}
@@ -63,7 +63,7 @@ const professionals = () => {
               <Button
                 onClick={toggleModal}
                 text='Dar de alta'
-                classname='px-3 h-10 ml-2'
+                classname='px-3 h-10'
               />
             </div>
           </>

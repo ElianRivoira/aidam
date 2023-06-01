@@ -67,10 +67,10 @@ const patients = () => {
           <div className='mb-10 flex w-full justify-between items-center gap-3 px-3.5'>
             <SearchBar search={search} setSearch={setSearch} getPatients={getPatients} />
             {loggedUser.data?.admin && (
-              <div className='w-[40%]'>
+              <div className='w-1/3'>
                 <Link
                   href={'/admin/patients/create'}
-                  className='h-10 bg-aidam80 hover:bg-aidam70 transition-colors text-lm text-white font-medium rounded-md flex px-1.5 text-center justify-center w-full items-center'
+                  className='h-10 bg-aidam80 hover:bg-aidam70 transition-colors text-lm lgMax:text-sm lgMax:font-normal text-white font-medium rounded-md flex px-1.5 text-center justify-center w-full items-center'
                 >
                   Nuevo paciente
                 </Link>

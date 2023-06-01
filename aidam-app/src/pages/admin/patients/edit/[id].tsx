@@ -72,6 +72,7 @@ const editPatient = ({ query }: MyPageProps) => {
     Object.keys(patientInfo).forEach(key => {
       formData.append(key, patientInfo[key]);
     });
+    console.log('PROFESSIONALSS', professionals)
     formData.append('professionals', JSON.stringify(professionals));
     certificate && formData.append('certificate', certificate as Blob);
 
@@ -110,6 +111,7 @@ const editPatient = ({ query }: MyPageProps) => {
             firstName2: prof.firstName.split(' ')[1],
             lastName1: prof.lastName.split(' ')[0],
             lastName2: prof.lastName.split(' ')[1],
+            id: prof._id,
           };
         })
       );
