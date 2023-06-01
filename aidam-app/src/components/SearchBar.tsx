@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { UseQueryResult } from '@tanstack/react-query';
 
 import { searchUser } from '@/services/users';
 import searchIcon from '@/assets/icons/search.svg';
@@ -13,7 +12,7 @@ interface Props {
   setActiveUsers?: React.Dispatch<React.SetStateAction<User[] | undefined>>;
   width?: string;
   searchFn?: (search: string, reportsType?: string) => void;
-  searchQuery?: UseQueryResult<Patient[], unknown>;
+  getPatients?: (search: string) => Promise<void>;
   reportsType?: string;
 }
 
@@ -23,20 +22,15 @@ const SearchBar: React.FC<Props> = ({
   setActiveUsers,
   width,
   searchFn,
-  searchQuery,
+  getPatients,
   reportsType,
 }) => {
   const [error, setError] = useState<string | null>(null);
 
   async function fetchSearchedUsers(search: string) {
     try {
-      if (search === '') {
-        const users = await searchUser('*');
-        return users;
-      } else {
         const users = await searchUser(search);
         return users;
-      }
     } catch (error) {
       setError(`Algo salió mal. Inténtelo nuevamente.`);
     }
@@ -45,17 +39,17 @@ const SearchBar: React.FC<Props> = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if(searchFn) {
+    if (searchFn) {
       searchFn(search, reportsType);
-    } else if (searchQuery) {
-      searchQuery.refetch()
     } else {
       if (!search) {
+        getPatients && getPatients('*')
         const users = await fetchSearchedUsers('*');
         if (setActiveUsers) {
           setActiveUsers(users);
         }
       } else {
+        getPatients && getPatients(search)
         const users = await fetchSearchedUsers(search);
         if (setActiveUsers) {
           setActiveUsers(users);
@@ -67,7 +61,7 @@ const SearchBar: React.FC<Props> = ({
   const clearButton = async () => {
     setSearch('');
     searchFn && searchFn('', reportsType);
-    searchQuery && searchQuery.refetch();
+    getPatients && getPatients('*');
     if (setActiveUsers) {
       const users = await fetchSearchedUsers('*');
       setActiveUsers(users);
@@ -77,10 +71,7 @@ const SearchBar: React.FC<Props> = ({
   return (
     <div className={`${width ? width : 'w-2/3'} flex flex-col items-center`}>
       {error && <div className='text-red-500'>{error}</div>}
-      <form
-        onSubmit={handleSubmit}
-        className='relative flex items-center w-full'
-      >
+      <form onSubmit={handleSubmit} className='relative flex items-center w-full'>
         <input
           type='search'
           id='search'
@@ -92,11 +83,7 @@ const SearchBar: React.FC<Props> = ({
           } w-full border rounded-full px-4 py-1 shadow-card outline-none focus:shadow-active hover:bg-gray-100 focus:bg-gray-100 transition-all`}
         />
         {search && (
-          <button
-            type='button'
-            onClick={clearButton}
-            className='absolute w-fit left-3'
-          >
+          <button type='button' onClick={clearButton} className='absolute w-fit left-3'>
             <Image src={x} alt='clear button' className='w-[18px]' />
           </button>
         )}

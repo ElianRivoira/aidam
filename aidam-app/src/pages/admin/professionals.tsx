@@ -3,7 +3,8 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
 
-import NavbarDesktop from '@/components/navbar/NavbarDesktop';
+// import NavbarDesktop from '@/components/navbar/NavbarDesktop';
+// import Navbar from '@/components/navbar/Navbar';
 import SearchBar from '@/components/SearchBar';
 import DesktopCard from '@/components/DesktopCard';
 import { getAllUsers } from '@/services/users';
@@ -12,7 +13,6 @@ import Modal from '@/components/Modal';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import MobileUsersCard from '@/components/MobileUsersCard';
 import Button from '@/components/Button';
-import Navbar from '@/components/navbar/Navbar';
 
 const professionals = () => {
   const [activeUsers, setActiveUsers] = useState<User[]>();
@@ -53,8 +53,8 @@ const professionals = () => {
       <main className='min-h-screen bg-background'>
         {useMediaQuery(1024) ? (
           <>
-            <Navbar />
-            <div className='p-2 flex justify-around w-fit'>
+            {/* <Navbar /> */}
+            <div className='p-2 px-3.5 flex justify-between w-full'>
               <SearchBar
                 search={search}
                 setSearch={setSearch}
@@ -69,7 +69,7 @@ const professionals = () => {
           </>
         ) : (
           <>
-            <NavbarDesktop />{' '}
+            {/* <NavbarDesktop />{' '} */}
             <div className='flex justify-end mt-7 w-full mb-14'>
               <div className='w-[70%] flex justify-between items-center mr-12'>
                 <SearchBar
@@ -88,7 +88,7 @@ const professionals = () => {
         )}
 
         {useMediaQuery(1024) ? (
-          <div className='mx-2'>
+          <div className='mx-3.5'>
             {activeUsers?.map((user, index) => {
               if (!user.admin)
                 return <MobileUsersCard user={user} key={index} />;

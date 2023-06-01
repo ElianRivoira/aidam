@@ -11,8 +11,8 @@ import { getLoggedUser } from '@/services/users';
 import Modal from '@/components/Modal';
 import Button from '@/components/Button';
 import useMediaQuery from '@/hooks/useMediaQuery';
-import Navbar from '@/components/navbar/Navbar';
-import NavbarDesktop from '@/components/navbar/NavbarDesktop';
+// import Navbar from '@/components/navbar/Navbar';
+// import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import ArrowBack from '@/components/ArrowBack';
 import { DateInput, TextArea } from '@/components/reports/Inputs';
 import { setCanvasHeight, setCanvasWidth } from '@/utils/canvas';
@@ -27,13 +27,9 @@ const create = ({ query }: MyPageProps) => {
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
   const [cookieError, setCookieError] = useState(false);
-  const [therapeuticObjetives, setTherapeuticObjetives] = useState<
-    Array<string>
-  >([]);
+  const [therapeuticObjetives, setTherapeuticObjetives] = useState<Array<string>>([]);
   const [objective, setObjective] = useState('');
-  const [therapeuticStrategies, setTherapeuticStrategies] = useState<
-    Array<string>
-  >([]);
+  const [therapeuticStrategies, setTherapeuticStrategies] = useState<Array<string>>([]);
   const [strategy, setStrategy] = useState('');
   const [reportDate, setReportDate] = useState('');
   const [reportPeriod, setReportPeriod] = useState('');
@@ -63,7 +59,7 @@ const create = ({ query }: MyPageProps) => {
   const [planType, setPlanType] = useState([
     `PLAN DE ABORDAJE INDIVIDUAL ${new Date().getFullYear()} `,
     'PLAN DE ABORDAJE INDIVIDUAL SEMESTRAL',
-    'INFORME DE EVOLUCIÓN FINAL (PARA PADRES)',
+    'INFORME DE EVOLUCION FINAL (PARA PADRES)',
   ]);
 
   const currentDate = new Date();
@@ -77,7 +73,7 @@ const create = ({ query }: MyPageProps) => {
 
   const upload = useMutation({
     mutationFn: uploadReport,
-    onSuccess: (editedPatient) => {
+    onSuccess: editedPatient => {
       setSuccessMsg('Informe cargado correctamente');
       setType(1);
       setOpen(true);
@@ -94,7 +90,7 @@ const create = ({ query }: MyPageProps) => {
     keepPreviousData: true,
     queryFn: () => getOnePatient(query.id),
     retry: 1,
-    onError: (error) => {
+    onError: error => {
       setType(2);
       setErrors((error as any).response.data.errors);
       setOpen(true);
@@ -157,40 +153,28 @@ const create = ({ query }: MyPageProps) => {
         <title>{`AIDAM - Generar informe`}</title>
       </Head>
       <main className='flex flex-col items-center min-h-screen bg-background'>
-        {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
+        {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
         <div className='w-full md:px-14 px-4 pb-10 text-lh md:text-base'>
           <div className='flex justify-between items-center my-3 lg:my-7 w-full'>
             <div className='flex lgMax:self-start items-center lg:gap-8 gap-4'>
-              <ArrowBack
-                width={40}
-                route={`/patients/${patient.data?._id}/reports`}
-              />
+              <ArrowBack width={40} route={`/patients/${patient.data?._id}/reports`} />
               <h2 className='text-xg lgMax:text-lm font-medium'>
                 {patient.data?.firstName} {patient.data?.lastName}
               </h2>
             </div>
-            <h1 className='text-xl2 lgMax:text-xg font-medium'>
-              GENERAR INFORME
-            </h1>
+            <h1 className='text-xl2 lgMax:text-xg font-medium'>GENERAR INFORME</h1>
           </div>
           <hr className='mb-7 border-black03 w-full' />
-          <h1 className='text-xl2.5 font-medium mt-7 mb-8 text-center'>
-            PLAN TERAPÉUTICO INTEGRAL
-          </h1>
-          <form
-            className='flex flex-col mt-7 gap-2'
-            onSubmit={handleFormSubmit}
-          >
-            <h1 className='mb-2 font-medium'>
-              INFORME DE EVALUACIÓN TERAPÉUTICA:
-            </h1>
+          <h1 className='text-xl2.5 font-medium mt-7 mb-8 text-center'>PLAN TERAPÉUTICO INTEGRAL</h1>
+          <form className='flex flex-col mt-7 gap-2' onSubmit={handleFormSubmit}>
+            <h1 className='mb-2 font-medium'>INFORME DE EVALUACIÓN TERAPÉUTICA:</h1>
             <div>
               <DateInput
                 label='Fecha:'
                 name='reportDate'
                 divclass='mb-8'
                 value={reportDate}
-                onChange={(e) => setReportDate(e.target.value)}
+                onChange={e => setReportDate(e.target.value)}
               />
             </div>
             <div className='flex'>
@@ -204,7 +188,7 @@ const create = ({ query }: MyPageProps) => {
                   firstDateWidth ? 'w-32' : 'w-fit'
                 }`}
                 required
-                onChange={(e) => {
+                onChange={e => {
                   setReportPeriod(e.target.value);
                   setFirstDateWidth(true);
                 }}
@@ -212,7 +196,7 @@ const create = ({ query }: MyPageProps) => {
                 <option value='' hidden>
                   Seleccione mes de ingreso
                 </option>
-                {months.map((month) => (
+                {months.map(month => (
                   <option value={month}>{month}</option>
                 ))}
               </select>
@@ -220,8 +204,7 @@ const create = ({ query }: MyPageProps) => {
               <p>{'a Diciembre ' + currentYear}</p>
             </div>
             <p className='font-medium text-ln'>
-              Se realiza la evaluación inicial del área, obteniendo los
-              siguientes resultados
+              Se realiza la evaluación inicial del área, obteniendo los siguientes resultados
             </p>
             <div className='flex flex-col lg:w-2/3 w-full'>
               <TextArea
@@ -231,7 +214,7 @@ const create = ({ query }: MyPageProps) => {
                 labelclass='font-normal text-lb'
                 placeholder='Detallar aspectos generales observados al comienzo de año, encuadre y ajuste al espacio terapéutico, aspectos conductuales, entre otros.'
                 value={generalAspects}
-                onChange={(e) => setGeneralAspects(e.target.value)}
+                onChange={e => setGeneralAspects(e.target.value)}
               />
               <TextArea
                 label='En razón a los aspectos específicos del área, según lo evaluado, se observa lo siguiente:'
@@ -240,7 +223,7 @@ const create = ({ query }: MyPageProps) => {
                 labelclass='font-normal text-lb'
                 placeholder='Completar con los aspectos consignados en el Protocolo de Evaluación pertinentes a cada especialidad y los resultados obtenidos.'
                 value={generalObjectives}
-                onChange={(e) => setGeneralObjectives(e.target.value)}
+                onChange={e => setGeneralObjectives(e.target.value)}
               />
               <TextArea
                 label='Se puede señalar que el paciente:'
@@ -249,7 +232,7 @@ const create = ({ query }: MyPageProps) => {
                 labelclass='font-normal text-lb'
                 placeholder='Consignar observaciones significativas, fortalezas detectadas, entre otras.'
                 value={generalFODA}
-                onChange={(e) => setGeneralFODA(e.target.value)}
+                onChange={e => setGeneralFODA(e.target.value)}
               />
             </div>
             <div className='flex mt-2'>
@@ -261,7 +244,7 @@ const create = ({ query }: MyPageProps) => {
                 className={`bg-white bg-opacity-20 p-0.5 focus:border focus:outline-none border border-slate-300 hover:border-aidam80 rounded-md mr-1 ${
                   !planWidth ? 'w-56' : 'w-fit'
                 }`}
-                onChange={(e) => {
+                onChange={e => {
                   setPlanWidth(true);
                   setSelectedPlanType(e.target.value);
                 }}
@@ -269,7 +252,7 @@ const create = ({ query }: MyPageProps) => {
                 <option value='' hidden>
                   Seleccione el tipo de plan
                 </option>
-                {planType.map((plan) => (
+                {planType.map(plan => (
                   <>
                     <option value={plan}>{plan}</option>
                   </>
@@ -287,7 +270,7 @@ const create = ({ query }: MyPageProps) => {
                 className={`bg-white bg-opacity-20 focus:border focus:outline-none border rounded-md mx-1 ${
                   secondDateWidth ? 'w-32' : 'w-fit'
                 }`}
-                onChange={(e) => {
+                onChange={e => {
                   setSecondDateWidth(true);
                   setSecondPeriod(e.target.value);
                 }}
@@ -295,7 +278,7 @@ const create = ({ query }: MyPageProps) => {
                 <option value='' hidden>
                   Mes de inicio de terapias
                 </option>
-                {months.map((month) => (
+                {months.map(month => (
                   <option value={month}>{month}</option>
                 ))}
               </select>
@@ -304,10 +287,7 @@ const create = ({ query }: MyPageProps) => {
             </div>
             <div className='flex flex-col gap-3 mb-6'>
               <h1 className='font-medium'>OBJETIVOS TERAPÉUTICOS</h1>
-              <p>
-                En función de lo evaluado, se proponen los siguientes objetivos
-                específicos de abordaje:
-              </p>
+              <p>En función de lo evaluado, se proponen los siguientes objetivos específicos de abordaje:</p>
               <div className='flex flex-col gap-2'>
                 <div className='flex gap-3'>
                   <input
@@ -315,25 +295,16 @@ const create = ({ query }: MyPageProps) => {
                     type='text'
                     placeholder='Ingrese de a un objetivo aquí'
                     className='px-1 focus:border focus:outline-none border border-slate-300 hover:border-aidam80 rounded-md w-1/2'
-                    onChange={(e) => setObjective(e.target.value)}
+                    onChange={e => setObjective(e.target.value)}
                   />
-                  <Button
-                    type='button'
-                    onClick={() => setObj(objective)}
-                    text='Agregar objetivo'
-                  />
+                  <Button type='button' onClick={() => setObj(objective)} text='Agregar objetivo' />
                 </div>
-                {therapeuticObjetives
-                  ? therapeuticObjetives.map((obj) => <li>{obj}</li>)
-                  : ''}
+                {therapeuticObjetives ? therapeuticObjetives.map(obj => <li>{obj}</li>) : ''}
               </div>
             </div>
             <div className='flex flex-col gap-3'>
               <h1 className='font-medium'>ESTRATEGIAS DE INTERVENCIÓN</h1>
-              <p>
-                Los objetivos planteados se desarrollaran a partir de las
-                siguientes estrategias de intervención:
-              </p>
+              <p>Los objetivos planteados se desarrollaran a partir de las siguientes estrategias de intervención:</p>
               <div className='flex flex-col gap-2'>
                 <div className='flex gap-3'>
                   <input
@@ -341,17 +312,11 @@ const create = ({ query }: MyPageProps) => {
                     type='text'
                     placeholder='Ingrese de a una estrategia aquí'
                     className='px-1 focus:border focus:outline-none border border-slate-300 hover:border-aidam80 rounded-md w-1/2'
-                    onChange={(e) => setStrategy(e.target.value)}
+                    onChange={e => setStrategy(e.target.value)}
                   />
-                  <Button
-                    type='button'
-                    onClick={() => setStrat(strategy)}
-                    text='Agregar estrategia'
-                  />
+                  <Button type='button' onClick={() => setStrat(strategy)} text='Agregar estrategia' />
                 </div>
-                {therapeuticStrategies
-                  ? therapeuticStrategies.map((strat) => <li>{strat}</li>)
-                  : ''}
+                {therapeuticStrategies ? therapeuticStrategies.map(strat => <li>{strat}</li>) : ''}
               </div>
             </div>
             <div className='flex flex-col mt-20'>
@@ -363,17 +328,16 @@ const create = ({ query }: MyPageProps) => {
                     width: setCanvasWidth('firmaRef', screenWidth),
                     height: setCanvasHeight('firmaRef', screenWidth),
                   }}
+                  minWidth={1}
+                  maxWidth={1}
+                  dotSize={1}
+                  velocityFilterWeight={1}
                 />
               </div>
             </div>
             <Button type='submit' text='Generar informe' classname='mt-4' />
           </form>
-          <Modal
-            open={open}
-            onClose={() => setOpen(false)}
-            type={type}
-            errors={errors}
-          >
+          <Modal open={open} onClose={() => setOpen(false)} type={type} errors={errors}>
             <h1>{successMsg}</h1>
           </Modal>
         </div>
@@ -390,9 +354,7 @@ interface MyPageProps {
   };
 }
 
-create.getInitialProps = async ({
-  query,
-}: NextPageContext): Promise<MyPageProps> => {
+create.getInitialProps = async ({ query }: NextPageContext): Promise<MyPageProps> => {
   const castedQuery = query as unknown as MyPageProps['query'];
   return { query: castedQuery };
 };

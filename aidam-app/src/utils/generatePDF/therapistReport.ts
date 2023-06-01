@@ -225,13 +225,18 @@ export const generateTRPDF = (
   const blobDoc = doc.output('blob');
   const file = new File(
     [blobDoc],
-    `${data.selectedPlanType} ${user?.firstName}_${user?.lastName}`,
+    `${data.selectedPlanType}.pdf`,
     {
       type: 'application/pdf',
     }
   );
-  if (patient.data) {
+  if (patient.data && user) {
     const formData = new FormData();
+    console.log(patient.data)
+    formData.append('firstName', patient.data.firstName);
+    formData.append('lastName', patient.data.lastName);
+    formData.append('userFirstName', user.firstName);
+    formData.append('userLastName', user.lastName);
     formData.append('report', file as Blob);
     upload.mutate({ id: patient.data._id, form: formData });
   }

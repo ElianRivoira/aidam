@@ -180,13 +180,17 @@ export const generateHCPDF = (
   firmaData && doc.addImage(firmaData, 'PNG', 110, y, firmaWidth, firmaHeight);
   y = checkPageBreak(doc, y + 35);
   y = inputLine(doc, `${loggedUser.data?.firstName} ${loggedUser.data?.lastName}`, 165, y, spacing);
-
+  console.log('loggedUser', loggedUser.data);
   const blobDoc = doc.output('blob');
-  const file = new File([blobDoc], 'Historia clinica.pdf', { type: 'application/pdf' });
-  if (patient.data) {
+  const file = new File([blobDoc], `Historia clinica.pdf`, {
+    type: 'application/pdf',
+  });
+  if (patient.data && loggedUser.data) {
     const formData = new FormData();
     formData.append('firstName', patient.data.firstName);
     formData.append('lastName', patient.data.lastName);
+    formData.append('userFirstName', loggedUser.data.firstName);
+    formData.append('userLastName', loggedUser.data.lastName);
     formData.append('report', file as Blob);
     uploadMed.mutate({ id: patient.data._id, form: formData });
   }
@@ -593,13 +597,17 @@ export const generateHCFPDF = (
   const blobDoc = doc.output('blob');
   const file = new File(
     [blobDoc],
-    `Historia clinica fisiatrica.pdf_${loggedUser.data?.firstName} ${loggedUser.data?.lastName}`,
+    `Historia clinica fisiatrica.pdf`,
     {
       type: 'application/pdf',
     }
   );
-  if (patient.data) {
+  if (patient.data && loggedUser.data) {
     const formData = new FormData();
+    formData.append('firstName', patient.data.firstName);
+    formData.append('lastName', patient.data.lastName);
+    formData.append('userFirstName', loggedUser.data.firstName);
+    formData.append('userLastName', loggedUser.data.lastName);
     formData.append('report', file as Blob);
     uploadMed.mutate({ id: patient.data._id, form: formData });
   }

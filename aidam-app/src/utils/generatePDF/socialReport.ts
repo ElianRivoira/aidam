@@ -518,7 +518,7 @@ const generatePDF = (
   y = inputLine(doc, `${loggedUser.data?.firstName} ${loggedUser.data?.lastName}`, 165, y, spacing);
 
   const blobDoc = doc.output('blob');
-  const file = new File([blobDoc], `Ficha Social.pdf_${loggedUser.data?.firstName} ${loggedUser.data?.lastName}`, { type: 'application/pdf' });
+  const file = new File([blobDoc], `Ficha Social_${loggedUser.data?.firstName}_${loggedUser.data?.lastName}.pdf`, { type: 'application/pdf' });
   if (patient.data) {
     const formData = new FormData();
     formData.append('report', file as Blob);

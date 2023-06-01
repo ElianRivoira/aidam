@@ -39,7 +39,7 @@ const ReportItem: React.FC<ReportItemProps> = ({
     const extension = splittedReportName[splittedReportName.length - 1];
     setfileExtension(extension);
     patient &&
-      setFileName(report.split(`${patient.firstName}_${patient.lastName}`)[1]);
+      setFileName(report.split(`${patient.firstName}-${patient.lastName}_`)[1]);
   }, []);
 
   return (

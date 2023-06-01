@@ -5,8 +5,8 @@ import { NextPageContext } from 'next';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import SignatureCanvas from 'react-signature-canvas';
 
-import Navbar from '@/components/navbar/Navbar';
-import NavbarDesktop from '@/components/navbar/NavbarDesktop';
+// import Navbar from '@/components/navbar/Navbar';
+// import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import { getOnePatient, uploadSocialReport } from '@/services/patients';
 import { TextArea, DateInput, RadioInput, TextInput, CheckboxInput } from '@/components/reports/Inputs';
@@ -372,7 +372,7 @@ const createSocial = ({ query }: MyPageProps) => {
         <title>{`AIDAM - Generar informe social`}</title>
       </Head>
       <main className='flex flex-col items-center min-h-screen bg-background'>
-        {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
+        {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
         <div className='w-full lg:px-12'>
           <div className='flex flex-col lgMax:px-4'>
             <div className='flex justify-between items-center my-3 lg:my-7 w-full'>

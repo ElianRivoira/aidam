@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 
-import NavbarDesktop from '@/components/navbar/NavbarDesktop';
+// import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import Input from '@/components/form/Input';
 import ArrowBack from '@/components/ArrowBack';
 import TagInputProf from '@/components/form/TagInputProfessionals';
@@ -82,7 +82,7 @@ const create = () => {
         <title>AIDAM Admin - Nuevo paciente</title>
       </Head>
       <main className='min-h-screen bg-background'>
-        <NavbarDesktop />
+        {/* <NavbarDesktop /> */}
         <div className='w-full mt-12 px-12 mb-4'>
           <ArrowBack route='/patients' />
           <h1 className='text-center text-xl4 font-semibold'>NUEVO PACIENTE</h1>
