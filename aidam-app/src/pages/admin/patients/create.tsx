@@ -81,9 +81,9 @@ const create = () => {
       <Head>
         <title>AIDAM Admin - Nuevo paciente</title>
       </Head>
-      <main className='min-h-screen bg-background'>
+      <main className='min-h-screen pt-12 bg-background'>
         {/* <NavbarDesktop /> */}
-        <div className='w-full mt-12 px-12 mb-4'>
+        <div className='w-full px-12 mb-4'>
           <ArrowBack route='/patients' />
           <h1 className='text-center text-xl4 font-semibold'>NUEVO PACIENTE</h1>
           <form

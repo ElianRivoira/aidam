@@ -371,11 +371,11 @@ const createSocial = ({ query }: MyPageProps) => {
       <Head>
         <title>{`AIDAM - Generar informe social`}</title>
       </Head>
-      <main className='flex flex-col items-center min-h-screen bg-background'>
+      <main className='flex flex-col items-center pt-3 lg:pt-7 min-h-screen bg-background'>
         {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
         <div className='w-full lg:px-12'>
           <div className='flex flex-col lgMax:px-4'>
-            <div className='flex justify-between items-center my-3 lg:my-7 w-full'>
+            <div className='flex justify-between items-center mb-3 lg:mb-7 w-full'>
               <div className='flex lgMax:self-start items-center lg:gap-8 gap-4'>
                 <ArrowBack route={`/patients/${query.id}/medicsocial`} width={useMediaQuery(1024) ? 33 : undefined} />
                 <h2 className='text-xg lgMax:text-lm font-medium'>

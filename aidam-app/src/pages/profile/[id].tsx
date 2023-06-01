@@ -115,7 +115,7 @@ const Profile = ({ query }: MyPageProps) => {
       <Head>
         <title>{loggedUser.data?.admin ? 'AIDAM Admin - Perfil' : 'AIDAM - Perfil'}</title>
       </Head>
-      <div className='min-h-screen flex flex-col items-center bg-background'>
+      <main className='min-h-screen flex flex-col items-center bg-background'>
         {useMediaQuery(1024) ? (
           <>
             {/* <Navbar /> */}
@@ -259,7 +259,7 @@ const Profile = ({ query }: MyPageProps) => {
             </div>
           </>
         )}
-      </div>
+      </main>
       <Modal
         open={open}
         onClose={() => setOpen(false)}
