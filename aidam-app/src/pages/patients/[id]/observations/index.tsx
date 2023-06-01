@@ -177,9 +177,7 @@ const Observations = ({ query }: MyPageProps) => {
                   </div>
                   <div className='w-full flex flex-col items-center'>
                     {patient.isFetching ? (
-                      <div className='h-14 flex justify-center w-full'>
-                        <Spinner />
-                      </div>
+                      <Spinner />
                     ) : patient.data?.observationsId.length ? (
                       filteredObs.length ? (
                         filteredObs.map(obs => {
@@ -206,9 +204,7 @@ const Observations = ({ query }: MyPageProps) => {
                     {searchDate ? formatStringDate(searchDate) : formatStringDate(actualDate)}
                   </div>
                   {patient.isFetching ? (
-                    <div className='h-14 flex justify-center w-full'>
-                      <Spinner />
-                    </div>
+                    <Spinner />
                   ) : patient.data?.observationsId.length ? (
                     filteredObs.length ? (
                       filteredObs.map(obs => {

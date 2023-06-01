@@ -243,9 +243,7 @@ const medicSocial = ({ query }: MyPageProps) => {
               </div> */}
               <div className={`flex w-full mt-8 ${medicalReports.length ? 'lg:min-h-[300px]' : ''}`}>
                 {patient.isFetching ? (
-                  <div className='h-14 flex justify-center w-full'>
-                    <Spinner />
-                  </div>
+                  <Spinner />
                 ) : medicalReports.length ? (
                   <>
                     <div className='w-full px-4'>
@@ -304,9 +302,7 @@ const medicSocial = ({ query }: MyPageProps) => {
               </div> */}
               <div className={`flex w-full mt-8 ${socialReports.length ? 'min-h-[300px]' : ''}`}>
                 {patient.isFetching ? (
-                  <div className='h-14 flex justify-center w-full'>
-                    <Spinner />
-                  </div>
+                  <Spinner />
                 ) : socialReports.length ? (
                   <>
                     <div className='w-full px-4'>

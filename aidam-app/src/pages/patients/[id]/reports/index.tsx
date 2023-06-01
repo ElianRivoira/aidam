@@ -174,9 +174,7 @@ const Reports = ({ query }: MyPageProps) => {
               {useMediaQuery(1024) ? (
                 <>
                   {patient.isFetching ? (
-                    <div className='h-14 flex justify-center w-full'>
-                      <Spinner />
-                    </div>
+                    <Spinner />
                   ) : patient.data?.reports.length ? (
                     filteredReports.length ? (
                       <div className='w-full px-4'>
@@ -205,20 +203,33 @@ const Reports = ({ query }: MyPageProps) => {
               ) : (
                 <>
                   {patient.isFetching ? (
-                    <div className='h-14 flex justify-center w-full'>
-                      <Spinner />
-                    </div>
-                  ) : patient.data?.reports.length ? filteredReports.length ? (
-                    <>
-                      <div
-                        className={`w-1/2 flex flex-col items-center ${
-                          filteredReports ? 'border-r border-black03' : ''
-                        }`}
-                      >
-                        {filteredReports.slice(0, Math.ceil(filteredReports.length / 2)).map((report, index) => {
-                          return (
+                    <Spinner />
+                  ) : patient.data?.reports.length ? (
+                    filteredReports.length ? (
+                      <>
+                        <div
+                          className={`w-1/2 flex flex-col items-center ${
+                            filteredReports ? 'border-r border-black03' : ''
+                          }`}
+                        >
+                          {filteredReports.slice(0, Math.ceil(filteredReports.length / 2)).map((report, index) => {
+                            return (
+                              <ReportItem
+                                index={`report.half1.${index}`}
+                                report={report}
+                                setType={setType}
+                                setOpen={setOpen}
+                                setDeleteMsg={setDeleteMsg}
+                                setFileNameToDelete={setFileNameToDelete}
+                                patient={patient.data}
+                              />
+                            );
+                          })}
+                        </div>
+                        <div className='w-1/2 flex flex-col items-center'>
+                          {filteredReports.slice(Math.ceil(filteredReports.length / 2)).map((report, index) => (
                             <ReportItem
-                              index={`report.half1.${index}`}
+                              index={`report.half2.${index}`}
                               report={report}
                               setType={setType}
                               setOpen={setOpen}
@@ -226,27 +237,14 @@ const Reports = ({ query }: MyPageProps) => {
                               setFileNameToDelete={setFileNameToDelete}
                               patient={patient.data}
                             />
-                          );
-                        })}
-                      </div>
-                      <div className='w-1/2 flex flex-col items-center'>
-                        {filteredReports.slice(Math.ceil(filteredReports.length / 2)).map((report, index) => (
-                          <ReportItem
-                            index={`report.half2.${index}`}
-                            report={report}
-                            setType={setType}
-                            setOpen={setOpen}
-                            setDeleteMsg={setDeleteMsg}
-                            setFileNameToDelete={setFileNameToDelete}
-                            patient={patient.data}
-                          />
-                        ))}
-                      </div>
-                    </>
-                  ) : (
-                    <p className='w-full text-center'>
-                      El paciente no posee informes cargados para la fecha seleccionada
-                    </p>
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      <p className='w-full text-center'>
+                        El paciente no posee informes cargados para la fecha seleccionada
+                      </p>
+                    )
                   ) : (
                     <p className='w-full text-center'>El paciente no posee informes cargados</p>
                   )}

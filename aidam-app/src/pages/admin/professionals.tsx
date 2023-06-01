@@ -50,7 +50,7 @@ const professionals = () => {
       <Head>
         <title>AIDAM Admin - Profesionales</title>
       </Head>
-      <main className='min-h-screen bg-background'>
+      <main className='min-h-screen pt-[30px] bg-background'>
         {useMediaQuery(1024) ? (
           <>
             {/* <Navbar /> */}
@@ -70,7 +70,7 @@ const professionals = () => {
         ) : (
           <>
             {/* <NavbarDesktop />{' '} */}
-            <div className='flex justify-end mt-7 w-full mb-14'>
+            <div className='flex justify-end w-full mb-14'>
               <div className='w-[70%] flex justify-between items-center mr-12'>
                 <SearchBar
                   search={search}

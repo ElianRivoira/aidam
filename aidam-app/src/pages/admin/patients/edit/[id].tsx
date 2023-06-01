@@ -121,9 +121,9 @@ const editPatient = ({ query }: MyPageProps) => {
       <Head>
         <title>AIDAM Admin - Editar paciente</title>
       </Head>
-      <main className='min-h-screen bg-background'>
+      <main className='min-h-screen pt-12 bg-background'>
         {/* <NavbarDesktop /> */}
-        <div className='w-full mt-12 px-12 mb-4'>
+        <div className='w-full px-12 mb-4'>
           <ArrowBack route={`/patients/${query.id}/profile`} />
           <h1 className='text-center text-xl4 font-semibold'>EDITAR PACIENTE</h1>
           <form encType='multipart/form-data' onSubmit={handleSubmit} className='mt-20 flex flex-col'>

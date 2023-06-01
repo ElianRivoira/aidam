@@ -137,9 +137,9 @@ const editUser = ({ query }: MyPageProps) => {
       <Head>
         <title>{loggedUser.data?.admin ? 'AIDAM Admin - Editar usuario' : 'AIDAM - Editar usuario'}</title>
       </Head>
-      <main className='min-h-screen bg-background'>
+      <main className='min-h-screen pt-12 bg-background'>
         {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
-        <div className='w-full mt-12 lgMax:mt-4 px-12'>
+        <div className='w-full lgMax:mt-4 px-12'>
           <div className='flex items-center w-full'>
             <ArrowBack route={`/profile/${user.data?._id}`} />
             <h1 className='text-center text-xl4 lgMax:text-xl2 font-semibold mx-auto'>EDITAR USUARIO</h1>

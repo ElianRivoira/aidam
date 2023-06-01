@@ -64,7 +64,7 @@ const patients = () => {
       {useMediaQuery(1024) ? (
         <main className='bg-background'>
           {/* <Navbar /> */}
-          <div className='mt-7 mb-10 flex justify-center'>
+          <div className='mb-10 flex justify-center'>
             <SearchBar search={search} setSearch={setSearch} getPatients={getPatients} />
           </div>
           <div className='m-3.5 flex flex-col items-center'>
@@ -86,9 +86,9 @@ const patients = () => {
         </main>
       ) : (
         <>
-          <main className='min-h-screen bg-background'>
+          <main className='min-h-screen pt-[30px] bg-background'>
             {/* <NavbarDesktop /> */}
-            <div className='flex justify-end mt-7 w-full'>
+            <div className='flex justify-end w-full'>
               <div className='w-[70%] flex justify-between items-center mr-12'>
                 <SearchBar search={search} setSearch={setSearch} getPatients={getPatients} />
                 {loggedUser.data?.admin && (

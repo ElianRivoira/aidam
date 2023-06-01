@@ -12,7 +12,9 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
-      <Component {...pageProps} />
+      <div className='pt-[70px] lg:pt-[80px]'>
+        <Component {...pageProps} />
+      </div>
       <ReactQueryDevtools />
     </QueryClientProvider>
   );
