@@ -6,8 +6,6 @@ import { NextPageContext } from 'next';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 // import SearchBar from '@/components/SearchBar';
-import Navbar from '@/components/navbar/Navbar';
-import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import NavbarPatient from '@/components/profile/patient/NavbarPatient';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import {
@@ -22,6 +20,7 @@ import UploadReportModal from '@/components/profile/patient/UploadReportModal';
 import Modal from '@/components/Modal';
 import Button from '@/components/Button';
 import Spinner from '@/components/Spinner';
+import { getLoggedUser } from '@/services/users';
 
 const medicSocial = ({ query }: MyPageProps) => {
   const [cookieError, setCookieError] = useState(false);
@@ -39,6 +38,18 @@ const medicSocial = ({ query }: MyPageProps) => {
   const [medicalReports, setMedicalReports] = useState<string[]>([]);
   const [socialReports, setSocialReports] = useState<string[]>([]);
   const router = useRouter();
+
+  const loggedUser = useQuery({
+    queryKey: ['loggedUser'],
+    queryFn: getLoggedUser,
+    retry: 1,
+    onError: error => {
+      setType(2);
+      setErrors((error as any).response.data.errors);
+      setOpen(true);
+      setCookieError(true);
+    },
+  });
 
   const patient = useQuery({
     queryKey: ['patient', query.id],
@@ -159,9 +170,11 @@ const medicSocial = ({ query }: MyPageProps) => {
 
     const formData = new FormData();
 
-    if (patient.data) {
+    if (patient.data && loggedUser.data) {
       formData.append('firstName', patient.data.firstName);
       formData.append('lastName', patient.data.lastName);
+      formData.append('userFirstName', loggedUser.data.firstName);
+      formData.append('userLastName', loggedUser.data.lastName);
       newReport && formData.append('report', newReport as Blob);
       if (reportType === 'medical') {
         uploadMed.mutate({ id: patient.data._id, form: formData });
@@ -191,7 +204,7 @@ const medicSocial = ({ query }: MyPageProps) => {
         <title>{`AIDAM - Informes médicos de ${patient.data?.firstName} ${patient.data?.lastName}`}</title>
       </Head>
       <main className='flex flex-col items-center min-h-screen bg-background'>
-        {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
+        {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
         <div className='w-full lg:px-12 lg:mt-2.5'>
           <NavbarPatient />
           <h2 className='text-lm font-medium text-start flex items-center mt-2 lgMax:px-4'>

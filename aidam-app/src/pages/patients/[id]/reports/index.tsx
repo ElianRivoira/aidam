@@ -5,9 +5,9 @@ import { useRouter } from 'next/router';
 import { NextPageContext } from 'next';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import SearchBar from '@/components/SearchBar';
-import Navbar from '@/components/navbar/Navbar';
-import NavbarDesktop from '@/components/navbar/NavbarDesktop';
+// import SearchBar from '@/components/SearchBar';
+// import Navbar from '@/components/navbar/Navbar';
+// import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import NavbarPatient from '@/components/profile/patient/NavbarPatient';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import { deleteReport, getOnePatient, uploadReport } from '@/services/patients';
@@ -148,7 +148,7 @@ const Reports = ({ query }: MyPageProps) => {
         <title>{`AIDAM - Informes de ${patient.data?.firstName} ${patient.data?.lastName}`}</title>
       </Head>
       <main className='flex flex-col items-center min-h-screen bg-background'>
-        {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
+        {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
         <div className='w-full lg:px-12 lg:mt-2.5'>
           <NavbarPatient />
           <div className='flex flex-col lgMax:px-4'>

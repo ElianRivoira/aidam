@@ -6,7 +6,8 @@ import { useRouter } from 'next/router';
 import { NextPageContext } from 'next';
 import { hasCookie } from 'cookies-next';
 
-import NavbarDesktop from '@/components/navbar/NavbarDesktop';
+// import NavbarDesktop from '@/components/navbar/NavbarDesktop';
+// import Navbar from '@/components/navbar/Navbar';
 import Input from '@/components/form/Input';
 import ArrowBack from '@/components/ArrowBack';
 import Modal from '@/components/Modal';
@@ -14,7 +15,6 @@ import { findUserById, getLoggedUser, putUser } from '@/services/users';
 import TagInputPatients from '@/components/form/TagInputPatients';
 import professions from '@/utils/professions';
 import useMediaQuery from '@/hooks/useMediaQuery';
-import Navbar from '@/components/navbar/Navbar';
 import profileIcon from '@/assets/icons/profileImage.svg';
 import Button from '@/components/Button';
 
@@ -138,7 +138,7 @@ const editUser = ({ query }: MyPageProps) => {
         <title>{loggedUser.data?.admin ? 'AIDAM Admin - Editar usuario' : 'AIDAM - Editar usuario'}</title>
       </Head>
       <main className='min-h-screen bg-background'>
-        {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
+        {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
         <div className='w-full mt-12 lgMax:mt-4 px-12'>
           <div className='flex items-center w-full'>
             <ArrowBack route={`/profile/${user.data?._id}`} />

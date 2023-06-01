@@ -8,7 +8,8 @@ import { hasCookie } from 'cookies-next';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import useMediaQuery from '@/hooks/useMediaQuery';
-import Navbar from '@/components/navbar/Navbar';
+// import Navbar from '@/components/navbar/Navbar';
+// import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import Data from '@/components/profile/Data';
 import profileImage from '@/assets/icons/profileImage.svg';
 import professionLogo from '@/assets/icons/professionLogo.svg';
@@ -16,7 +17,6 @@ import licenseIcon from '@/assets/icons/licenseIcon.svg';
 import emailIcon from '@/assets/icons/emailIcon.svg';
 import phoneIcon from '@/assets/icons/phoneIcon.svg';
 import { findUserById, getLoggedUser } from '@/services/users';
-import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import ArrowBack from '@/components/ArrowBack';
 import Modal from '@/components/Modal';
 import { deleteUser } from '@/services/users';
@@ -118,7 +118,7 @@ const Profile = ({ query }: MyPageProps) => {
       <div className='min-h-screen flex flex-col items-center bg-background'>
         {useMediaQuery(1024) ? (
           <>
-            <Navbar />
+            {/* <Navbar /> */}
             <div className='px-3.5 w-full'>
               <div className={`flex ${loggedUser.data?.admin ? 'justify-between' : 'justify-end'} mt-4`}>
                 {loggedUser.data?.admin && <ArrowBack route='/admin/professionals' />}
@@ -181,7 +181,7 @@ const Profile = ({ query }: MyPageProps) => {
           </>
         ) : (
           <>
-            <NavbarDesktop />
+            {/* <NavbarDesktop /> */}
             <div className='w-full px-12'>
               <div className={`flex mt-9 ${loggedUser.data?.admin ? 'justify-between' : 'justify-end'} items-center`}>
                 {loggedUser.data?.admin && <ArrowBack route='/admin/professionals' />}

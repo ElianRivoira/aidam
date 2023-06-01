@@ -5,8 +5,8 @@ import { NextPageContext } from 'next';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import SignatureCanvas from 'react-signature-canvas';
 
-import Navbar from '@/components/navbar/Navbar';
-import NavbarDesktop from '@/components/navbar/NavbarDesktop';
+// import Navbar from '@/components/navbar/Navbar';
+// import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import { getOnePatient, uploadMedicalReport } from '@/services/patients';
 import { TextArea, DateInput, RadioInput, TextInput } from '@/components/reports/Inputs';
@@ -366,7 +366,7 @@ const createMedical = ({ query }: MyPageProps) => {
         <title>{`AIDAM - Generar informe médico`}</title>
       </Head>
       <main className='flex flex-col items-center min-h-screen bg-background'>
-        {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
+        {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
         <div className='w-full lg:px-12'>
           <div className='flex flex-col lgMax:px-4'>
             <div className='flex justify-between items-center my-3 lg:my-7 w-full'>
@@ -758,6 +758,10 @@ const createMedical = ({ query }: MyPageProps) => {
                         width: setCanvasWidth('firmaRef', screenWidth),
                         height: setCanvasHeight('firmaRef', screenWidth),
                       }}
+                      minWidth={1}
+                      maxWidth={1}
+                      dotSize={1}
+                      velocityFilterWeight={1}
                     />
                   </div>
                 </div>
@@ -1054,6 +1058,10 @@ const createMedical = ({ query }: MyPageProps) => {
                         width: setCanvasWidth('firmaRef', screenWidth),
                         height: setCanvasHeight('firmaRef', screenWidth),
                       }}
+                      minWidth={1}
+                      maxWidth={1}
+                      dotSize={1}
+                      velocityFilterWeight={1}
                     />
                   </div>
                 </div>

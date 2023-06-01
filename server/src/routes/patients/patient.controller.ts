@@ -199,8 +199,9 @@ const httpSearchPatient = async (req: Request, res: Response) => {
   if (!errors.isEmpty()) {
     throw new RequestValidationError(errors.array());
   }
-
-  const findedPatients = await patientService.searchPatient(req.params.name);
+  console.log('NOMBRE', req.params.name)
+  const name = req.params.name ? req.params.name : '*';
+  const findedPatients = await patientService.searchPatient(name);
   res.send(findedPatients);
 };
 
@@ -448,7 +449,7 @@ const httpDeleteSocialReport = async (req: Request, res: Response) => {
   }
 };
 
-export {
+export default {
   httpGetAllPatientsFromTherapist,
   httpGetAllPatients,
   httpPostPatient,

@@ -4,14 +4,14 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { NextPageContext } from 'next';
 import { useRouter } from 'next/router';
 
-import Navbar from '@/components/navbar/Navbar';
+// import Navbar from '@/components/navbar/Navbar';
+// import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import NavbarPatient from '@/components/profile/patient/NavbarPatient';
 import ObservationCard from '@/components/profile/patient/ObservationCard';
 import { getOnePatient } from '@/services/patients';
 import { formatStringDate } from '@/utils/formatDate';
 import PickDateModal from '@/components/profile/patient/PickDateModal';
 import useMediaQuery from '@/hooks/useMediaQuery';
-import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import DesktopCard from '@/components/DesktopCard';
 import CreateObs from '@/components/observations/CreateObs';
 import { deleteObservation, putObservation, postObservation } from '@/services/observations';
@@ -136,7 +136,7 @@ const Observations = ({ query }: MyPageProps) => {
         <title>{`AIDAM - Observaciones de ${patient.data?.firstName} ${patient.data?.lastName}`}</title>
       </Head>
       <main className='flex flex-col items-center min-h-screen bg-background'>
-        {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
+        {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
         <div className='w-full lg:px-12 lg:mt-2.5'>
           <NavbarPatient />
           <div className='flex flex-col lgMax:px-3.5'>
