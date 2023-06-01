@@ -13,6 +13,7 @@ import Modal from '@/components/Modal';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import MobileUsersCard from '@/components/MobileUsersCard';
 import Button from '@/components/Button';
+import Spinner from '@/components/Spinner';
 
 const professionals = () => {
   const [activeUsers, setActiveUsers] = useState<User[]>();
@@ -22,6 +23,7 @@ const professionals = () => {
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   function toggleModal() {
@@ -32,13 +34,14 @@ const professionals = () => {
     queryKey: ['users'],
     queryFn: getAllUsers,
     retry: 1,
-    onSuccess: (data) => {
-      const activeUsrs = data.filter((user) => user.status === true);
-      const inactiveUsrs = data.filter((user) => user.status === false);
+    onSuccess: data => {
+      const activeUsrs = data.filter(user => user.status === true);
+      const inactiveUsrs = data.filter(user => user.status === false);
       setActiveUsers(activeUsrs);
       setInactiveUsers(inactiveUsrs);
+      setIsLoading(false);
     },
-    onError: (error) => {
+    onError: error => {
       setType(2);
       setErrors((error as any).response.data.errors);
       setOpen(true);
@@ -55,16 +58,8 @@ const professionals = () => {
           <>
             {/* <Navbar /> */}
             <div className='px-3.5 mb-10 flex justify-between w-full'>
-              <SearchBar
-                search={search}
-                setSearch={setSearch}
-                setActiveUsers={setActiveUsers}
-              />
-              <Button
-                onClick={toggleModal}
-                text='Dar de alta'
-                classname='px-3 h-10'
-              />
+              <SearchBar search={search} setSearch={setSearch} setActiveUsers={setActiveUsers} setIsLoading={setIsLoading} />
+              <Button onClick={toggleModal} text='Dar de alta' classname='px-3 h-10' />
             </div>
           </>
         ) : (
@@ -72,29 +67,26 @@ const professionals = () => {
             {/* <NavbarDesktop />{' '} */}
             <div className='flex justify-end w-full mb-14'>
               <div className='w-[70%] flex justify-between items-center mr-12'>
-                <SearchBar
-                  search={search}
-                  setSearch={setSearch}
-                  setActiveUsers={setActiveUsers}
-                />
-                <Button
-                  onClick={toggleModal}
-                  text='Dar de alta'
-                  classname='px-4 h-10'
-                />
+                <SearchBar search={search} setSearch={setSearch} setActiveUsers={setActiveUsers} setIsLoading={setIsLoading} />
+                <Button onClick={toggleModal} text='Dar de alta' classname='px-4 h-10' />
               </div>
             </div>
           </>
         )}
 
         {useMediaQuery(1024) ? (
-          <div className='mx-3.5'>
-            {activeUsers?.map((user, index) => {
-              if (!user.admin)
-                return <MobileUsersCard user={user} key={index} />;
-              else return null;
-            })}
-          </div>
+          users.isLoading || isLoading ? (
+            <Spinner />
+          ) : (
+            <div className='mx-3.5'>
+              {activeUsers?.map((user, index) => {
+                if (!user.admin) return <MobileUsersCard user={user} key={index} />;
+                else return null;
+              })}
+            </div>
+          )
+        ) : users.isLoading || isLoading ? (
+          <Spinner />
         ) : (
           <div className='mx-12'>
             {activeUsers?.map((user, index) => {
@@ -111,12 +103,7 @@ const professionals = () => {
             inactiveUsers={inactiveUsers ?? []}
           />
         )}
-        <Modal
-          open={open}
-          onClose={() => router.push('/login')}
-          type={type}
-          errors={errors}
-        >
+        <Modal open={open} onClose={() => router.push('/login')} type={type} errors={errors}>
           <h1></h1>
         </Modal>
       </main>
