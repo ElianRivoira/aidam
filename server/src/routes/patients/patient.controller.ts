@@ -60,6 +60,8 @@ const httpPostPatient = async (req: any, res: Response): Promise<void> => {
       birth: req.body.birth,
       email: req.body.email,
       phone: req.body.phone,
+      cud: req.body.cud,
+      adress: req.body.adress,
       certificate: req.file && [req.file.filename],
     });
 
@@ -108,6 +110,8 @@ const httpEditPatient = async (req: any, res: Response, next: NextFunction): Pro
       birth,
       email,
       phone,
+      adress,
+      cud,
       professionals,
     } = req.body;
     const filename = req.file && req.file.filename;
@@ -132,6 +136,8 @@ const httpEditPatient = async (req: any, res: Response, next: NextFunction): Pro
         birth,
         email,
         phone,
+        adress,
+        cud,
       },
       null,
       false,
@@ -199,10 +205,13 @@ const httpSearchPatient = async (req: Request, res: Response) => {
   if (!errors.isEmpty()) {
     throw new RequestValidationError(errors.array());
   }
-  console.log('NOMBRE', req.params.name)
-  const name = req.params.name ? req.params.name : '*';
-  const findedPatients = await patientService.searchPatient(name);
-  res.send(findedPatients);
+  try {
+    const name = req.params.name ? req.params.name : '*';
+    const findedPatients = await patientService.searchPatient(name);
+    res.send(findedPatients);
+  } catch (e) {
+    throw new ServerError(e);
+  }
 };
 
 const httpDownloadCertificate = async (req: Request, res: Response) => {

@@ -32,9 +32,7 @@ const TagInput: React.FC<TagInputProps> = ({ tagged, setTagged, patient }) => {
     mutationFn: unassignProf,
     onSuccess: response => {
       handleTagRemove(response.profName);
-      setSuccessMsg(
-        'El profesional ha sido desvinculado del paciente correctamente'
-      );
+      setSuccessMsg('El profesional ha sido desvinculado del paciente correctamente');
       setType(1);
       setOpen(true);
     },
@@ -54,7 +52,7 @@ const TagInput: React.FC<TagInputProps> = ({ tagged, setTagged, patient }) => {
     setSearchText(value);
   };
 
-  const handleClickOnProf = (name: INames) => {
+  const handleClickOnProf = (name: INames, id: string) => {
     setTagged(prevState => {
       if (prevState[0])
         return [
@@ -64,6 +62,7 @@ const TagInput: React.FC<TagInputProps> = ({ tagged, setTagged, patient }) => {
             firstName2: name.firstName2,
             lastName1: name.lastName1,
             lastName2: name.lastName2,
+            id,
           },
         ];
       else
@@ -73,6 +72,7 @@ const TagInput: React.FC<TagInputProps> = ({ tagged, setTagged, patient }) => {
             firstName2: name.firstName2,
             lastName1: name.lastName1,
             lastName2: name.lastName2,
+            id,
           },
         ];
     });
@@ -83,10 +83,7 @@ const TagInput: React.FC<TagInputProps> = ({ tagged, setTagged, patient }) => {
     // Eliminar el usuario etiquetado de la lista
     const filteredProfs = tagged.filter(
       prof =>
-        prof.firstName1 !== profToDelete.firstName1 &&
-        prof.firstName2 !== profToDelete.firstName2 &&
-        prof.lastName1 !== profToDelete.lastName1 &&
-        prof.lastName2 !== profToDelete.lastName2
+        prof.id !== profToDelete.id
     );
     setTagged(filteredProfs);
   };
@@ -106,18 +103,21 @@ const TagInput: React.FC<TagInputProps> = ({ tagged, setTagged, patient }) => {
       />
       {searchText && (
         <div className='absolute z-20 border bg-white rounded-md flex flex-col gap-2 w-full'>
-          {professionals.data?.map((prof, index) => (
-            <div
-              key={index}
-              onClick={() => {
-                const names = createINames(prof);
-                handleClickOnProf(names);
-              }}
-              className='hover:bg-aidamNav hover:text-white rounded-md p-3 cursor-pointer w-full transition-colors'
-            >
-              {`${prof.firstName} ${prof.lastName}`}
-            </div>
-          ))}
+          {professionals.data?.map(
+            (prof, index) =>
+              !prof.admin && (
+                <div
+                  key={index}
+                  onClick={() => {
+                    const names = createINames(prof);
+                    handleClickOnProf(names, prof._id);
+                  }}
+                  className='hover:bg-aidamNav hover:text-white rounded-md p-3 cursor-pointer w-full transition-colors'
+                >
+                  {`${prof.firstName} ${prof.lastName} - ${prof.profession}`}
+                </div>
+              )
+          )}
         </div>
       )}
       <div className='flex flex-wrap gap-2 mt-2.5'>
@@ -129,26 +129,20 @@ const TagInput: React.FC<TagInputProps> = ({ tagged, setTagged, patient }) => {
             >
               <button
                 onClick={() => {
-                  patient &&
-                    unassignProfessional.mutate({ id: patient._id, prof });
+                  console.log('PROFF', prof)
+                  patient && unassignProfessional.mutate({ id: patient._id, prof });
                 }}
                 className='flex items-center mr-1'
                 type='button'
               >
                 <Image src={x} alt='x' width={20} />
               </button>
-              {prof.firstName1} {prof.firstName2} {prof.lastName1}{' '}
-              {prof.lastName2}
+              {prof.firstName1} {prof.firstName2} {prof.lastName1} {prof.lastName2}
             </div>
           );
         })}
       </div>
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        type={type}
-        errors={errors}
-      >
+      <Modal open={open} onClose={() => setOpen(false)} type={type} errors={errors}>
         <h1>{successMsg}</h1>
       </Modal>
     </div>

@@ -13,6 +13,8 @@ export interface PatientAttrs {
   birth: Date;
   email: string;
   phone: number;
+  cud: string;
+  adress: string;
   certificate: string[];
 }
 

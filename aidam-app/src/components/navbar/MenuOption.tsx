@@ -8,11 +8,12 @@ interface MenuProps {
   children?: React.ReactNode;
   href?: string;
   logo?: any;
+  setIsOpen: (x: boolean) => void;
 }
 
-const MenuOption: React.FC<MenuProps> = ({ children, href, logo }) => {
+const MenuOption: React.FC<MenuProps> = ({ children, href, logo, setIsOpen }) => {
   return (
-    <li className='block'>
+    <li className='block' onClick={() => setIsOpen(false)}>
       <Link
         href={href ? href : ''}
         className={`flex h-16 items-center text-xg text-black hover:bg-aidam70 rounded`}
