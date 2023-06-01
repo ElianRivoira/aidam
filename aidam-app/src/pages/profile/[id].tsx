@@ -120,16 +120,16 @@ const Profile = ({ query }: MyPageProps) => {
           <>
             {/* <Navbar /> */}
             <div className='px-3.5 w-full'>
+              <div className='flex flex-col'>
               <div className={`flex ${loggedUser.data?.admin ? 'justify-between' : 'justify-end'} mt-4`}>
                 {loggedUser.data?.admin && <ArrowBack route='/admin/professionals' />}
-              </div>
-              <div className='flex flex-col'>
                 <Link
                   href={`/profile/edit/${user.data?._id}`}
                   className='self-end text-xs font-normal text-white px-4 py-2.5 mr-1 h-fit rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
                 >
                   Editar
                 </Link>
+              </div>
                 <div className='flex flex-col items-center mx-auto'>
                   <div className='rounded-full w-[90px] h-[90px] overflow-hidden mb-2'>
                     {pathImg ? (

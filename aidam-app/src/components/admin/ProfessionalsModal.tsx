@@ -26,19 +26,19 @@ const ProfessionalsModal: React.FC<Props> = ({
   };
 
   return (
-    <div className='fixed z-50 inset-0 overflow-y-auto'>
+    <div className='fixed z-50 inset-0 overflow-y-auto' onClick={closeModal}>
       <div className='flex items-center justify-center min-h-screen px-4 pt-6 pb-20 text-center sm:block sm:p-0'>
         <div className='fixed inset-0 transition-opacity'>
           <div className='absolute inset-0 bg-black opacity-75'></div>
         </div>
         <span className='hidden sm:inline-block sm:align-middle sm:h-screen'></span>
-        <div className='inline-block align-bottom bg-[#FCFCFC] rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full'>
+        <div className='fixed top-2/4 lgMax:left-3 lgMax:right-3 lg:left-2/4 min-h-[20%] p-3 -translate-y-2/4 lg:-translate-x-2/4 bg-background rounded-xl text-left overflow-hidden shadow-xl transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full'>
           <div className='text-center text-3xl font-bold md:mt-6 mt-10'>
             PROFESIONALES
           </div>
           <button
             type='button'
-            className='absolute top-0 right-0 mt-3 mr-3 rounded-md pl-4 py-2 text-black text-3xl font-medium hover:text-indigo-700 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
+            className='absolute top-3 right-3 rounded-md pl-4 py-2 text-black text-3xl font-medium hover:text-indigo-700 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
             onClick={closeModal}
           >
             <Image src={x} alt='x' />

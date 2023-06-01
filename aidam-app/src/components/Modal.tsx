@@ -26,7 +26,7 @@ const Modal: React.FC<ModalProps> = ({
   if (!open) return null;
   return (
     <>
-      <div className='fixed top-0 left-0 right-0 bottom-0 bg-black/[.75] z-50' />
+      <div className='fixed inset-0 bg-black/[.75] z-50' />
       <div className='text-center fixed top-2/4 lgMax:left-3 lgMax:right-3 lg:left-2/4 -translate-y-2/4 lg:-translate-x-2/4 bg-white p-8 z-50 rounded-md font-semibold text-ln flex flex-col items-center'>
         {type === 1 ? (
           <>

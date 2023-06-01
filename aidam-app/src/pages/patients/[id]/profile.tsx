@@ -116,11 +116,11 @@ const Profile = ({ query }: MyPageProps) => {
         <div className='w-full lg:px-12 lg:mt-2.5'>
           <NavbarPatient />
           <div className='flex flex-col lgMax:px-3.5'>
-            {!useMediaQuery(1024) && (
-              <div className='flex justify-between items-center mt-8'>
+            
+              <div className='flex justify-between items-center mt-5 lg:mt-8'>
                 <ArrowBack route='/patients' />
                 <div className='flex gap-12 relative z-0'>
-                  <Button onClick={() => setOpenCertificateModal(true)} text='Certificado' />
+                  {!useMediaQuery(1024) && <Button onClick={() => setOpenCertificateModal(true)} text='Certificado' />}
                   {patient.data && loggedUser.data?.admin ? (
                     <DotsMenu
                       handleDelete={() => delPatient.mutate(patient.data._id)}
@@ -133,11 +133,13 @@ const Profile = ({ query }: MyPageProps) => {
                   ) : null}
                 </div>
               </div>
-            )}
-            <div className='lgMax:my-8 lg:mb-11 flex w-full'>
+          
+            {/* <div className='lgMax:mt-5 flex justify-between'>
               {useMediaQuery(1024) && (
                 <ArrowBack route='/patients' width={33} />
               )}
+            </div> */}
+            <div className='lgMax:mb-8 lg:mb-11 flex w-full'>
               <div className='flex flex-col mx-auto items-center'>
                 <Image
                   src={profileImage}

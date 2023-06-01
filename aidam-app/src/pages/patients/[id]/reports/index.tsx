@@ -17,6 +17,7 @@ import Modal from '@/components/Modal';
 import Button from '@/components/Button';
 import Spinner from '@/components/Spinner';
 import PickDateModal from '@/components/profile/patient/PickDateModal';
+import { getLoggedUser } from '@/services/users';
 
 const Reports = ({ query }: MyPageProps) => {
   const [cookieError, setCookieError] = useState(false);
@@ -35,6 +36,18 @@ const Reports = ({ query }: MyPageProps) => {
   const [openPickDate, setOpenPickDate] = useState(false);
   const [filteredReports, setFilteredReports] = useState<string[]>([]);
   const router = useRouter();
+
+  const loggedUser = useQuery({
+    queryKey: ['loggedUser'],
+    queryFn: getLoggedUser,
+    retry: 1,
+    onError: error => {
+      setType(2);
+      setErrors((error as any).response.data.errors);
+      setOpen(true);
+      setCookieError(true);
+    },
+  });
 
   const patient = useQuery({
     queryKey: ['patient', query.id],
@@ -98,9 +111,11 @@ const Reports = ({ query }: MyPageProps) => {
 
     const formData = new FormData();
 
-    if (patient.data) {
+    if (patient.data && loggedUser.data) {
       formData.append('firstName', patient.data.firstName);
       formData.append('lastName', patient.data.lastName);
+      formData.append('userFirstName', loggedUser.data.firstName);
+      formData.append('userLastName', loggedUser.data.lastName);
       newReport && formData.append('report', newReport as Blob);
       upload.mutate({ id: patient.data._id, form: formData });
     }

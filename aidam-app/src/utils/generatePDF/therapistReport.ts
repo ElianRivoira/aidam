@@ -1,6 +1,7 @@
 import { UseMutationResult, UseQueryResult } from '@tanstack/react-query';
 import SignatureCanvas from 'react-signature-canvas';
 import jsPDF from 'jspdf';
+import { checkPageBreak } from '../jsPDF';
 
 export const generateTRPDF = (
   e: React.FormEvent<HTMLFormElement>,
@@ -36,11 +37,11 @@ export const generateTRPDF = (
   const doc = new jsPDF();
   doc.setFont('Helvetica');
   doc.setFontSize(10);
-  const lineHeight = 10;
+  const lineHeight = 5;
   const spacing = 6;
   const headingFontSize = 14;
 
-  function checkPageBreak() {
+  function checkPageBreakk() {
     const pageHeight = doc.internal.pageSize.getHeight();
     if (y > pageHeight - lineHeight) {
       doc.addPage();
@@ -91,12 +92,11 @@ export const generateTRPDF = (
   y += 10;
   doc.text(`DIAGNÓSTICO: ${patient.data?.diagnosis}`, 10, y);
   y += 10;
-
-  y += 20;
   doc.text(`OBRA SOCIAL: ${patient.data?.socialwork}`, 10, y);
   doc.text(`AF: ${patient.data?.affiliateNumber}`, 125, y);
+  y += 20
   centerHeaders('INFORME DE EVUALUACIÓN TERAPÉUTICA');
-  doc.setFont('Helvetica', 'normal');
+  doc.setFont('Helvetica', 'bold');
   doc.setFontSize(10);
   y += 10;
   doc.text(
@@ -104,8 +104,10 @@ export const generateTRPDF = (
     10,
     y
   );
-  y += 10;
+  y += 6;
   const maxWidth = 180;
+
+  doc.setFont('Helvetica', 'normal');
 
   const generalAspectsText =
     'En relación al accionar del paciente y el encuadre, se puede puntualizar que: ' +
@@ -115,7 +117,8 @@ export const generateTRPDF = (
   splitText.forEach((line: string) => {
     doc.text(line, 10, y);
     y += lineHeight;
-    checkPageBreak();
+    checkPageBreakk();
+    y += 1
   });
 
   const generalObjectivesText =
@@ -126,7 +129,8 @@ export const generateTRPDF = (
   splitSecondText.forEach((line: string) => {
     doc.text(line, 10, y);
     y += lineHeight;
-    checkPageBreak();
+    checkPageBreakk();
+    y += 1
   });
 
   const generalFODAText =
@@ -136,10 +140,11 @@ export const generateTRPDF = (
   splitThirdText.forEach((line: string) => {
     doc.text(line, 10, y);
     y += lineHeight;
-    checkPageBreak();
+    checkPageBreakk();
+    y += 1
   });
 
-  y += 10;
+  y += 4;
 
   centerHeaders(data.selectedPlanType);
 
@@ -155,7 +160,7 @@ export const generateTRPDF = (
 
   doc.text('OBJETIVOS TERAPÉUTICOS', 10, y);
 
-  y += 10;
+  y += 6;
 
   doc.setFont('Helvetica', 'normal');
   doc.setFontSize(10);
@@ -167,28 +172,28 @@ export const generateTRPDF = (
   );
 
   y += 10;
-  checkPageBreak();
+  checkPageBreakk();
 
   data.therapeuticObjetives.forEach((objective) => {
     doc.setFont('Helvetica');
     doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
     doc.text(`\u2022 ${objective}`, 10, y, { align: 'justify' });
-    checkPageBreak();
+    checkPageBreakk();
     y += spacing;
   });
 
   y += 10;
 
   doc.setFontSize(14);
-  checkPageBreak();
+  checkPageBreakk();
 
   doc.setFont('Helvetica', 'bold');
 
   doc.text('ESTRATEGIAS DE INTERVENCIÓN', 10, y);
 
-  y += 10;
-  checkPageBreak();
+  y += 6;
+  checkPageBreakk();
 
   doc.setFont('Helvetica', 'normal');
   doc.setFontSize(10);
@@ -198,7 +203,7 @@ export const generateTRPDF = (
     10,
     y
   );
-  checkPageBreak();
+  checkPageBreakk();
 
   y += 10;
 
@@ -207,20 +212,20 @@ export const generateTRPDF = (
     doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
     doc.text(`\u2022 ${strat}`, 10, y, { align: 'justify' });
-    checkPageBreak();
+    checkPageBreakk();
     y += spacing;
   });
 
   y += 10;
-  checkPageBreak();
+  checkPageBreakk();
   const signatureWidth = 70;
   const signatureHeight = 30;
-
+  y = checkPageBreak(doc, y, 40);
   if (signatureData)
     doc.addImage(signatureData, 'PNG', 10, y, signatureWidth, signatureHeight);
   doc.text(`${user?.firstName} ${user?.lastName}`, 125, y + 10);
 
-  checkPageBreak();
+  checkPageBreakk();
 
   const blobDoc = doc.output('blob');
   const file = new File(

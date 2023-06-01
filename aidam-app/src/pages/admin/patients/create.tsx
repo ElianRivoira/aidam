@@ -81,18 +81,14 @@ const create = () => {
       <Head>
         <title>AIDAM Admin - Nuevo paciente</title>
       </Head>
-      <main className='min-h-screen pt-12 bg-background'>
+      <main className='min-h-screen pt-6 lg:pt-12 bg-background'>
         {/* <NavbarDesktop /> */}
-        <div className='w-full px-12 mb-4'>
+        <div className='w-full px-6 lg:px-12 mb-4'>
           <ArrowBack route='/patients' />
-          <h1 className='text-center text-xl4 font-semibold'>NUEVO PACIENTE</h1>
-          <form
-            encType='multipart/form-data'
-            onSubmit={handleSubmit}
-            className='mt-20 flex flex-col'
-          >
-            <div className='flex justify-evenly'>
-              <div className='flex flex-col w-1/4 gap-9 items-center'>
+          <h1 className='text-center text-xl4 font-semibold lgMax:mt-3'>NUEVO PACIENTE</h1>
+          <form encType='multipart/form-data' onSubmit={handleSubmit} className='mt-20 flex flex-col'>
+            <div className='flex lgMax:flex-col justify-evenly'>
+              <div className='flex flex-col w-full lg:w-1/4 gap-5 lgMax:mb-5 items-center'>
                 <Input
                   label='Nombre'
                   name='firstName'
@@ -133,7 +129,7 @@ const create = () => {
                   placeholder='Ejemplo 1234'
                 />
               </div>
-              <div className='flex flex-col w-1/4 gap-9 items-center'>
+              <div className='flex flex-col w-full lg:w-1/4 gap-5 lgMax:mb-5 items-center'>
                 <Input
                   label='Obra Social'
                   name='socialwork'
@@ -175,7 +171,7 @@ const create = () => {
                   placeholder='Trastorno ...'
                 />
               </div>
-              <div className='flex flex-col w-1/4 gap-9 items-center'>
+              <div className='flex flex-col w-full lg:w-1/4 gap-5 lg:gap-9 items-center'>
                 <Input
                   label='Correo Electrónico'
                   name='email'
@@ -199,13 +195,10 @@ const create = () => {
                   value={certificate?.name}
                   onChange={e => handleFile(e)}
                 />
-                <TagInputProf
-                  tagged={professionals}
-                  setTagged={setProfessionals}
-                />
+                <TagInputProf tagged={professionals} setTagged={setProfessionals} />
               </div>
             </div>
-            <div className='flex justify-evenly mt-10'>
+            <div className='flex justify-between lg:justify-evenly mt-10'>
               <div className='w-1/4'></div>
               <div className='w-1/4'></div>
               <div className='w-1/4 flex justify-end'>
@@ -213,12 +206,7 @@ const create = () => {
               </div>
             </div>
           </form>
-          <Modal
-            open={open}
-            onClose={() => setOpen(false)}
-            type={type}
-            errors={errors}
-          >
+          <Modal open={open} onClose={() => setOpen(false)} type={type} errors={errors}>
             <h1>Paciente creado satisfactoriamente</h1>
           </Modal>
         </div>

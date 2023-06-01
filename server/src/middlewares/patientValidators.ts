@@ -34,8 +34,9 @@ const validatePatient = [
     .withMessage('El correo electrónico de contacto del paciente tiene un formato inválido'),
   body('phone')
     .notEmpty()
+    .withMessage('El número de teléfono de contacto del paciente es requerido')
     .isMobilePhone('es-AR')
-    .withMessage('El número de teléfono de contacto del paciente es requerido'),
+    .withMessage('El número de teléfono de contacto del paciente debe cumplir el formato estándar de Arg +549(característica)(N° sin el 15)'),
 ];
 
 export { validatePatient };

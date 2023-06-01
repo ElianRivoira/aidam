@@ -49,8 +49,8 @@ const patients = () => {
   };
 
   useEffect(() => {
-    getPatients('*')
-  }, [])
+    getPatients('*');
+  }, []);
 
   useEffect(() => {
     if (type === 2 && !open && cookieError) router.push('/login');
@@ -62,10 +62,20 @@ const patients = () => {
         <title>{loggedUser.data?.admin ? 'AIDAM Admin - Pacientes' : 'AIDAM - Pacientes'}</title>
       </Head>
       {useMediaQuery(1024) ? (
-        <main className='bg-background'>
+        <main className='bg-background pt-[30px]'>
           {/* <Navbar /> */}
-          <div className='mb-10 flex justify-center'>
+          <div className='mb-10 flex w-full justify-between items-center gap-3 px-3.5'>
             <SearchBar search={search} setSearch={setSearch} getPatients={getPatients} />
+            {loggedUser.data?.admin && (
+              <div className='w-[40%]'>
+                <Link
+                  href={'/admin/patients/create'}
+                  className='h-10 bg-aidam80 hover:bg-aidam70 transition-colors text-lm text-white font-medium rounded-md flex px-1.5 text-center justify-center w-full items-center'
+                >
+                  Nuevo paciente
+                </Link>
+              </div>
+            )}
           </div>
           <div className='m-3.5 flex flex-col items-center'>
             {loggedUser.data?.admin
@@ -94,7 +104,7 @@ const patients = () => {
                 {loggedUser.data?.admin && (
                   <Link
                     href={'/admin/patients/create'}
-                    className='h-10 bg-aidam80 hover:bg-aidam70 transition-colors text-lb text-white font-semibold rounded-md p-4 flex items-center'
+                    className='h-10 bg-aidam80 hover:bg-aidam70 transition-colors text-lb text-white font-semibold rounded-md p-4 flex items-center w-fit'
                   >
                     Nuevo paciente
                   </Link>
