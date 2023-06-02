@@ -18,11 +18,11 @@ const app: Express = express();
 
 app.use(
   cors({
-    origin: '*',
+    origin: process.env.FRONT_IP,
     credentials: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    preflightContinue: false,
-    optionsSuccessStatus: 200,
+    // methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    // preflightContinue: false,
+    // optionsSuccessStatus: 200,
   })
 );
 app.use(express.json());
