@@ -18,7 +18,7 @@ const app: Express = express();
 
 app.use(
   cors({
-    origin: process.env.FRONT_IP_LOCAL,
+    origin: process.env.FRONT_IP,
     credentials: true,
     // methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     // preflightContinue: false,
