@@ -35,7 +35,7 @@ const app: Express = express();
 
 app.use(
   cors({
-    origin: 'http://localhost:3001',
+    origin: process.env.FRONT_IP,
     credentials: true,
   })
 );
