@@ -26,7 +26,7 @@ export const uploadCertificate = multer({
     filename: (req, file, cb) => {
       const { firstName, lastName, dni } = req.body;
       const date = new Date()
-        .toLocaleString()
+        .toLocaleString('es-ES')
         .split(',')[0]
         .replaceAll('/', '-');
       const fileExtension = path.extname(file.originalname);
@@ -72,11 +72,10 @@ export const uploadReport = multer({
     filename: (req, file, cb) => {
       const { firstName, lastName, userFirstName, userLastName } = req.body
       const date = new Date()
-        .toLocaleString()
+        .toLocaleString('es-ES')
         .split(',')[0]
         .replaceAll('/', '-');
-        console.log('date', new Date())
-        console.log('toLocaleString', new Date().toLocaleString())
+        console.log('date', new Date().toLocaleString('es-ES'))
         const fileBasename = file.originalname.split('.')[0];
         const fileExtension = path.extname(file.originalname);
       cb(null, `${firstName}-${lastName}_${fileBasename}_${userFirstName}-${userLastName} - (${date})${fileExtension}`);
@@ -99,7 +98,7 @@ export const uploadMedicalReport = multer({
     filename: (req, file, cb) => {
       const { firstName, lastName, userFirstName, userLastName } = req.body
       const date = new Date()
-        .toLocaleString()
+        .toLocaleString('es-ES')
         .split(',')[0]
         .replaceAll('/', '-');
         const fileBasename = file.originalname.split('.')[0];
@@ -124,7 +123,7 @@ export const uploadSocialReport = multer({
     filename: (req, file, cb) => {
       const { firstName, lastName, userFirstName, userLastName } = req.body
       const date = new Date()
-        .toLocaleString()
+        .toLocaleString('es-ES')
         .split(',')[0]
         .replaceAll('/', '-');
         const fileBasename = file.originalname.split('.')[0];
