@@ -7,22 +7,30 @@ import { centerHeaders, checkPageBreak, inputLine, subtitle, textArea } from '@/
 import calculateAge from '@/utils/calculateAge';
 
 const generatePDF = (
-  e: React.FormEvent<HTMLFormElement>,
-  socialFormData: SocialFormData,
-  patient: UseQueryResult<Patient, unknown>,
-  loggedUser: UseQueryResult<User, unknown>,
-  croquisRef: React.RefObject<SignatureCanvas>,
-  firmaRef: React.RefObject<SignatureCanvas>,
-  linkageNetMapRef: React.RefObject<SignatureCanvas>,
-  uploadSoc: UseMutationResult<
-    Patient,
-    any,
-    {
-      id: string;
-      form: FormData;
-    },
-    unknown
-  >
+  // e: React.FormEvent<HTMLFormElement>,
+  // socialFormData: SocialFormData,
+  // patient: UseQueryResult<Patient, unknown>,
+  // loggedUser: UseQueryResult<User, unknown>,
+  // croquisRef: React.RefObject<SignatureCanvas>,
+  // firmaRef: React.RefObject<SignatureCanvas>,
+  // linkageNetMapRef: React.RefObject<SignatureCanvas>,
+  // uploadSoc: UseMutationResult<
+  //   Patient,
+  //   any,
+  //   {
+  //     id: string;
+  //     form: FormData;
+  //   },
+  //   unknown
+  // >
+  e,
+  socialFormData,
+  patient,
+  loggedUser,
+  croquisRef,
+  firmaRef,
+  linkageNetMapRef,
+  uploadSoc,
 ) => {
   e.preventDefault();
 
@@ -521,7 +529,7 @@ const generatePDF = (
   const file = new File([blobDoc], `Ficha Social_${loggedUser.data?.firstName}_${loggedUser.data?.lastName}.pdf`, { type: 'application/pdf' });
   if (patient.data) {
     const formData = new FormData();
-    formData.append('report', file as Blob);
+    formData.append('report', file);
     uploadSoc.mutate({ id: patient.data._id, form: formData });
   }
 };
