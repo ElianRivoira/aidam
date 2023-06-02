@@ -18,6 +18,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/utils/autoTable.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/utils/autoTable.js", "src/utils/generatePDF/socialReport.js"],
   "exclude": ["node_modules"]
 }
