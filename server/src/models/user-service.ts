@@ -8,6 +8,9 @@ import { NotFoundError } from '../errors/not-found-error';
 import INames from '../interfaces/INames';
 import { sendPasswordChangerEmail } from '../utils/emails';
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 const signUp = async (data: UserAttrs): Promise<UserDoc> => {
   const user = User.build(data);
   await user.save();
@@ -211,7 +214,7 @@ const forgotPassword = async (email: string) => {
     user = await User.findOne({ email });
     if (user) {
       const token = recoverPasswordToken(email);
-      const link = `http://localhost:3000/reset-password?token=${token}`;
+      const link = `http://${process.env.SERVER_IP}:3001/reset-password?token=${token}`;
       message = 'Se ha enviado un mensaje a tu email para recuperar tu clave';
       sendPasswordChangerEmail(email, link);
     } else {

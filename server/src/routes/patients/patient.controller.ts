@@ -11,6 +11,9 @@ import path from 'path';
 import { validateToken } from '../../utils/tokens';
 import { BadRequestError } from '../../errors/bad-request-error';
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 const httpGetAllPatientsFromTherapist = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const errors = validationResult(req);
 
@@ -235,7 +238,7 @@ const httpDownloadCertificate = async (req: Request, res: Response) => {
     // res.setHeader('Content-Disposition', `attachment; filename=${responseFileName}`);
 
     // res.sendFile(filePath);
-    res.send(`http://localhost:8000/download/certificate/${patient?.certificate[0]}`);
+    res.send(`http://${process.env.SERVER_IP}:8000/download/certificate/${patient?.certificate[0]}`);
   } catch (e) {
     console.error(e);
     throw new ServerError(e);
