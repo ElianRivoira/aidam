@@ -16,7 +16,6 @@ dotenv.config();
 
 const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001'];
 
-
 const app: Express = express();
 // app.use(cors({
 //   origin: function (origin, callback) {
@@ -37,6 +36,9 @@ app.use(
   cors({
     origin: process.env.FRONT_IP,
     credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 200,
   })
 );
 app.use(express.json());
@@ -53,33 +55,13 @@ app.use(
 );
 app.use(morgan('dev'));
 
-app.use(
-  '/download/certificate',
-  validateLoggedUser,
-  express.static(path.join(__dirname, '../certificates'))
-);
+app.use('/download/certificate', validateLoggedUser, express.static(path.join(__dirname, '../certificates')));
 
-app.use(
-  '/users/profileimg',
-  validateLoggedUser,
-  express.static(path.join(__dirname, '../profilesImgs'))
-);
+app.use('/users/profileimg', validateLoggedUser, express.static(path.join(__dirname, '../profilesImgs')));
 
-app.use(
-  '/patients/reports',
-  validateLoggedUser,
-  express.static(path.join(__dirname, '../reports'))
-);
-app.use(
-  '/patients/reports/medical',
-  validateLoggedUser,
-  express.static(path.join(__dirname, '../medicalReports'))
-);
-app.use(
-  '/patients/reports/social',
-  validateLoggedUser,
-  express.static(path.join(__dirname, '../socialReports'))
-);
+app.use('/patients/reports', validateLoggedUser, express.static(path.join(__dirname, '../reports')));
+app.use('/patients/reports/medical', validateLoggedUser, express.static(path.join(__dirname, '../medicalReports')));
+app.use('/patients/reports/social', validateLoggedUser, express.static(path.join(__dirname, '../socialReports')));
 
 app.use('/api', apiRouter);
 
