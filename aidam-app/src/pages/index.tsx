@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
 
 import { getLoggedUser } from '@/services/users';
+import Spinner from '@/components/Spinner';
 
 const index = () => {
   const router = useRouter();
@@ -26,7 +27,7 @@ const index = () => {
     }
   }, []);
 
-  if (isLoading) return <h1>Loading...</h1>;
+  if (isLoading) return <Spinner />;
   if (isError) {
     return <h1>{(error as any)?.response.data.errors[0].message}</h1>;
   }

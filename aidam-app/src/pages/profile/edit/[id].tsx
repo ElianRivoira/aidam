@@ -14,7 +14,6 @@ import Modal from '@/components/Modal';
 import { findUserById, getLoggedUser, putUser } from '@/services/users';
 import TagInputPatients from '@/components/form/TagInputPatients';
 import professions from '@/utils/professions';
-import useMediaQuery from '@/hooks/useMediaQuery';
 import profileIcon from '@/assets/icons/profileImage.svg';
 import Button from '@/components/Button';
 
@@ -125,6 +124,7 @@ const editUser = ({ query }: MyPageProps) => {
             firstName2: patient.firstName.split(' ')[1],
             lastName1: patient.lastName.split(' ')[0],
             lastName2: patient.lastName.split(' ')[1],
+            id: patient._id,
           };
         })
       );

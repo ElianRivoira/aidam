@@ -15,8 +15,8 @@ import phoneIcon from '@/assets/icons/phoneIcon.svg';
 import emailIcon from '@/assets/icons/emailIcon.svg';
 import cardIcon from '@/assets/icons/cardIcon.svg';
 import scheduleIcon from '@/assets/icons/scheduleIcon.svg';
-import Navbar from '@/components/navbar/Navbar';
-import NavbarDesktop from '@/components/navbar/NavbarDesktop';
+// import Navbar from '@/components/navbar/Navbar';
+// import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import NavbarPatient from '@/components/profile/patient/NavbarPatient';
 import { deleteCertificate, getOnePatient } from '@/services/patients';
 import useMediaQuery from '@/hooks/useMediaQuery';
@@ -116,24 +116,26 @@ const Profile = ({ query }: MyPageProps) => {
         <div className='w-full lg:px-12 lg:mt-2.5'>
           <NavbarPatient />
           <div className='flex flex-col lgMax:px-3.5'>
-            
-              <div className='flex justify-between items-center mt-5 lg:mt-8'>
-                <ArrowBack route='/patients' />
-                <div className='flex gap-12 relative z-0'>
-                  {!useMediaQuery(1024) && <Button onClick={() => setOpenCertificateModal(true)} text='Certificado' />}
-                  {patient.data && loggedUser.data?.admin ? (
-                    <DotsMenu
-                      handleDelete={() => delPatient.mutate(patient.data._id)}
-                      handleEdit={() =>
-                        router.push({
-                          pathname: `/admin/patients/edit/${patient.data._id}`,
-                        })
-                      }
-                    />
-                  ) : null}
-                </div>
+            <div className='flex justify-between items-center mt-5 lg:mt-8'>
+              <ArrowBack route='/patients' />
+              <div className='flex gap-12 relative z-0'>
+                {!useMediaQuery(1024) && <Button onClick={() => setOpenCertificateModal(true)} text='Certificado' />}
+                {patient.data && loggedUser.data?.admin ? (
+                  <DotsMenu
+                    handleDelete={() => {
+                      setType(4);
+                      setOpen(true);
+                    }}
+                    handleEdit={() =>
+                      router.push({
+                        pathname: `/admin/patients/edit/${patient.data._id}`,
+                      })
+                    }
+                  />
+                ) : null}
               </div>
-          
+            </div>
+
             {/* <div className='lgMax:mt-5 flex justify-between'>
               {useMediaQuery(1024) && (
                 <ArrowBack route='/patients' width={33} />
@@ -141,11 +143,7 @@ const Profile = ({ query }: MyPageProps) => {
             </div> */}
             <div className='lgMax:mb-8 lg:mb-11 flex w-full'>
               <div className='flex flex-col mx-auto items-center'>
-                <Image
-                  src={profileImage}
-                  alt='perfil'
-                  className='lg:w-[90px]'
-                />
+                <Image src={profileImage} alt='perfil' className='lg:w-[90px]' />
                 <p className='font-semibold text-lb lg:text-xl1 lg:mt-3'>
                   {patient.data?.firstName} {patient.data?.lastName}
                 </p>
@@ -166,50 +164,24 @@ const Profile = ({ query }: MyPageProps) => {
               )}
               <div className='flex flex-col px-2.5 lg:w-1/3 lg:items-center'>
                 <div className='w-fit'>
-                  <h1 className='font-semibold lg:mb-11 mb-6 lg:text-xg'>
-                    DATOS PERSONALES
-                  </h1>
+                  <h1 className='font-semibold lg:mb-11 mb-6 lg:text-xg'>DATOS PERSONALES</h1>
                   <Data
                     icon={professionLogo}
                     title={'Obra social'}
                     info={patient.data?.socialwork.toUpperCase()}
                   ></Data>
-                  <Data
-                    icon={licenseIcon}
-                    title={'N° de afiliado'}
-                    info={patient.data?.affiliateNumber}
-                  ></Data>
-                  <Data
-                    icon={cardIcon}
-                    title={'Módulo autorizado'}
-                    info={patient.data?.authorizedModule}
-                  ></Data>
+                  <Data icon={licenseIcon} title={'N° de afiliado'} info={patient.data?.affiliateNumber}></Data>
+                  <Data icon={cardIcon} title={'Módulo autorizado'} info={patient.data?.authorizedModule}></Data>
                   <Data icon={cardIcon} title={'DNI'} info={'54688688'}></Data>
-                  <Data
-                    icon={scheduleIcon}
-                    title={'Fecha de nacimiento'}
-                    info={birthDate}
-                  ></Data>
-                  <Data
-                    icon={scheduleIcon}
-                    title={'Dirección'}
-                    info={patient.data?.adress}
-                  ></Data>
-                  <Data
-                    icon={scheduleIcon}
-                    title={'CUD'}
-                    info={patient.data?.cud}
-                  ></Data>
+                  <Data icon={scheduleIcon} title={'Fecha de nacimiento'} info={birthDate}></Data>
+                  <Data icon={scheduleIcon} title={'Dirección'} info={patient.data?.adress}></Data>
+                  <Data icon={scheduleIcon} title={'CUD'} info={patient.data?.cud}></Data>
                 </div>
               </div>
-              {useMediaQuery(1024) && (
-                <hr className='w-full border-black03 mb-5' />
-              )}
+              {useMediaQuery(1024) && <hr className='w-full border-black03 mb-5' />}
               <div className='flex justify-center lgMax:px-2.5 lgMax:mb-1 lg:w-1/3 lg:border-x border-black03'>
                 <div className='w-full lg:w-[80%] flex flex-col'>
-                  <h1 className='font-semibold mb-11 lgMax:mb-6 lg:text-center lg:text-xg'>
-                    PROFESIONALES
-                  </h1>
+                  <h1 className='font-semibold mb-11 lgMax:mb-6 lg:text-center lg:text-xg'>PROFESIONALES</h1>
                   <div>
                     {patient.data?.professionalsId.map((prof, index) => (
                       <li
@@ -224,32 +196,18 @@ const Profile = ({ query }: MyPageProps) => {
                   </div>
                 </div>
               </div>
-              {useMediaQuery(1024) && (
-                <hr className='w-full border-black03 mb-5' />
-              )}
+              {useMediaQuery(1024) && <hr className='w-full border-black03 mb-5' />}
               <div className='flex flex-col px-2.5 mb-4 lg:w-1/3 lg:items-center'>
                 <div className='w-fit'>
                   {!useMediaQuery(1024) && (
                     <>
-                      <h1 className='font-semibold mb-11 text-xg'>
-                        DIAGNÓSTICO
-                      </h1>
+                      <h1 className='font-semibold mb-11 text-xg'>DIAGNÓSTICO</h1>
                       <p className='text-lb mb-11'>{patient.data?.diagnosis}</p>
                     </>
                   )}
-                  <h1 className='font-semibold mb-6 lg:mb-11 lg:text-xg'>
-                    CONTACTO
-                  </h1>
-                  <Data
-                    icon={emailIcon}
-                    title={'Correo electrónico'}
-                    info={patient.data?.email}
-                  ></Data>
-                  <Data
-                    icon={phoneIcon}
-                    title={'Teléfono'}
-                    info={patient.data?.phone}
-                  ></Data>
+                  <h1 className='font-semibold mb-6 lg:mb-11 lg:text-xg'>CONTACTO</h1>
+                  <Data icon={emailIcon} title={'Correo electrónico'} info={patient.data?.email}></Data>
+                  <Data icon={phoneIcon} title={'Teléfono'} info={patient.data?.phone}></Data>
                 </div>
               </div>
             </div>
@@ -260,6 +218,10 @@ const Profile = ({ query }: MyPageProps) => {
           onClose={() => setOpen(false)}
           type={type}
           errors={errors}
+          deleteFunc={() => {
+            patient.data && delPatient.mutate(patient.data?._id);
+          }}
+          deleteMessage='¿Está seguro que desea dar de baja al paciente?'
         >
           <h1>{successMsg}</h1>
         </Modal>
@@ -288,9 +250,7 @@ interface MyPageProps {
   };
 }
 
-Profile.getInitialProps = async ({
-  query,
-}: NextPageContext): Promise<MyPageProps> => {
+Profile.getInitialProps = async ({ query }: NextPageContext): Promise<MyPageProps> => {
   const castedQuery = query as unknown as MyPageProps['query'];
   return { query: castedQuery };
 };

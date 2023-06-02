@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import Input from '@/components/form/Input';
 import Modal from '@/components/Modal';
+import Button from '@/components/Button';
 
 const ResetPasswordPage = () => {
   const router = useRouter();
@@ -100,12 +101,7 @@ const ResetPasswordPage = () => {
                 validate={validate}
               />
             </div>
-            <button
-              type='submit'
-              className='w-[165px] h-8 mt-6 rounded-md bg-aidam80 text-white font-normal text-sm hover:bg-aidam70 active:shadow-active'
-            >
-              Cambiar contraseña
-            </button>
+            <Button type='submit' text='Cambiar contraseña' classname='mt-6' />
           </form>
         </div>
         <Modal

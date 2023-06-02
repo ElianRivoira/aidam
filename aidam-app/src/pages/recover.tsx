@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { useMutation } from '@tanstack/react-query';
 import { forgotPassword } from '@/services/users';
@@ -9,6 +9,7 @@ import aidamTexto from '@/assets/icons/aidamTexto.svg';
 import Input from '@/components/form/Input';
 import Modal from '@/components/Modal';
 import Link from 'next/link';
+import Button from '@/components/Button';
 
 const Recover = () => {
   const router = useRouter();
@@ -35,12 +36,6 @@ const Recover = () => {
     },
   });
 
-  useEffect(() => {
-    if (type === 1 && open === false) {
-      console.log(sendEmail);
-    }
-  }, [open]);
-
   return (
     <>
       <Head>
@@ -48,10 +43,7 @@ const Recover = () => {
       </Head>
       <div className='flex h-screen justify-center items-center'>
         <div className='w-full shadow-xg mx-5 rounded-3xl p-3.5 pb-5 max-w-md flex flex-col items-center'>
-          <form
-            onSubmit={handleSubmit}
-            className='flex w-full px-4 flex-col items-center'
-          >
+          <form onSubmit={handleSubmit} className='flex w-full px-4 flex-col items-center'>
             <div>
               <Image src={aidamTexto} alt='aidam' className='mb-8 mt-5' />
             </div>
@@ -60,26 +52,23 @@ const Recover = () => {
                 label='Ingresa tu correo electronico'
                 type='email'
                 name='email'
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
                 value={email}
                 pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$'
               />
             </div>
-            <div className='flex flex-col'>
-              <button
-                type='submit'
-                className='bg-aidam80 text-white w-44 h-8 rounded-md text-sm mb-3'
-              >
-                Recuperar contraseña
-              </button>
+            <div className='flex flex-col mb-3'>
+              <Button type='submit' text='Recuperar contraseña' />
             </div>
-            <Link href={"/login"} className='text-sm hover:text-aidam80'>Volver al login</Link>
+            <Link href={'/login'} className='text-aidam hover:text-aidam80 text-sm'>
+              Volver al login
+            </Link>
           </form>
           <Modal
             open={open}
             onClose={() => {
               setOpen(false);
-              router.push("/login")
+              router.push('/login');
             }}
             type={type}
             errors={errors}

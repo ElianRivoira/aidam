@@ -11,9 +11,10 @@ interface Props {
   setSearch: (e: string) => void;
   setActiveUsers?: React.Dispatch<React.SetStateAction<User[] | undefined>>;
   width?: string;
-  searchFn?: (search: string, reportsType?: string) => void;
+  // searchFn?: (search: string, reportsType?: string) => void;
   getPatients?: (search: string) => Promise<void>;
-  reportsType?: string;
+  // reportsType?: string;
+  setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SearchBar: React.FC<Props> = ({
@@ -21,16 +22,19 @@ const SearchBar: React.FC<Props> = ({
   setSearch,
   setActiveUsers,
   width,
-  searchFn,
+  // searchFn,
   getPatients,
-  reportsType,
+  // reportsType,
+  setIsLoading,
 }) => {
   const [error, setError] = useState<string | null>(null);
 
   async function fetchSearchedUsers(search: string) {
     try {
-        const users = await searchUser(search);
-        return users;
+      setIsLoading && setIsLoading(true);
+      const users = await searchUser(search);
+      setActiveUsers && setActiveUsers(users);
+      setIsLoading && setIsLoading(false);
     } catch (error) {
       setError(`Algo salió mal. Inténtelo nuevamente.`);
     }
@@ -39,33 +43,24 @@ const SearchBar: React.FC<Props> = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (searchFn) {
-      searchFn(search, reportsType);
+    // if (searchFn) {
+    //   searchFn(search, reportsType);
+    // } else {
+    if (!search) {
+      getPatients && getPatients('*');
+      await fetchSearchedUsers('*');
     } else {
-      if (!search) {
-        getPatients && getPatients('*')
-        const users = await fetchSearchedUsers('*');
-        if (setActiveUsers) {
-          setActiveUsers(users);
-        }
-      } else {
-        getPatients && getPatients(search)
-        const users = await fetchSearchedUsers(search);
-        if (setActiveUsers) {
-          setActiveUsers(users);
-        }
-      }
+      getPatients && getPatients(search);
+      await fetchSearchedUsers(search);
     }
+    // }
   };
 
   const clearButton = async () => {
     setSearch('');
-    searchFn && searchFn('', reportsType);
+    // searchFn && searchFn('', reportsType);
     getPatients && getPatients('*');
-    if (setActiveUsers) {
-      const users = await fetchSearchedUsers('*');
-      setActiveUsers(users);
-    }
+    await fetchSearchedUsers('*');
   };
 
   return (
