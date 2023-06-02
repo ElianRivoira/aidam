@@ -14,7 +14,24 @@ import { validateLoggedUser } from './middlewares/userValidators';
 
 dotenv.config();
 
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001'];
+
+
 const app: Express = express();
+// app.use(cors({
+//   origin: function (origin, callback) {
+//     console.log(origin)
+//     if(origin){
+//       if (allowedOrigins.includes(origin)) {
+//         console.log('TRUE')
+//         callback(null, true);
+//       } else {
+//         console.log('FALSE')
+//         callback(new Error('Not allowed by CORS'));
+//       }
+//     }
+//   }
+// }));
 
 app.use(
   cors({
