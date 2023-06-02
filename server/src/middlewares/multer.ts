@@ -75,6 +75,8 @@ export const uploadReport = multer({
         .toLocaleString()
         .split(',')[0]
         .replaceAll('/', '-');
+        console.log('date', new Date())
+        console.log('toLocaleString', new Date().toLocaleString())
         const fileBasename = file.originalname.split('.')[0];
         const fileExtension = path.extname(file.originalname);
       cb(null, `${firstName}-${lastName}_${fileBasename}_${userFirstName}-${userLastName} - (${date})${fileExtension}`);
