@@ -150,8 +150,13 @@ const Reports = ({ query }: MyPageProps) => {
 
   const filterReports = (searchDate: Date, patient: Patient | undefined) => {
     const filtered = patient?.reports.filter(report => {
+      console.log('REPORT', report)
       const reportDate = report.split(' - ')[1];
+      console.log('REPORT DATE', reportDate)
       const reportMonth = Number(reportDate.split('-')[1]);
+      console.log('REPORT MONTH', reportMonth)
+      console.log('SEARCH MONTH', searchDate.getMonth() + 1)
+      console.log('COMPARACION', reportMonth === searchDate.getMonth() + 1)
       if (reportMonth === searchDate.getMonth() + 1) return true;
     });
     filtered && setFilteredReports(filtered);
