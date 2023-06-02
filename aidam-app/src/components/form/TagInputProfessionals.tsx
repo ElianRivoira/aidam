@@ -81,10 +81,7 @@ const TagInput: React.FC<TagInputProps> = ({ tagged, setTagged, patient }) => {
 
   const handleTagRemove = async (profToDelete: INames) => {
     // Eliminar el usuario etiquetado de la lista
-    const filteredProfs = tagged.filter(
-      prof =>
-        prof.id !== profToDelete.id
-    );
+    const filteredProfs = tagged.filter(prof => prof.id !== profToDelete.id);
     setTagged(filteredProfs);
   };
 
@@ -129,7 +126,7 @@ const TagInput: React.FC<TagInputProps> = ({ tagged, setTagged, patient }) => {
             >
               <button
                 onClick={() => {
-                  console.log('PROFF', prof)
+                  console.log('PROFF', prof);
                   patient && unassignProfessional.mutate({ id: patient._id, prof });
                 }}
                 className='flex items-center mr-1'
