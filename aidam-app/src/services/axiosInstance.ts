@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: `http://${process.env.API_ADDRESS}/api`,
+  baseURL: process.env.NEXT_PUBLIC_API,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -9,7 +9,7 @@ export const api = axios.create({
 });
 
 export const apiForm = axios.create({
-  baseURL: `http://${process.env.API_ADDRESS}/api`,
+  baseURL: process.env.NEXT_PUBLIC_API,
   headers: {
     'Content-Type': 'multipart/form-data',
   },
