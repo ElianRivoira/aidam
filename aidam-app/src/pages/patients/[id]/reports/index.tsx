@@ -63,6 +63,7 @@ const Reports = ({ query }: MyPageProps) => {
     },
     onSuccess: patient => {
       filterReports(actualDate, patient);
+      console.log(patient)
     },
   });
 
@@ -153,8 +154,8 @@ const Reports = ({ query }: MyPageProps) => {
       const reportMonth = Number(reportDate.split('-')[1]);
       if (reportMonth === searchDate.getMonth() + 1) return true;
     });
-    // filtered && filtered.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     filtered && setFilteredReports(filtered);
+    console.log(filtered)
   };
 
   return (
@@ -193,7 +194,9 @@ const Reports = ({ query }: MyPageProps) => {
                   ) : patient.data?.reports.length ? (
                     filteredReports.length ? (
                       <div className='w-full px-4'>
-                        {filteredReports.map(report => (
+                        {filteredReports.map(report => {
+                          console.log('MAP', report)
+                          return (
                           <ReportItem
                             index={report}
                             report={report}
@@ -204,7 +207,7 @@ const Reports = ({ query }: MyPageProps) => {
                             width='w-full'
                             patient={patient.data}
                           />
-                        ))}
+                        )})}
                       </div>
                     ) : (
                       <p className='w-full text-center'>

@@ -88,7 +88,7 @@ const professionals = () => {
         ) : users.isLoading || isLoading ? (
           <Spinner />
         ) : (
-          <div className='mx-12'>
+          <div className='mx-12 flex flex-col items-center'>
             {activeUsers?.map((user, index) => {
               if (!user.admin) return <DesktopCard user={user} key={index} />;
               else return null;
