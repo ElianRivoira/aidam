@@ -11,9 +11,7 @@ const getAllPatients = async (): Promise<PatientDoc[]> => {
   return patients;
 };
 
-const getAllPatientsFromTherapist = async (
-  professionalId: string
-): Promise<PatientDoc[]> => {
+const getAllPatientsFromTherapist = async (professionalId: string): Promise<PatientDoc[]> => {
   try {
     const patients = await Patient.find({ professionalsId: professionalId });
     return patients;
@@ -33,10 +31,7 @@ const postPatient = async (data: PatientAttrs): Promise<PatientDoc> => {
   return patient;
 };
 
-const getOnePatient = async (
-  id: string,
-  populate?: boolean
-): Promise<PatientDoc | null> => {
+const getOnePatient = async (id: string, populate?: boolean): Promise<PatientDoc | null> => {
   if (populate) {
     const patient = await Patient.findOne({ _id: id }, { __v: 0, userId: 0 })
       .populate({
@@ -61,7 +56,7 @@ const putPatient = async (
   certificate?: string,
   report?: string,
   medicalReport?: string,
-  socialReport?: string,
+  socialReport?: string
 ): Promise<PatientDoc | null> => {
   const findAndUpdate = () => {
     if (pull) {
@@ -84,9 +79,9 @@ const putPatient = async (
           id,
           {
             ...data,
-            $pull: { 
+            $pull: {
               professionalsId: professionalId,
-              reports: report ,
+              reports: report,
             },
           },
           {
@@ -98,9 +93,9 @@ const putPatient = async (
           id,
           {
             ...data,
-            $pull: { 
+            $pull: {
               professionalsId: professionalId,
-              medicalReports: medicalReport ,
+              medicalReports: medicalReport,
             },
           },
           {
@@ -112,9 +107,9 @@ const putPatient = async (
           id,
           {
             ...data,
-            $pull: { 
+            $pull: {
               professionalsId: professionalId,
-              socialReports: socialReport ,
+              socialReports: socialReport,
             },
           },
           {
@@ -209,11 +204,7 @@ const putPatient = async (
 };
 
 const deletePatient = async (id: string): Promise<PatientDoc | null> => {
-  const patient = await Patient.findByIdAndUpdate(
-    id,
-    { active: false },
-    { new: true }
-  );
+  const patient = await Patient.findByIdAndUpdate(id, { active: false }, { new: true });
   return patient;
 };
 
@@ -227,16 +218,14 @@ const searchPatient = async (name: string | INames): Promise<PatientDoc[]> => {
       })
       .populate({ path: 'professionalsId' });
   } else if (typeof name === 'object') {
-    const { firstName1, firstName2, lastName1, lastName2 } = name;
+    const { firstName1, firstName2, lastName1, lastName2, id } = name;
     findedPatients = await Patient.find({
       $and: [
         {
           $and: [
             {
               firstName: {
-                $regex: `.*${firstName1}${
-                  firstName2 ? ` ${firstName2}` : ''
-                }.*`,
+                $regex: `.*${firstName1}${firstName2 ? ` ${firstName2}` : ''}.*`,
                 $options: 'i',
               },
             },
@@ -245,6 +234,9 @@ const searchPatient = async (name: string | INames): Promise<PatientDoc[]> => {
                 $regex: `.*${lastName1}${lastName2 ? ` ${lastName2}` : ''}.*`,
                 $options: 'i',
               },
+            },
+            {
+              _id: id,
             },
           ],
         },

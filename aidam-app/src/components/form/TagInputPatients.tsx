@@ -15,11 +15,7 @@ interface TagInputProps {
   user?: User | undefined;
 }
 
-const TagInputPatients: React.FC<TagInputProps> = ({
-  tagged,
-  setTagged,
-  user,
-}) => {
+const TagInputPatients: React.FC<TagInputProps> = ({ tagged, setTagged, user }) => {
   const [searchText, setSearchText] = useState('');
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(0);
@@ -36,9 +32,7 @@ const TagInputPatients: React.FC<TagInputProps> = ({
     mutationFn: unassignPatient,
     onSuccess: response => {
       handleTagRemove(response.patientName);
-      setSuccessMsg(
-        'El paciente ha sido desvinculado del profesional correctamente'
-      );
+      setSuccessMsg('El paciente ha sido desvinculado del profesional correctamente');
       setType(1);
       setOpen(true);
     },
@@ -58,7 +52,7 @@ const TagInputPatients: React.FC<TagInputProps> = ({
     setSearchText(value);
   };
 
-  const handleClickOnPatient = (name: INames) => {
+  const handleClickOnPatient = (name: INames, id: string) => {
     setTagged(prevState => {
       if (prevState[0])
         return [
@@ -68,6 +62,7 @@ const TagInputPatients: React.FC<TagInputProps> = ({
             firstName2: name.firstName2,
             lastName1: name.lastName1,
             lastName2: name.lastName2,
+            id,
           },
         ];
       else
@@ -77,6 +72,7 @@ const TagInputPatients: React.FC<TagInputProps> = ({
             firstName2: name.firstName2,
             lastName1: name.lastName1,
             lastName2: name.lastName2,
+            id,
           },
         ];
     });
@@ -84,13 +80,7 @@ const TagInputPatients: React.FC<TagInputProps> = ({
   };
 
   const handleTagRemove = async (patientToDelete: INames) => {
-    const filteredPatients = tagged.filter(
-      patient =>
-        patient.firstName1 !== patientToDelete.firstName1 &&
-        patient.firstName2 !== patientToDelete.firstName2 &&
-        patient.lastName1 !== patientToDelete.lastName1 &&
-        patient.lastName2 !== patientToDelete.lastName2
-    );
+    const filteredPatients = tagged.filter(patient => patient.id !== patientToDelete.id);
     setTagged(filteredPatients);
   };
 
@@ -114,11 +104,11 @@ const TagInputPatients: React.FC<TagInputProps> = ({
               key={index}
               onClick={() => {
                 const names = createINames(patient);
-                handleClickOnPatient(names);
+                handleClickOnPatient(names, patient._id);
               }}
               className='hover:bg-aidamNav hover:text-white rounded-md p-3 cursor-pointer w-full transition-colors'
             >
-              {`${patient.firstName} ${patient.lastName}`}
+              {`${patient.firstName} ${patient.lastName} - ${patient.dni}`}
             </div>
           ))}
         </div>
@@ -132,7 +122,7 @@ const TagInputPatients: React.FC<TagInputProps> = ({
             >
               <button
                 onClick={() => {
-                  user && unassignPat.mutate({id: user._id, patient})
+                  user && unassignPat.mutate({ id: user._id, patient });
                 }}
                 className='flex items-center mr-1'
                 type='button'
@@ -144,12 +134,7 @@ const TagInputPatients: React.FC<TagInputProps> = ({
           );
         })}
       </div>
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        type={type}
-        errors={errors}
-      >
+      <Modal open={open} onClose={() => setOpen(false)} type={type} errors={errors}>
         <h1>{successMsg}</h1>
       </Modal>
     </div>
