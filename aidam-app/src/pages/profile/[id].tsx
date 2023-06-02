@@ -99,7 +99,7 @@ const Profile = ({ query }: MyPageProps) => {
   useEffect(() => {
     setFilteredPatients(user.data?.patientsId);
     if (user.data?.profileImg) {
-      const path = `http://localhost:8000/users/profileimg/${user.data.profileImg}`;
+      const path = `http://${process.env.NEXT_PUBLIC_DOWNLOAD}/users/profileimg/${user.data.profileImg}`;
       setPathImg(path);
     } else {
       setPathImg('');
