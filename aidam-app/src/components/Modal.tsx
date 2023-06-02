@@ -79,7 +79,7 @@ const Modal: React.FC<ModalProps> = ({
                 className='border flex items-center text-lb p-4 rounded-md w-fit bg-redLogout text-white h-10 hover:bg-redLogout/[.9] active:shadow-active transition-colors'
                 onClick={deleteFunc}
               >
-                Eliminar
+                Confirmar
               </button>
             </div>
           </>
