@@ -176,6 +176,9 @@ const Profile = ({ query }: MyPageProps) => {
                   <Data icon={scheduleIcon} title={'Fecha de nacimiento'} info={birthDate}></Data>
                   <Data icon={scheduleIcon} title={'Dirección'} info={patient.data?.adress}></Data>
                   <Data icon={scheduleIcon} title={'CUD'} info={patient.data?.cud}></Data>
+                  <Data icon={scheduleIcon} title={'Escuela'} info={patient.data?.school}></Data>
+                  <Data icon={scheduleIcon} title={'Turno'} info={patient.data?.shift}></Data>
+                  <Data icon={scheduleIcon} title={'Año académico'} info={patient.data?.schoolYear}></Data>
                 </div>
               </div>
               {useMediaQuery(1024) && <hr className='w-full border-black03 mb-5' />}
