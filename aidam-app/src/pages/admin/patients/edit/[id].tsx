@@ -33,6 +33,9 @@ const editPatient = ({ query }: MyPageProps) => {
     phone: '',
     cud: '',
     adress: '',
+    school: '',
+    shift: '',
+    schoolYear: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,6 +106,9 @@ const editPatient = ({ query }: MyPageProps) => {
         phone: patient.data.phone.toString(),
         cud: patient.data.cud,
         adress: patient.data.adress,
+        school: patient.data.school,
+        shift: patient.data.shift,
+        schoolYear: patient.data.schoolYear,
       });
       setProfessionals(
         patient.data.professionalsId.map(prof => {
@@ -170,8 +176,32 @@ const editPatient = ({ query }: MyPageProps) => {
                   value={patientInfo.adress}
                   placeholder='Ejemplo 1234'
                 />
+                <Input
+                  label='Escuela'
+                  name='school'
+                  type='text'
+                  onChange={e => handleChange(e)}
+                  value={patientInfo.school}
+                  placeholder='Ejemplo'
+                />
               </div>
               <div className='flex flex-col w-full lg:w-1/4 gap-5 lgMax:mb-5 items-center'>
+                <Input
+                  label='Turno'
+                  name='shift'
+                  type='text'
+                  onChange={e => handleChange(e)}
+                  value={patientInfo.shift}
+                  placeholder='Ejemplo'
+                />
+                <Input
+                  label='Año académico'
+                  name='schoolYear'
+                  type='text'
+                  onChange={e => handleChange(e)}
+                  value={patientInfo.schoolYear}
+                  placeholder=''
+                />
                 <Input
                   label='Obra Social'
                   name='socialwork'
