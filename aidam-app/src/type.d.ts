@@ -88,6 +88,9 @@ interface Patient {
   socialReports: string[];
   cud: string;
   adress: string;
+  school: string;
+  shift: string;
+  schoolYear: string;
 }
 
 interface PostPatient {
@@ -103,6 +106,9 @@ interface PostPatient {
   phone: string;
   cud: string;
   adress: string;
+  school: string;
+  shift: string;
+  schoolYear: string;
 }
 
 interface FormPatient {
@@ -118,6 +124,9 @@ interface FormPatient {
   phone: string;
   cud: string;
   adress: string;
+  school: string;
+  shift: string;
+  schoolYear: string;
   [key: string]: string;
 }
 
