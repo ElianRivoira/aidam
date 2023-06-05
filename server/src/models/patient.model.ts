@@ -16,6 +16,9 @@ export interface PatientAttrs {
   cud: string;
   adress: string;
   certificate: string[];
+  school: string;
+  shift: string;
+  schoolYear: string;
 }
 
 interface PatientModel extends mongoose.Model<PatientDoc> {
@@ -43,6 +46,9 @@ export interface PatientDoc extends mongoose.Document {
   socialReports: string[];
   cud: string;
   adress: string;
+  school: string;
+  shift: string;
+  schoolYear: string;
 }
 
 const patientSchema = new mongoose.Schema({
@@ -123,6 +129,15 @@ const patientSchema = new mongoose.Schema({
     type: String,
   },
   adress: {
+    type: String,
+  },
+  school: {
+    type: String,
+  },
+  shift: {
+    type: String,
+  },
+  schoolYear: {
     type: String,
   },
 });

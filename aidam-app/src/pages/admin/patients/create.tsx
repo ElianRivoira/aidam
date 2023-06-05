@@ -33,6 +33,9 @@ const create = () => {
     phone: '',
     cud: '',
     adress: '',
+    school: '',
+    shift: '',
+    schoolYear: '',
   });
 
   // const loggedUser = useQuery({
@@ -144,15 +147,39 @@ const create = () => {
                   value={patientInfo.adress}
                   placeholder='Ejemplo 1234'
                 />
+                <Input
+                  label='Escuela'
+                  name='school'
+                  type='text'
+                  onChange={e => handleChange(e)}
+                  value={patientInfo.school}
+                  placeholder='Ejemplo'
+                />
               </div>
               <div className='flex flex-col w-full lg:w-1/4 gap-5 lgMax:mb-5 items-center'>
+                <Input
+                  label='Turno'
+                  name='shift'
+                  type='text'
+                  onChange={e => handleChange(e)}
+                  value={patientInfo.shift}
+                  placeholder='Ejemplo'
+                />
+                <Input
+                  label='Año académico'
+                  name='schoolYear'
+                  type='text'
+                  onChange={e => handleChange(e)}
+                  value={patientInfo.schoolYear}
+                  placeholder=''
+                />
                 <Input
                   label='Obra Social'
                   name='socialwork'
                   type='text'
                   onChange={e => handleChange(e)}
                   value={patientInfo.socialWork}
-                  placeholder='EJEMPLO'
+                  placeholder='Ejemplo'
                 />
                 <Input
                   label='N° de Afiliado'
@@ -178,6 +205,8 @@ const create = () => {
                   value={patientInfo.cud}
                   // placeholder='Trastorno ...'
                 />
+              </div>
+              <div className='flex flex-col w-full lg:w-1/4 gap-5 lg:gap-9 items-center'>
                 <Input
                   label='Diagnóstico'
                   name='diagnosis'
@@ -186,8 +215,6 @@ const create = () => {
                   value={patientInfo.diagnosis}
                   placeholder='Trastorno ...'
                 />
-              </div>
-              <div className='flex flex-col w-full lg:w-1/4 gap-5 lg:gap-9 items-center'>
                 <Input
                   label='Correo Electrónico'
                   name='email'

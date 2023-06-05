@@ -67,6 +67,9 @@ const httpPostPatient = async (req: any, res: Response): Promise<void> => {
       cud: req.body.cud,
       adress: req.body.adress,
       certificate: req.file && [req.file.filename],
+      school: req.body.school,
+      shift: req.body.shift,
+      schoolYear: req.body.schoolYear,
     });
 
     professionalsArray.forEach(async (prof: string) => {
@@ -117,6 +120,9 @@ const httpEditPatient = async (req: any, res: Response, next: NextFunction): Pro
       adress,
       cud,
       professionals,
+      school,
+      shift,
+      schoolYear,
     } = req.body;
     const filename = req.file && req.file.filename;
 
@@ -142,6 +148,9 @@ const httpEditPatient = async (req: any, res: Response, next: NextFunction): Pro
         phone,
         adress,
         cud,
+        school,
+        shift,
+        schoolYear,
       },
       null,
       false,
