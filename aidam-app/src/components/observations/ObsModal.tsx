@@ -11,6 +11,7 @@ interface ObsModalProps {
   obsId: string;
   putObs: UseMutationResult<Observation, any, PutObservation, unknown>;
   open: boolean;
+  patientId: string | undefined;
   onClose: () => void;
 }
 interface Fecha {
@@ -19,13 +20,7 @@ interface Fecha {
   minutos: string;
 }
 
-const ObsModal: React.FC<ObsModalProps> = ({
-  openDeleteModal,
-  obsId,
-  putObs,
-  open,
-  onClose,
-}) => {
+const ObsModal: React.FC<ObsModalProps> = ({ openDeleteModal, obsId, putObs, open, patientId, onClose }) => {
   if (!open) return null;
   const [readonly, setReadonly] = useState(true);
   const [date, setDate] = useState<Fecha>();
@@ -39,17 +34,17 @@ const ObsModal: React.FC<ObsModalProps> = ({
 
   const handleEdit = () => {
     setReadonly(true);
-    putObs.mutate({
-      id: obsId,
-      text: obsText,
-    });
+    patientId &&
+      putObs.mutate({
+        id: obsId,
+        text: obsText,
+        patientId: patientId,
+      });
   };
 
   useEffect(() => {
     if (observation.data?.date) {
-      let [fecha, hora] = new Date(observation.data.date)
-        .toLocaleString('es-ES')
-        .split(',');
+      let [fecha, hora] = new Date(observation.data.date).toLocaleString('es-ES').split(',');
       let minutos: string;
       [hora, minutos] = hora.split(':');
       setDate({ fecha, hora, minutos });
@@ -61,18 +56,13 @@ const ObsModal: React.FC<ObsModalProps> = ({
 
   return (
     <>
-      <div
-        onClick={onClose}
-        className='fixed top-0 left-0 right-0 bottom-0 bg-black/[.75] z-50'
-      />
+      <div onClick={onClose} className='fixed top-0 left-0 right-0 bottom-0 bg-black/[.75] z-50' />
       <div className='fixed top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 bg-white p-4 w-full lg:w-[40%] max-w-[530px] z-50 rounded-md flex flex-col items-center'>
         <button className='w-fit self-end' onClick={onClose}>
           <Image src={x} alt='salir' />
         </button>
         <div className='w-full flex flex-col'>
-          <h1 className='w-full mb-6 text-xl2 font-medium text-center'>
-            {observation.data?.title}
-          </h1>
+          <h1 className='w-full mb-6 text-xl2 font-medium text-center'>{observation.data?.title}</h1>
           <hr className='border-black03 w-full' />
         </div>
         <div className='w-full px-2.5'>
@@ -82,18 +72,14 @@ const ObsModal: React.FC<ObsModalProps> = ({
                 ? `${observation.data.professional.firstName} ${observation.data.professional.lastName}`
                 : null}
             </h1>
-            {date ? (
-              <p className='text-sm'>{`${date?.fecha}, ${date?.hora}:${date?.minutos} hs`}</p>
-            ) : null}
+            {date ? <p className='text-sm'>{`${date?.fecha}, ${date?.hora}:${date?.minutos} hs`}</p> : null}
           </div>
           <textarea
             readOnly={readonly}
             onChange={e => setObsText(e.target.value)}
             rows={15}
             className={`flex w-full min-h-[200px] rounded-2xl p-3 shadow-card mb-[26px] text-lb font-normal resize-none cursor-default outline-none ${
-              readonly
-                ? ''
-                : 'border border-aidam hover:border-aidam cursor-text'
+              readonly ? '' : 'border border-aidam hover:border-aidam cursor-text'
             }`}
             value={obsText}
           ></textarea>

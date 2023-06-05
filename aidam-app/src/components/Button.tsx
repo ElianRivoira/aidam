@@ -12,7 +12,7 @@ const Button: React.FC<ButtonProps> = ({ onClick, text, type, classname }) => {
     <button
       onClick={onClick}
       type={type}
-      className={`flex w-fit items-center text-lm lgMax:text-sm font-medium lgMax:font-normal p-2.5 text-white rounded-md bg-aidam80 hover:bg-aidam70 active:shadow-active transition-colors ${classname}`}
+      className={`flex w-fit items-center justify-center text-center lg:text-lm text-sm p-3 py-2 min-w-[100px] sm:py-2 font-medium text-white rounded-md bg-aidam80 hover:bg-aidam70 active:shadow-active transition-colors ${classname}`}
     >
       {text}
     </button>

@@ -20,8 +20,6 @@ const UploadReportModal: React.FC<UploadReportModalProps> = ({
   value,
 }) => {
   if (!open) return null;
-  const [deleteMsg, setDeleteMsg] = useState('');
-  const [fileNameToDelete, setFileNameToDelete] = useState('');
 
   return (
     <>

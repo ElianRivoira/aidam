@@ -150,8 +150,8 @@ const Observations = ({ query }: MyPageProps) => {
                     <h1 className='text-xl2 font-medium'>OBSERVACIONES</h1>
                   </div>
                   <div className='lg:w-[45%] xb:w-1/3 flex gap-6 justify-end'>
-                    <Button onClick={() => setOpenCreateObs(true)} text='Crear observación' />
-                    <Button onClick={() => setOpenPickDate(true)} text='Buscar observaciones' />
+                    <Button onClick={() => setOpenCreateObs(true)} text='Crear' />
+                    <Button onClick={() => setOpenPickDate(true)} text='Buscar' />
                   </div>
                 </div>
                 <hr className='border-black03' />
@@ -172,8 +172,8 @@ const Observations = ({ query }: MyPageProps) => {
               {useMediaQuery(1024) ? (
                 <>
                   <div className='flex justify-between mt-4 mb-[26px]'>
-                    <Button onClick={() => setOpenCreateObs(true)} text='Crear observación' />
-                    <Button onClick={() => setOpenPickDate(true)} text='Buscar observaciones' />
+                    <Button onClick={() => setOpenCreateObs(true)} text='Crear' />
+                    <Button onClick={() => setOpenPickDate(true)} text='Buscar' />
                   </div>
                   <div className='w-full flex flex-col items-center'>
                     {patient.isFetching ? (
@@ -247,6 +247,7 @@ const Observations = ({ query }: MyPageProps) => {
               obsId={obsId}
               putObs={putObs}
               open={openObs}
+              patientId={patient.data?._id}
               onClose={() => setOpenObs(false)}
             />
             <Modal

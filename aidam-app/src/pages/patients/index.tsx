@@ -73,7 +73,7 @@ const patients = () => {
         <main className='bg-background pt-[30px]'>
           {/* <Navbar /> */}
           <div className='mb-10 flex w-full justify-between items-center gap-3 px-3.5'>
-            <SearchBar search={search} setSearch={setSearch} getPatients={getPatients} />
+            <SearchBar search={search} setSearch={setSearch} getPatients={getPatients} width={loggedUser.data?.admin ? '' : 'w-full'} />
             {loggedUser.data?.admin && (
               <div className='w-1/3'>
                 <Link
