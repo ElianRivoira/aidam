@@ -42,7 +42,7 @@ export const generateHCPDF = (
   y = inputLine(doc, `Edad: ${patient.data?.birth && calculateAge(patient.data.birth)}`, x, y, spacing);
   y = inputLine(
     doc,
-    `Fecha de Nacimiento: ${patient.data?.birth && new Date(patient.data.birth).toLocaleString().split(',')[0]}`,
+    `Fecha de Nacimiento: ${patient.data?.birth && new Date(patient.data.birth).toLocaleString('es-ES').split(',')[0]}`,
     x,
     y,
     spacing
@@ -180,7 +180,6 @@ export const generateHCPDF = (
   firmaData && doc.addImage(firmaData, 'PNG', 110, y, firmaWidth, firmaHeight);
   y = checkPageBreak(doc, y + 35);
   y = inputLine(doc, `${loggedUser.data?.firstName} ${loggedUser.data?.lastName}`, 165, y, spacing);
-  console.log('loggedUser', loggedUser.data);
   const blobDoc = doc.output('blob');
   const file = new File([blobDoc], `Historia clinica.pdf`, {
     type: 'application/pdf',
@@ -223,7 +222,7 @@ export const generateHCFPDF = (
   }
   if (patient.data?.birth) {
     birthDate = new Date(patient.data?.birth);
-    birthDate = birthDate.toLocaleString().split(',');
+    birthDate = birthDate.toLocaleString('es-ES').split(',');
     birthDate = birthDate[0];
     [day, month, year] = birthDate.split('/');
     day = Number(day);
@@ -255,21 +254,13 @@ export const generateHCFPDF = (
   const auxiliarWidth = 100;
   let x = 10;
 
-  function checkPageBreak() {
-    const pageHeight = doc.internal.pageSize.getHeight();
-    if (y > pageHeight - lineHeight) {
-      doc.addPage();
-      y = 10;
-    }
-  }
-
-  function generateCheck(arr: Array<string>, obj: any) {
+  function generateCheck(arr: Array<string>, obj: any, optionalTagWidth?: number) {
     arr.forEach((tag, index) => {
       if (x + tagWidth >= pageWidth) {
         y += 10;
         x = 10;
       }
-      checkPageBreak();
+      y = checkPageBreak(doc, y);
       let result = 'No';
       let currentProperty = obj[`checkbox${index + 1}`];
       if (currentProperty) result = 'Si';
@@ -280,6 +271,7 @@ export const generateHCFPDF = (
   }
 
   centerHeaders('HISTORIA CLÍNICA FISIÁTRICA', doc, headingFontSize, y);
+  doc.setFontSize(10);
   doc.setFont('Helvetica', 'normal');
   y += 10;
   doc.text(`Edad: ${age} años`, 10, y);
@@ -297,23 +289,28 @@ export const generateHCFPDF = (
   doc.text(`Fecha de evaluación: ${data.reportDate}`, 10, y);
   y += 10;
   centerHeaders('ANTECEDENTES MATERNOS', doc, headingFontSize, y);
+  doc.setFontSize(12);
   y += 10;
   doc.text(`Embarazo:`, 10, y);
   y += 10;
   doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(10);
   generateCheck(['A término', 'Prematuro', 'Controlado'], data.embarazoValues);
   x = 10;
   y += 10;
   doc.text(`Patologias: ${data.embarazoOptional}`, 10, y);
   doc.setFont('Helvetica', 'bold');
   y += 10;
+  doc.setFontSize(12);
   doc.text(`Parto:`, 10, y);
+  doc.setFontSize(10);
   y += 10;
   doc.setFont('Helvetica', 'normal');
   generateCheck(['Espontaneo', 'Inducido', 'Cesarea', 'Fórceps'], data.partoValues);
   x = 10;
   y += 10;
   centerHeaders('CARACTERISTICAS RECIEN  NACIDO', doc, headingFontSize, y);
+  doc.setFontSize(10);
   y += 10;
   doc.setFont('Helvetica', 'normal');
   generateCheck(
@@ -324,6 +321,7 @@ export const generateHCFPDF = (
   doc.text(`Otros: ${data.recienNacidoOptional}`, 10, y);
   y += 10;
   centerHeaders('CARACTERISTICAS DEL DESARROLLO', doc, headingFontSize, y);
+  doc.setFontSize(10);
   y += 10;
   x = 10;
   doc.setFont('Helvetica', 'normal');
@@ -332,7 +330,7 @@ export const generateHCFPDF = (
       y += 10;
       x = 10;
     }
-    checkPageBreak();
+    y = checkPageBreak(doc, y);
 
     doc.text(`${hito.name}: ${hito.value} meses`, x, y);
 
@@ -341,19 +339,22 @@ export const generateHCFPDF = (
 
   y += 10;
   centerHeaders('ESTUDIOS COMPLEMENTARIOS', doc, headingFontSize, y);
+  doc.setFontSize(10);
   y += 10;
   x = 10;
   doc.setFont('Helvetica', 'normal');
   generateCheck(['RMN', 'RX', 'TAC', 'PEV', 'OEA', 'PEA'], data.complementario);
   y += 10;
   x = 10;
-  checkPageBreak();
+  y = checkPageBreak(doc, y);
   doc.text(`CIRUGÍAS:`, 10, y);
   y += 6;
   y = textArea(doc, data.cirugia, x, y, 5, undefined);
   centerHeaders('ESTADO ACTUAL', doc, headingFontSize, y);
   y += 10;
+  doc.setFontSize(12);
   doc.text(`Conducta:`, 10, y);
+  doc.setFontSize(10);
   y += 10;
   doc.setFont('Helvetica', 'normal');
   generateCheck(
@@ -375,7 +376,9 @@ export const generateHCFPDF = (
   doc.text(`Otros: ${data.conductaOptional}`, 10, y);
   y += 10;
   doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(12);
   doc.text(`Lenguaje:`, 10, y);
+  doc.setFontSize(10);
   y += 10;
   doc.setFont('Helvetica', 'normal');
   generateCheck(['Adecuado a la edad', 'Infantil', 'Dislalias', 'Disartria', 'Pobre', 'No habla'], data.lenguaje);
@@ -384,7 +387,9 @@ export const generateHCFPDF = (
   doc.text(`Otros: ${data.lenguajeOptional}`, 10, y);
   y += 10;
   doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(12);
   doc.text(`Visión:`, 10, y);
+  doc.setFontSize(10);
   y += 10;
   doc.setFont('Helvetica', 'normal');
   generateCheck(['Normal', 'Usa lentes', 'Ceguera', 'Retinopatía', 'Estrabismo', 'Cataratas'], data.vision);
@@ -393,7 +398,9 @@ export const generateHCFPDF = (
   doc.text(`Otros: ${data.visionOptional}`, 10, y);
   y += 10;
   doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(12);
   doc.text(`Audición:`, 10, y);
+  doc.setFontSize(10);
   y += 10;
   doc.setFont('Helvetica', 'normal');
   generateCheck(['Normal', 'Hipoacusia', 'Audífonos'], data.audicion);
@@ -402,24 +409,32 @@ export const generateHCFPDF = (
   doc.text(`Otros: ${data.audicionOptional}`, 10, y);
   y += 10;
   doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(12);
   doc.text(`Comprensión:`, 10, y);
+  doc.setFontSize(10);
   y += 10;
   doc.setFont('Helvetica', 'normal');
   generateCheck(
     ['Adecuada a la edad:', 'Limitada', 'Responde a consignas elementales', 'No responde a consignas elementales'],
-    data.comprension
+    data.comprension,
+    90
   );
   x = 10;
+  y = checkPageBreak(doc, y)
   y += 10;
   doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(12);
   doc.text(`Control de esfínteres:`, 10, y);
+  doc.setFontSize(10);
   y += 10;
   doc.setFont('Helvetica', 'normal');
   generateCheck(['Vesical total', 'Parcial', 'No controla', 'Anal total', 'Parcial', 'No controla'], data.esfinteres);
   x = 10;
   y += 10;
   doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(12);
   doc.text(`Alimentación:`, 10, y);
+  doc.setFontSize(10);
   y += 10;
   doc.setFont('Helvetica', 'normal');
   generateCheck(['Conservada', 'Sonda nasogástrica', 'Gastrostomía'], data.alimentacion);
@@ -428,7 +443,9 @@ export const generateHCFPDF = (
   doc.text(`Otros: ${data.alimentacionOptional}`, 10, y);
   y += 10;
   doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(12);
   doc.text(`Patrones de sueño:`, 10, y);
+  doc.setFontSize(10);
   y += 10;
   doc.setFont('Helvetica', 'normal');
   generateCheck(['Conservado', 'Insomnio'], data.sueño);
@@ -437,158 +454,152 @@ export const generateHCFPDF = (
   doc.text(`Otros: ${data.sueñoOptional}`, 10, y);
   y += 10;
   doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(12);
   doc.text(`Escolaridad:`, 10, y);
   doc.setFont('Helvetica', 'normal');
   y += 10;
   doc.text(`Primaria:`, 10, y);
   y += 10;
+  doc.setFontSize(10);
   generateCheck(['Común', 'Integrada', 'Domiciliaria'], data.primaria);
   x = 10;
   y += 10;
+  doc.setFontSize(12);
   doc.text(`Secundaria:`, 10, y);
+  doc.setFontSize(10);
   y += 10;
   generateCheck(['Común', 'Integrada', 'Domiciliaria'], data.secundaria);
   x = 10;
   y += 10;
+  doc.setFontSize(12);
   doc.text(`Adaptación:`, 10, y);
+  doc.setFontSize(10);
   y += 10;
   generateCheck(['Buena', 'Regular', 'Mala'], data.adaptacion);
   x = 10;
   y += 10;
+  doc.setFontSize(12);
   doc.text(`Lectoescritura:`, 10, y);
   y += 10;
+  doc.setFontSize(10);
   generateCheck(['Si', 'No'], data.lectoEscritura);
   x = 10;
   y += 10;
-  doc.text(`Observaciones: ${data.obsLectoescritura}`, 10, y);
+  doc.setFontSize(12);
+  doc.text('Observaciones:', 10, y)
+  y += 6
+  y = textArea(doc, data.obsLectoescritura, x, y, 5);
   y += 10;
   doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(14);
   doc.text(`DIAGNÓSTICO ETIOLÓGICO:`, 10, y);
-  y += 10;
-  doc.setFont('Helvetica', 'normal');
-  const maxWidth = 180;
+  y += 6;
+    
+  y = textArea(doc, data.diagEtiologico, x, y, 5);
+  y += 5;
 
-  const diagSplitText = doc.splitTextToSize(data.diagEtiologico, maxWidth);
-
-  diagSplitText.forEach((line: string) => {
-    doc.text(line, 10, y);
-    y += lineHeight;
-    checkPageBreak();
-  });
-
-  y += 10;
   doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(14);
   doc.text(`DIAGNÓSTICO FUNCIONAL:`, 10, y);
-  y += 10;
-  doc.setFont('Helvetica', 'normal');
+  y += 6;
 
-  const diagFuncSplit = doc.splitTextToSize(data.diagFuncional, maxWidth);
+  y = textArea(doc, data.diagFuncional, x, y, 5);
+  y += 5;
 
-  diagFuncSplit.forEach((line: string) => {
-    doc.text(line, 10, y);
-    y += lineHeight;
-    checkPageBreak();
-  });
-
-  y += 10;
   doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(14);
   doc.text(`ASPECTO MOTOR:`, 10, y);
 
-  checkPageBreak();
+  y = checkPageBreak(doc, y);
 
   y += 10;
+  doc.setFontSize(12);
   doc.text(`GMFCS:`, 10, y);
   y += 10;
-  doc.setFont('Helvetica', 'normal');
 
-  const gmfcsSplit = doc.splitTextToSize(data.gmfcs, maxWidth);
+  y = textArea(doc, data.gmfcs, x, y, 5);
+  y += 5;
 
-  gmfcsSplit.forEach((line: string) => {
-    doc.text(line, 10, y);
-    y += lineHeight;
-    checkPageBreak();
-  });
-
-  y += 10;
-  checkPageBreak();
+  y = checkPageBreak(doc, y);
   doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(14);
   doc.text(`MARCHA:`, 10, y);
   doc.setFont('Helvetica', 'normal');
-  y += 10;
+  doc.setFontSize(10);
+  y += 6;
   generateCheck(['Independiente', 'Dependiente'], data.marcha);
   x = 10;
   y += 10;
-  checkPageBreak();
+  y = checkPageBreak(doc, y);
   doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(14);
   doc.text(`EQUIPAMIENTO:`, 10, y);
   doc.setFont('Helvetica', 'normal');
-  y += 10;
+  doc.setFontSize(10);
+  y += 6;
   generateCheck(['Ortesis', 'Bastones', 'Andador', 'Silla de ruedas'], data.equipamiento);
   x = 10;
   y += 10;
   doc.setFont('Helvetica', 'bold');
-  doc.text(`HABITOS DE LA VIDA DÍARIA (AVD):`, 10, y);
-  y += 10;
+  doc.setFontSize(14);
+  doc.text(`HÁBITOS DE LA VIDA DIARIA (AVD):`, 10, y);
+  y += 6;
   doc.setFont('Helvetica', 'normal');
-  doc.text(`ESCALA FIM: ${data.fim}  ESCALA BARTHEL: ${data.barthel}  OTROS: ${data.otraEscala}`, 10, y);
-  y += 10;
+  doc.setFontSize(12);
+  doc.text(`ESCALA FIM:`, 10, y);
+  y += 6;
+  doc.setFontSize(10);
+  y = textArea(doc, data.fim, x, y, 5)
+  y += 1;
+  doc.setFontSize(12);
+  doc.text('ESCALA BARTHEL:', x, y)
+  y += 6;
+  doc.setFontSize(10);
+  y = textArea(doc, data.barthel, x, y, 5);
+  doc.setFontSize(12);
+  y += 1;
+  doc.text('OTROS:', x, y)
+  y += 6;
+  doc.setFontSize(10);
+  y = textArea(doc, data.otraEscala, x, y, 5);
+  y += 6;
   doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(14);
   doc.text(`MEDICACIÓN ACTUAL:`, 10, y);
-  y += 10;
-  doc.setFont('Helvetica', 'normal');
+  y += 6;
 
-  const medActualSplit = doc.splitTextToSize(data.medActual, maxWidth);
+  y = textArea(doc, data.medActual, x, y, 5);
+  y += 5;
 
-  medActualSplit.forEach((line: string) => {
-    doc.text(line, 10, y);
-    y += lineHeight;
-    checkPageBreak();
-  });
-
-  y += 10;
   doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(14);
   doc.text(`INTERCONSULTAS:`, 10, y);
-  y += 10;
-  doc.setFont('Helvetica', 'normal');
+  y += 6;
 
-  const interSplit = doc.splitTextToSize(data.inter, maxWidth);
-
-  interSplit.forEach((line: string) => {
-    doc.text(line, 10, y);
-    y += lineHeight;
-    checkPageBreak();
-  });
-  y += 10;
-  checkPageBreak();
+  y = textArea(doc, data.inter, x, y, 5);
+  y += 5;
+  
+  y = checkPageBreak(doc, y);
+  doc.setFontSize(14);
   centerHeaders('PLAN TERAPÉUTICO', doc, headingFontSize, y);
-  checkPageBreak();
+  y = checkPageBreak(doc, y);
   y += 10;
   doc.setFont('Helvetica', 'bold');
   doc.text(`OBJETIVOS:`, 10, y);
-  y += 10;
+  y += 6;
   doc.setFont('Helvetica', 'normal');
-
-  const objSplit = doc.splitTextToSize(data.objectives, maxWidth);
-
-  objSplit.forEach((line: string) => {
-    doc.text(line, 10, y);
-    y += lineHeight;
-    checkPageBreak();
-  });
-  y += 10;
+  doc.setFontSize(10);
+  y = textArea(doc, data.objectives, x, y, 5)
+  y += 5
   doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(14);
   doc.text(`OBSERVACIONES:`, 10, y);
-  y += 10;
+  doc.setFontSize(10);
+  y += 6;
   doc.setFont('Helvetica', 'normal');
 
-  const obsSplit = doc.splitTextToSize(data.observations, maxWidth);
-
-  obsSplit.forEach((line: string) => {
-    doc.text(line, 10, y);
-    y += lineHeight;
-    checkPageBreak();
-  });
-  checkPageBreak();
+  y = textArea(doc, data.observations, x, y, 5)
+  y += 5
   const signatureWidth = 70;
   const signatureHeight = 30;
   if (signatureData) doc.addImage(signatureData, 'PNG', 10, y, signatureWidth, signatureHeight);

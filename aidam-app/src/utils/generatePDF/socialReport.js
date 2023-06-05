@@ -1,7 +1,5 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { UseMutationResult, UseQueryResult } from '@tanstack/react-query';
-import SignatureCanvas from 'react-signature-canvas';
 
 import { centerHeaders, checkPageBreak, inputLine, subtitle, textArea } from '@/utils/jsPDF';
 import calculateAge from '@/utils/calculateAge';
@@ -56,7 +54,7 @@ const generatePDF = (
   inputLine(doc, `DNI: ${patient.data?.dni}`, x, y, spacing);
   y = inputLine(
     doc,
-    `Fecha de nacimiento: ${patient.data?.birth && new Date(patient.data.birth).toLocaleString().split(',')[0]}`,
+    `Fecha de nacimiento: ${patient.data?.birth && new Date(patient.data.birth).toLocaleString('es-ES').split(',')[0]}`,
     90,
     y,
     spacing
@@ -526,9 +524,13 @@ const generatePDF = (
   y = inputLine(doc, `${loggedUser.data?.firstName} ${loggedUser.data?.lastName}`, 165, y, spacing);
 
   const blobDoc = doc.output('blob');
-  const file = new File([blobDoc], `Ficha Social_${loggedUser.data?.firstName}_${loggedUser.data?.lastName}.pdf`, { type: 'application/pdf' });
+  const file = new File([blobDoc], 'Ficha Social.pdf', { type: 'application/pdf' });
   if (patient.data) {
     const formData = new FormData();
+    formData.append('firstName', patient.data.firstName);
+    formData.append('lastName', patient.data.lastName);
+    formData.append('userFirstName', loggedUser.data?.firstName);
+    formData.append('userLastName', loggedUser.data?.lastName);
     formData.append('report', file);
     uploadSoc.mutate({ id: patient.data._id, form: formData });
   }

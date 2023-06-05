@@ -58,14 +58,13 @@ const PickCertificateModal: React.FC<PickCertificateModalProps> = ({
         <div className='flex flex-wrap justify-around'>
           {patient?.certificate ? (
             patient.certificate.map((cert, index) => {
-              const certNameSplitted = cert.split('-');
-              const day = certNameSplitted[3];
-              const month = certNameSplitted[4];
-              const [year, extension] = certNameSplitted[5].split('.');
+              const certNameSplitted = cert.split('_');
+              const [date, extension] = certNameSplitted[3].split('.');
+              const [day, month, year] = date.split('-');
               return (
                 <div
                   key={index}
-                  className={`${styles.divCertificate} w-fit flex flex-col border border-white hover:border-black03 rounded-md pt-0 transition-all`}
+                  className={`${styles.divCertificate} w-fit flex flex-col border lg:border-white border-black03 hover:border-black03 rounded-md pt-0 transition-all`}
                 >
                   {admin && (
                     <button
@@ -83,7 +82,7 @@ const PickCertificateModal: React.FC<PickCertificateModalProps> = ({
                         src={x}
                         alt='eliminar'
                         width={18}
-                        className={`${styles.x} hidden`}
+                        className={`${styles.x} lg:hidden`}
                       />
                     </button>
                   )}
