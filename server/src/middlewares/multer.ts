@@ -70,14 +70,14 @@ export const uploadReport = multer({
   storage: multer.diskStorage({
     destination: REPORT_DIR,
     filename: (req, file, cb) => {
-      const { firstName, lastName, userFirstName, userLastName } = req.body
+      const { firstName, lastName, userFirstName, userLastName, userId } = req.body
       const date = new Date()
         .toLocaleString('es-ES')
         .split(',')[0]
         .replaceAll('/', '-');
         const fileBasename = file.originalname.split('.')[0];
         const fileExtension = path.extname(file.originalname);
-      cb(null, `${firstName}-${lastName}_${fileBasename}_${userFirstName}-${userLastName} - (${date})${fileExtension}`);
+      cb(null, `${userId}_${firstName}-${lastName}_${fileBasename}_${userFirstName}-${userLastName} - (${date})${fileExtension}`);
     },
   }),
   fileFilter: (req, file, cb) => {
@@ -95,14 +95,14 @@ export const uploadMedicalReport = multer({
   storage: multer.diskStorage({
     destination: MEDICAL_REPORT_DIR,
     filename: (req, file, cb) => {
-      const { firstName, lastName, userFirstName, userLastName } = req.body
+      const { firstName, lastName, userFirstName, userLastName, userId } = req.body
       const date = new Date()
         .toLocaleString('es-ES')
         .split(',')[0]
         .replaceAll('/', '-');
         const fileBasename = file.originalname.split('.')[0];
         const fileExtension = path.extname(file.originalname);
-      cb(null, `${firstName}-${lastName}_${fileBasename}_${userFirstName}-${userLastName} - (${date})${fileExtension}`);
+      cb(null, `${userId}_${firstName}-${lastName}_${fileBasename}_${userFirstName}-${userLastName} - (${date})${fileExtension}`);
     },
   }),
   fileFilter: (req, file, cb) => {
@@ -120,14 +120,14 @@ export const uploadSocialReport = multer({
   storage: multer.diskStorage({
     destination: SOCIAL_REPORT_DIR,
     filename: (req, file, cb) => {
-      const { firstName, lastName, userFirstName, userLastName } = req.body
+      const { firstName, lastName, userFirstName, userLastName, userId } = req.body
       const date = new Date()
         .toLocaleString('es-ES')
         .split(',')[0]
         .replaceAll('/', '-');
         const fileBasename = file.originalname.split('.')[0];
         const fileExtension = path.extname(file.originalname);
-      cb(null, `${firstName}-${lastName}_${fileBasename}_${userFirstName}-${userLastName} - (${date})${fileExtension}`);
+      cb(null, `${userId}_${firstName}-${lastName}_${fileBasename}_${userFirstName}-${userLastName} - (${date})${fileExtension}`);
     },
   }),
   fileFilter: (req, file, cb) => {

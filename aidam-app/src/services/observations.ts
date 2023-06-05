@@ -16,8 +16,8 @@ export const getObservation = async (id: string): Promise<Observation> => {
 export const putObservation = async (
   data: PutObservation
 ): Promise<Observation> => {
-  const { id, text } = data;
-  const obs = await api.put(`/observations/edit/${id}`, { text });
+  const { id, text, patientId } = data;
+  const obs = await api.put(`/observations/edit/${id}`, { text, patientId });
   return obs.data;
 };
 

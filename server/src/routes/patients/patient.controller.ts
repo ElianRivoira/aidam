@@ -12,6 +12,7 @@ import { validateToken } from '../../utils/tokens';
 import { BadRequestError } from '../../errors/bad-request-error';
 
 import dotenv from 'dotenv';
+import { performTask } from '../../services/taskMetric';
 dotenv.config();
 
 const httpGetAllPatientsFromTherapist = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -288,12 +289,15 @@ const httpUploadReport = async (req: Request, res: Response) => {
     const loggedUser = await userService.getLoggedUser(user.id);
     if (loggedUser) {
       if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
-        throw new BadRequestError('No posee permisos para editar este paciente');
+        throw new BadRequestError('No posee permisos para subir un informe en este paciente');
     }
 
     const filename = req.file && req.file.filename;
 
     const editedPatient = await patientService.putPatient(req.params.id, undefined, null, false, undefined, filename);
+
+    performTask(loggedUser._id, 'Subió un informe');
+    loggedUser.save();
 
     res.send(editedPatient);
   } catch (e) {
@@ -324,6 +328,9 @@ const httpUploadMedicalReport = async (req: Request, res: Response) => {
       undefined,
       filename
     );
+
+    performTask(loggedUser._id, 'Subió un informe');
+    loggedUser.save();
 
     res.send(editedPatient);
   } catch (e) {
@@ -356,6 +363,9 @@ const httpUploadSocialReport = async (req: Request, res: Response) => {
       filename
     );
 
+    performTask(loggedUser._id, 'Subió un informe');
+    loggedUser.save();
+
     res.send(editedPatient);
   } catch (e) {
     throw new ServerError(e);
@@ -368,13 +378,18 @@ const httpDeleteReport = async (req: Request, res: Response) => {
     throw new RequestValidationError(errors.array());
   }
   try {
+    const { fileName } = req.body;
+
+    const fileOwnerId = fileName.split('_')[0];
+
     const { user } = validateToken(req.session?.token);
     const loggedUser = await userService.getLoggedUser(user.id);
     if (loggedUser) {
-      if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
-        throw new BadRequestError('No posee permisos para editar este paciente');
+      if(loggedUser.admin === false){
+        if (loggedUser._id.toString() !== fileOwnerId)
+          throw new BadRequestError('No posee permisos para borrar este informe');
+      }
     }
-    const { fileName } = req.body;
 
     const patient = await patientService.getOnePatient(req.params.id);
 
@@ -401,13 +416,18 @@ const httpDeleteMedicalReport = async (req: Request, res: Response) => {
     throw new RequestValidationError(errors.array());
   }
   try {
+    const { fileName } = req.body;
+
+    const fileOwnerId = fileName.split('_')[0];
+    
     const { user } = validateToken(req.session?.token);
     const loggedUser = await userService.getLoggedUser(user.id);
     if (loggedUser) {
-      if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
-        throw new BadRequestError('No posee permisos para editar este paciente');
+      if(loggedUser.admin === false){
+        if (loggedUser._id.toString() !== fileOwnerId)
+          throw new BadRequestError('No posee permisos para borrar este informe');
+      }
     }
-    const { fileName } = req.body;
 
     const patient = await patientService.getOnePatient(req.params.id);
 
@@ -434,13 +454,18 @@ const httpDeleteSocialReport = async (req: Request, res: Response) => {
     throw new RequestValidationError(errors.array());
   }
   try {
+    const { fileName } = req.body;
+
+    const fileOwnerId = fileName.split('_')[0];
+    
     const { user } = validateToken(req.session?.token);
     const loggedUser = await userService.getLoggedUser(user.id);
     if (loggedUser) {
-      if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
-        throw new BadRequestError('No posee permisos para editar este paciente');
+      if(loggedUser.admin === false){
+        if (loggedUser._id.toString() !== fileOwnerId)
+          throw new BadRequestError('No posee permisos para borrar este informe');
+      }
     }
-    const { fileName } = req.body;
 
     const patient = await patientService.getOnePatient(req.params.id);
 

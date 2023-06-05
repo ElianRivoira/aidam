@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 
 // import NavbarDesktop from '@/components/navbar/NavbarDesktop';
@@ -10,9 +10,11 @@ import TagInputProf from '@/components/form/TagInputProfessionals';
 import { postPatient } from '@/services/patients';
 import Modal from '@/components/Modal';
 import Button from '@/components/Button';
+// import { getLoggedUser } from '@/services/users';
 
 const create = () => {
   const router = useRouter();
+  // const [cookieError, setCookieError] = useState(false);
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
@@ -32,6 +34,18 @@ const create = () => {
     cud: '',
     adress: '',
   });
+
+  // const loggedUser = useQuery({
+  //   queryKey: ['loggedUser'],
+  //   queryFn: getLoggedUser,
+  //   retry: 1,
+  //   onError: error => {
+  //     setType(2);
+  //     setErrors((error as any).response.data.errors);
+  //     setOpen(true);
+  //     setCookieError(true);
+  //   },
+  // });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -65,12 +79,14 @@ const create = () => {
       formData.append(key, patientInfo[key]);
     });
     formData.append('professionals', JSON.stringify(professionals));
+    // loggedUser.data && formData.append('userId', loggedUser.data?._id);
     certificate && formData.append('certificate', certificate as Blob);
 
     postObs.mutate(formData);
   };
 
   useEffect(() => {
+    // if (type === 2 && !open && cookieError) router.push('/login');
     if (type === 1 && open === false) {
       router.push('/patients');
     }

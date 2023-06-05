@@ -241,6 +241,7 @@ export const generateTRPDF = (
     formData.append('lastName', patient.data.lastName);
     formData.append('userFirstName', user.firstName);
     formData.append('userLastName', user.lastName);
+    formData.append('userId', user._id);
     formData.append('report', file as Blob);
     upload.mutate({ id: patient.data._id, form: formData });
   }

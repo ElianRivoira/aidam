@@ -190,6 +190,7 @@ export const generateHCPDF = (
     formData.append('lastName', patient.data.lastName);
     formData.append('userFirstName', loggedUser.data.firstName);
     formData.append('userLastName', loggedUser.data.lastName);
+    formData.append('userId', loggedUser.data._id);
     formData.append('report', file as Blob);
     uploadMed.mutate({ id: patient.data._id, form: formData });
   }
@@ -619,6 +620,7 @@ export const generateHCFPDF = (
     formData.append('lastName', patient.data.lastName);
     formData.append('userFirstName', loggedUser.data.firstName);
     formData.append('userLastName', loggedUser.data.lastName);
+    formData.append('userId', loggedUser.data._id);
     formData.append('report', file as Blob);
     uploadMed.mutate({ id: patient.data._id, form: formData });
   }

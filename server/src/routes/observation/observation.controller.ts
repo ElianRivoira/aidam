@@ -21,8 +21,11 @@ const httpPostObservation = async (req: Request, res: Response) => {
       const { user } = validateToken(req.session.token);
       const loggedUser = await userService.getLoggedUser(user.id);
       if (loggedUser) {
-        if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
+        if (!loggedUser.patientsId.includes(patientId) && loggedUser.admin === false) {
+          console.log('PACIENTES USUARIO', loggedUser.patientsId);
+          console.log('PACIENTE ID', patientId);
           throw new BadRequestError('No posee permisos para crear una observación en este paciente');
+        }
       }
 
       const obs = await observationService.postObservation({
@@ -75,13 +78,15 @@ const httpPutObservation = async (req: Request, res: Response) => {
   }
   try {
     const obsId = req.params.id;
-    const { text } = req.body;
+    const { text, patientId } = req.body;
     if (req.session?.token) {
       const { user } = validateToken(req.session.token);
       const loggedUser = await userService.getLoggedUser(user.id);
       if (loggedUser) {
-        if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
-          throw new BadRequestError('No posee permisos para crear una observación en este paciente');
+        if (loggedUser.admin === false) {
+          if (!loggedUser.patientsId.includes(patientId) || !loggedUser.observationsId.includes(obsId))
+            throw new BadRequestError('No posee permisos para editar esta observación');
+        }
       }
 
       const obs = await observationService.putObservation(obsId, text);
@@ -107,13 +112,11 @@ const httpDeleteObservation = async (req: Request, res: Response) => {
       const { user } = validateToken(req.session.token);
       const loggedUser = await userService.getLoggedUser(user.id);
 
-      const observation = await observationService.deleteObservation(obsId);
-
-      const patient = await patientService.getOnePatient(patientId);
-
       if (loggedUser) {
-        if (!loggedUser.patientsId.includes(req.params.id) && loggedUser.admin === false)
-          throw new BadRequestError('No posee permisos para crear una observación en este paciente');
+        if (loggedUser.admin === false) {
+          if (!loggedUser.patientsId.includes(patientId) || !loggedUser.observationsId.includes(obsId))
+            throw new BadRequestError('No posee permisos para eliminar esta observación');
+        }
 
         const observationToDelete = obsId;
         const index = loggedUser.observationsId.indexOf(observationToDelete);
@@ -122,17 +125,20 @@ const httpDeleteObservation = async (req: Request, res: Response) => {
           performTask(loggedUser._id, 'Borró observación');
           loggedUser.save();
         }
-      }
+        const observation = await observationService.deleteObservation(obsId);
 
-      if (patient) {
-        const observationToDelete = obsId;
-        const index = patient.observationsId.indexOf(observationToDelete);
-        if (index > -1) {
-          patient.observationsId.splice(index, 1);
-          patient.save();
+        const patient = await patientService.getOnePatient(patientId);
+
+        if (patient) {
+          const observationToDelete = obsId;
+          const index = patient.observationsId.indexOf(observationToDelete);
+          if (index > -1) {
+            patient.observationsId.splice(index, 1);
+            patient.save();
+          }
         }
+        res.send(observation);
       }
-      res.send(observation);
     }
   } catch (e) {
     throw new ServerError(e);

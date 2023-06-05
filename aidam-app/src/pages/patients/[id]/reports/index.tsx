@@ -117,26 +117,27 @@ const Reports = ({ query }: MyPageProps) => {
       formData.append('lastName', patient.data.lastName);
       formData.append('userFirstName', loggedUser.data.firstName);
       formData.append('userLastName', loggedUser.data.lastName);
+      formData.append('userId', loggedUser.data._id);
       newReport && formData.append('report', newReport as Blob);
       upload.mutate({ id: patient.data._id, form: formData });
     }
   };
 
-  const setSearchedReports = (search: string, reportsType?: string) => {
-    let searchedReports: string[] = [];
-    if (patient.data) {
-      if (search.length) {
-        searchedReports = patient.data.reports.filter(report => {
-          return report.toLowerCase().includes(search.toLowerCase());
-        });
-      }
-      if (searchedReports.length) {
-        setReports(searchedReports);
-      } else {
-        setReports(patient.data.reports);
-      }
-    }
-  };
+  // const setSearchedReports = (search: string, reportsType?: string) => {
+  //   let searchedReports: string[] = [];
+  //   if (patient.data) {
+  //     if (search.length) {
+  //       searchedReports = patient.data.reports.filter(report => {
+  //         return report.toLowerCase().includes(search.toLowerCase());
+  //       });
+  //     }
+  //     if (searchedReports.length) {
+  //       setReports(searchedReports);
+  //     } else {
+  //       setReports(patient.data.reports);
+  //     }
+  //   }
+  // };
 
   const handleDelete = (fileName: string) => {
     delReport.mutate({ id: patient.data?._id, fileName });
@@ -150,17 +151,11 @@ const Reports = ({ query }: MyPageProps) => {
 
   const filterReports = (searchDate: Date, patient: Patient | undefined) => {
     const filtered = patient?.reports.filter(report => {
-      console.log('REPORT', report)
       const reportDate = report.split(' - ')[1];
-      console.log('REPORT DATE', reportDate)
       const reportMonth = Number(reportDate.split('-')[1]);
-      console.log('REPORT MONTH', reportMonth)
-      console.log('SEARCH MONTH', searchDate.getMonth() + 1)
-      console.log('COMPARACION', reportMonth === searchDate.getMonth() + 1)
       if (reportMonth === searchDate.getMonth() + 1) return true;
     });
     filtered && setFilteredReports(filtered);
-    console.log(filtered)
   };
 
   return (
@@ -182,12 +177,12 @@ const Reports = ({ query }: MyPageProps) => {
               <div className='flex lg:gap-9 lgMax:justify-between'>
                 <Link
                   href={`/patients/${query.id}/reports/create`}
-                  className='flex items-center text-lm font-medium lgMax:font-normal p-2.5 lgMax:py-2 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
+                  className='flex items-center justify-center text-center lg:text-lm min-w-[100px]  text-sm font-medium p-3 py-2 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
                 >
-                  Generar Informe
+                  Generar
                 </Link>
-                <Button onClick={() => setOpenReportModal(true)} text='Subir informe' />
-                <Button onClick={() => setOpenPickDate(true)} text='Buscar informes' />
+                <Button onClick={() => setOpenReportModal(true)} text='Subir' />
+                <Button onClick={() => setOpenPickDate(true)} text='Buscar' />
               </div>
             </div>
             {!useMediaQuery(1024) && <hr className='border-black03 mt-4' />}

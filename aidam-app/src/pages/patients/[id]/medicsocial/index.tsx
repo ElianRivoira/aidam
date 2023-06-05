@@ -175,6 +175,7 @@ const medicSocial = ({ query }: MyPageProps) => {
       formData.append('lastName', patient.data.lastName);
       formData.append('userFirstName', loggedUser.data.firstName);
       formData.append('userLastName', loggedUser.data.lastName);
+      formData.append('userId', loggedUser.data._id);
       newReport && formData.append('report', newReport as Blob);
       if (reportType === 'medical') {
         uploadMed.mutate({ id: patient.data._id, form: formData });
@@ -218,16 +219,16 @@ const medicSocial = ({ query }: MyPageProps) => {
                 <div className='flex lg:gap-9 lgMax:justify-between'>
                   <Link
                     href={`/patients/${query.id}/medicsocial/createMedical`}
-                    className='flex items-center text-center text-lm font-medium lgMax:font-normal p-2.5 lgMax:py-2 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
+                    className='flex items-center justify-center text-center lg:text-lm min-w-[100px]  text-sm font-medium p-3 py-2 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
                   >
-                    Generar Informe
+                    Generar
                   </Link>
                   <Button
                     onClick={() => {
                       setReportType('medical');
                       setOpenReportModal(true);
                     }}
-                    text='Subir informe'
+                    text='Subir'
                   />
                 </div>
               </div>
@@ -277,16 +278,16 @@ const medicSocial = ({ query }: MyPageProps) => {
                 <div className='flex lg:gap-9 lgMax:justify-between'>
                   <Link
                     href={`/patients/${query.id}/medicsocial/createSocial`}
-                    className='flex items-center text-center text-lm font-medium lgMax:font-normal p-2.5 lgMax:py-2 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
+                    className='flex items-center justify-center text-center lg:text-lm min-w-[100px]  text-sm font-medium p-3 py-2 text-white rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
                   >
-                    Generar Informe
+                    Generar
                   </Link>
                   <Button
                     onClick={() => {
                       setReportType('social');
                       setOpenReportModal(true);
                     }}
-                    text='Subir Informe'
+                    text='Subir'
                   />
                 </div>
               </div>

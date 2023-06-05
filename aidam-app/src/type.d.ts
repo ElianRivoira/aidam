@@ -50,6 +50,7 @@ interface PostObservation {
 interface PutObservation {
   id: string;
   text: string;
+  patientId: string;
 }
 
 interface DeleteObservation {
