@@ -10,7 +10,7 @@ interface ObsProps {
 }
 
 const ObservationCard: React.FC<ObsProps> = ({ obs, patient, onClick }) => {
-  let [fecha, hora] = new Date(obs.date).toLocaleString().split(',');
+  let [fecha, hora] = new Date(obs.date).toLocaleString('es-ES').split(',');
   let minutos;
   [hora, minutos] = hora.split(':');
 

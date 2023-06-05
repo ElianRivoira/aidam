@@ -26,9 +26,9 @@ const DesktopCard: React.FC<DesktopCardProps> = ({
     if (!user?.lastLoginDate) {
       setLastConnectionString('No se ha conectado aún');
     } else {
-      setLastConnectionString(new Date(user.lastLoginDate).toLocaleString());
+      setLastConnectionString(new Date(user.lastLoginDate).toLocaleString('es-ES'));
     }
-    if(observation) setObsDate(new Date(observation.date).toLocaleString().split(',')[0])
+    if(observation) setObsDate(new Date(observation.date).toLocaleString('es-ES').split(',')[0])
   }, []);
 
   return (

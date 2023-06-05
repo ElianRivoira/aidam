@@ -14,7 +14,7 @@ const Signup = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState(0);
+  const [phone, setPhone] = useState('');
   const [profession, setProfession] = useState('');
   const [license, setLicense] = useState('');
   const [password, setPassword] = useState('');
@@ -111,8 +111,8 @@ const Signup = () => {
             <Input
               name='phone'
               label='Teléfono'
-              type='tel'
-              onChange={e => setPhone(Number(e.target.value))}
+              type='text'
+              onChange={e => setPhone(e.target.value)}
               value={phone}
             />
             <div className='flex gap-1.5'>

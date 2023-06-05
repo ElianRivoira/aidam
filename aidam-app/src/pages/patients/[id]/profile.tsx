@@ -92,7 +92,7 @@ const Profile = ({ query }: MyPageProps) => {
 
   useEffect(() => {
     if (patient.data) {
-      const date = new Date(patient.data.birth).toLocaleString().split(',')[0];
+      const date = new Date(patient.data.birth).toLocaleString('es-ES').split(',')[0];
       setBirthDate(date);
     }
   }, [patient.data]);

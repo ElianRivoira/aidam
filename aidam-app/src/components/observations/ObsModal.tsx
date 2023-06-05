@@ -48,7 +48,7 @@ const ObsModal: React.FC<ObsModalProps> = ({
   useEffect(() => {
     if (observation.data?.date) {
       let [fecha, hora] = new Date(observation.data.date)
-        .toLocaleString()
+        .toLocaleString('es-ES')
         .split(',');
       let minutos: string;
       [hora, minutos] = hora.split(':');

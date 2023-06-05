@@ -30,7 +30,7 @@ interface PostUser {
   firstName: string;
   lastName: string;
   email: string;
-  phone: number;
+  phone: string;
   profession: string;
   license: string;
   password: string;
@@ -76,7 +76,7 @@ interface Patient {
   dni: number;
   birth: Date;
   email: string;
-  phone: number;
+  phone: string;
   schedulesId: [];
   observationsId: Observation[];
   professionalsId: User[];
@@ -99,7 +99,7 @@ interface PostPatient {
   authorizedModule: string;
   diagnosis: string;
   email: string;
-  phone: number;
+  phone: string;
   cud: string;
   adress: string;
 }

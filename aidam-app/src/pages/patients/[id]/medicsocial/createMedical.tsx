@@ -779,7 +779,7 @@ const createMedical = ({ query }: MyPageProps) => {
                     value={reportDate}
                     required
                     type='date'
-                    className='border focus:border-none focus:outline-none'
+                    className='border rounded-md hover:border-aidam80 focus:border-none focus:outline-none'
                     id='fecha'
                     onChange={e => setReportDate(e.target.value)}
                   />

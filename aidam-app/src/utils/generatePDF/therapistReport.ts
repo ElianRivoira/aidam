@@ -23,7 +23,7 @@ export const generateTRPDF = (
   let birthDate;
   if (patient.data?.birth) {
     birthDate = new Date(patient.data?.birth);
-    birthDate = birthDate.toLocaleString().split(',');
+    birthDate = birthDate.toLocaleString('es-ES').split(',');
     birthDate = birthDate[0];
   }
 
@@ -237,7 +237,6 @@ export const generateTRPDF = (
   );
   if (patient.data && user) {
     const formData = new FormData();
-    console.log(patient.data)
     formData.append('firstName', patient.data.firstName);
     formData.append('lastName', patient.data.lastName);
     formData.append('userFirstName', user.firstName);
