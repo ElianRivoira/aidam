@@ -6,6 +6,7 @@ import path from 'path';
 import cookieSession from 'cookie-session';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 
 import apiRouter from './routes/api';
 import { errorHandler } from './middlewares/error-handler';
@@ -16,6 +17,7 @@ dotenv.config();
 
 const app: Express = express();
 
+app.use(cookieParser());
 app.use(
   cors({
     origin: process.env.FRONT_IP,
@@ -35,6 +37,7 @@ app.use(
     secure: false, // Set to true if using HTTPS
     httpOnly: false,
     sameSite: 'strict',
+    domain: 'http://aidam.online'
   })
 );
 app.use(morgan('dev'));
