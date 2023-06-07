@@ -14,7 +14,7 @@ import useMediaQuery from '@/hooks/useMediaQuery';
 // import Navbar from '@/components/navbar/Navbar';
 // import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import ArrowBack from '@/components/ArrowBack';
-import { DateInput, TextArea } from '@/components/reports/Inputs';
+import { DateInput, TextArea, TextInput } from '@/components/reports/Inputs';
 import { setCanvasHeight, setCanvasWidth } from '@/utils/canvas';
 import { generateTRPDF } from '@/utils/generatePDF/therapistReport';
 
@@ -167,10 +167,11 @@ const create = ({ query }: MyPageProps) => {
           <hr className='mb-7 border-black03 w-full' />
           <h1 className='text-xl2.5 font-medium mt-7 mb-8 text-center'>PLAN TERAPÉUTICO INTEGRAL</h1>
           <form className='flex flex-col mt-7 gap-2' onSubmit={handleFormSubmit}>
-            <h1 className='mb-2 font-medium'>INFORME DE EVALUACIÓN TERAPÉUTICA:</h1>
+            <h1 className='mb-2 font-medium text-lb lg:text-ln'>INFORME DE EVALUACIÓN TERAPÉUTICA:</h1>
             <div>
               <DateInput
                 label='Fecha:'
+                labelclass='text-ss lg:text-lb font-medium'
                 name='reportDate'
                 divclass='mb-8'
                 value={reportDate}
@@ -178,7 +179,7 @@ const create = ({ query }: MyPageProps) => {
               />
             </div>
             <div className='flex'>
-              <label className='font-medium' htmlFor='period'>
+              <label className='font-medium text-ss lg:text-lb' htmlFor='period'>
                 Período:{' '}
               </label>
               <select
@@ -203,7 +204,7 @@ const create = ({ query }: MyPageProps) => {
 
               <p>{'a Diciembre ' + currentYear}</p>
             </div>
-            <p className='font-medium text-ln'>
+            <p className='font-medium text-lb lg:text-ln'>
               Se realiza la evaluación inicial del área, obteniendo los siguientes resultados
             </p>
             <div className='flex flex-col lg:w-2/3 w-full'>
@@ -211,7 +212,7 @@ const create = ({ query }: MyPageProps) => {
                 label='En relación al accionar del paciente y el encuadre, se puede puntualizar que:'
                 name='accionar'
                 divclass='mb-4'
-                labelclass='font-normal text-lb'
+                labelclass='font-normal text-ss lg:text-lb'
                 placeholder='Detallar aspectos generales observados al comienzo de año, encuadre y ajuste al espacio terapéutico, aspectos conductuales, entre otros.'
                 value={generalAspects}
                 onChange={e => setGeneralAspects(e.target.value)}
@@ -220,7 +221,7 @@ const create = ({ query }: MyPageProps) => {
                 label='En razón a los aspectos específicos del área, según lo evaluado, se observa lo siguiente:'
                 name='observacion'
                 divclass='mb-4'
-                labelclass='font-normal text-lb'
+                labelclass='font-normal text-ss lg:text-lb'
                 placeholder='Completar con los aspectos consignados en el Protocolo de Evaluación pertinentes a cada especialidad y los resultados obtenidos.'
                 value={generalObjectives}
                 onChange={e => setGeneralObjectives(e.target.value)}
@@ -229,13 +230,13 @@ const create = ({ query }: MyPageProps) => {
                 label='Se puede señalar que el paciente:'
                 name='foda'
                 divclass='mb-4'
-                labelclass='font-normal text-lb'
+                labelclass='font-normal text-ss lg:text-lb'
                 placeholder='Consignar observaciones significativas, fortalezas detectadas, entre otras.'
                 value={generalFODA}
                 onChange={e => setGeneralFODA(e.target.value)}
               />
             </div>
-            <div className='flex mt-2'>
+            <div className='flex mt-3'>
               <select
                 required
                 id='period'
@@ -259,8 +260,8 @@ const create = ({ query }: MyPageProps) => {
                 ))}
               </select>
             </div>
-            <div className='flex mb-11'>
-              <label className='font-medium' htmlFor='secondPeriod'>
+            <div className='flex mb-5'>
+              <label className='font-medium text-ss lg:text-lb' htmlFor='secondPeriod'>
                 Período:
               </label>
               <select
@@ -283,44 +284,48 @@ const create = ({ query }: MyPageProps) => {
                 ))}
               </select>
 
-              <p>{'a Diciembre ' + currentYear}</p>
+              <p className='text-ss lg:text-lb'>{'a Diciembre ' + currentYear}</p>
             </div>
             <div className='flex flex-col gap-3 mb-6'>
-              <h1 className='font-medium'>OBJETIVOS TERAPÉUTICOS</h1>
-              <p>En función de lo evaluado, se proponen los siguientes objetivos específicos de abordaje:</p>
+              <h1 className='font-medium text-lb lg:text-ln'>OBJETIVOS TERAPÉUTICOS</h1>
+              <p className='text-ss lg:text-lb'>En función de lo evaluado, se proponen los siguientes objetivos específicos de abordaje:</p>
               <div className='flex flex-col gap-2'>
-                <div className='flex gap-3'>
-                  <input
+                <div className='flex gap-3 lg:w-2/3'>
+                  <TextInput
+                    inputclass='h-full'
+                    name='objective'
                     value={objective}
-                    type='text'
-                    placeholder='Ingrese de a un objetivo aquí'
-                    className='px-1 focus:border focus:outline-none border border-slate-300 hover:border-aidam80 rounded-md w-1/2'
                     onChange={e => setObjective(e.target.value)}
+                    placeholder='Ingrese de a un objetivo aquí'
                   />
-                  <Button type='button' onClick={() => setObj(objective)} text='Agregar objetivo' />
+                  <Button type='button' onClick={() => setObj(objective)} text='Agregar' />
                 </div>
-                {therapeuticObjetives ? therapeuticObjetives.map(obj => <li>{obj}</li>) : ''}
+                <ul className='flex flex-col list-disc break-words'>
+                  {therapeuticObjetives ? therapeuticObjetives.map(obj => <li className='mb-2 text-ss lg:text-lb'>{obj}</li>) : ''}
+                </ul>
               </div>
             </div>
             <div className='flex flex-col gap-3'>
-              <h1 className='font-medium'>ESTRATEGIAS DE INTERVENCIÓN</h1>
-              <p>Los objetivos planteados se desarrollaran a partir de las siguientes estrategias de intervención:</p>
-              <div className='flex flex-col gap-2'>
-                <div className='flex gap-3'>
-                  <input
+              <h1 className='font-medium text-lb lg:text-ln'>ESTRATEGIAS DE INTERVENCIÓN</h1>
+              <p className='text-ss lg:text-lb'>Los objetivos planteados se desarrollaran a partir de las siguientes estrategias de intervención:</p>
+              <div className='flex flex-col gap-2 w-full'>
+                <div className='flex gap-3 lg:w-2/3'>
+                  <TextInput
+                    inputclass='h-full'
+                    name='strategy'
                     value={strategy}
-                    type='text'
-                    placeholder='Ingrese de a una estrategia aquí'
-                    className='px-1 focus:border focus:outline-none border border-slate-300 hover:border-aidam80 rounded-md w-1/2'
                     onChange={e => setStrategy(e.target.value)}
+                    placeholder='Ingrese de a una estrategia aquí'
                   />
-                  <Button type='button' onClick={() => setStrat(strategy)} text='Agregar estrategia' />
+                  <Button type='button' onClick={() => setStrat(strategy)} text='Agregar' />
                 </div>
-                {therapeuticStrategies ? therapeuticStrategies.map(strat => <li>{strat}</li>) : ''}
+                <div className='flex flex-col list-disc break-words'>
+                  {therapeuticStrategies ? therapeuticStrategies.map(strat => <li className='mb-2 text-ss lg:text-lb'>{strat}</li>) : ''}
+                </div>
               </div>
             </div>
             <div className='flex flex-col mt-20'>
-              <p>Firma:</p>
+              <p className='text-ss lg:text-lb'>Firma:</p>
               <div className='border w-fit rounded-md border-aidam80'>
                 <SignatureCanvas
                   ref={firmaRef}
