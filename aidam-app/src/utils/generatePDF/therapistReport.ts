@@ -1,7 +1,9 @@
 import { UseMutationResult, UseQueryResult } from '@tanstack/react-query';
 import SignatureCanvas from 'react-signature-canvas';
 import jsPDF from 'jspdf';
-import { checkPageBreak } from '../jsPDF';
+
+import { checkPageBreak, textArea } from '../jsPDF';
+import aidamHeader from '@/assets/images/aidamHeader-upscaled.png';
 
 export const generateTRPDF = (
   e: React.FormEvent<HTMLFormElement>,
@@ -32,7 +34,7 @@ export const generateTRPDF = (
     signatureData = firmaRef.current.toDataURL();
   }
 
-  let y = 10;
+  let y = 22;
 
   const doc = new jsPDF();
   doc.setFont('Helvetica');
@@ -45,15 +47,13 @@ export const generateTRPDF = (
     const pageHeight = doc.internal.pageSize.getHeight();
     if (y > pageHeight - lineHeight) {
       doc.addPage();
-      y = 10;
+      y = 22;
     }
   }
 
   function centerHeaders(text: string) {
     const headingText = text;
-    const headingFontWidth =
-      (doc.getStringUnitWidth(headingText) * headingFontSize) /
-      doc.internal.scaleFactor;
+    const headingFontWidth = (doc.getStringUnitWidth(headingText) * headingFontSize) / doc.internal.scaleFactor;
     const headingX = (doc.internal.pageSize.getWidth() - headingFontWidth) / 2;
     doc.setFont('Helvetica', 'bold');
     doc.setFontSize(headingFontSize);
@@ -65,11 +65,7 @@ export const generateTRPDF = (
   doc.setFontSize(10);
   doc.text(`FECHA: ${data.reportDate}`, 10, y);
   y += 10;
-  doc.text(
-    `PERÍODO: ${data.reportPeriod} a Diciembre ${data.currentYear}`,
-    10,
-    y
-  );
+  doc.text(`PERÍODO: ${data.reportPeriod} a Diciembre ${data.currentYear}`, 10, y);
   y += 10;
   doc.text(`ESPECIALIDAD: ${user?.profession}`, 10, y);
   y += 10;
@@ -80,11 +76,7 @@ export const generateTRPDF = (
     decoration: 'underline',
   });
   y += 10;
-  doc.text(
-    `NOMBRE Y APELLIDO: ${patient.data?.firstName} ${patient.data?.lastName}`,
-    10,
-    y
-  );
+  doc.text(`NOMBRE Y APELLIDO: ${patient.data?.firstName} ${patient.data?.lastName}`, 10, y);
   y += 10;
   doc.text(`FECHA DE NACIMIENTO: ${birthDate}`, 10, y);
   y += 10;
@@ -94,31 +86,26 @@ export const generateTRPDF = (
   y += 10;
   doc.text(`OBRA SOCIAL: ${patient.data?.socialwork}`, 10, y);
   doc.text(`AF: ${patient.data?.affiliateNumber}`, 125, y);
-  y += 20
+  y += 20;
   centerHeaders('INFORME DE EVUALUACIÓN TERAPÉUTICA');
   doc.setFont('Helvetica', 'bold');
   doc.setFontSize(10);
   y += 10;
-  doc.text(
-    'Se realiza la evaluación inicial del área, obteniendo los siguientes resultados:',
-    10,
-    y
-  );
+  doc.text('Se realiza la evaluación inicial del área, obteniendo los siguientes resultados:', 10, y);
   y += 6;
   const maxWidth = 180;
 
   doc.setFont('Helvetica', 'normal');
 
   const generalAspectsText =
-    'En relación al accionar del paciente y el encuadre, se puede puntualizar que: ' +
-    data.generalAspects;
+    'En relación al accionar del paciente y el encuadre, se puede puntualizar que: ' + data.generalAspects;
 
   const splitText = doc.splitTextToSize(generalAspectsText, maxWidth);
   splitText.forEach((line: string) => {
     doc.text(line, 10, y);
     y += lineHeight;
     checkPageBreakk();
-    y += 1
+    y += 1;
   });
 
   const generalObjectivesText =
@@ -130,18 +117,17 @@ export const generateTRPDF = (
     doc.text(line, 10, y);
     y += lineHeight;
     checkPageBreakk();
-    y += 1
+    y += 1;
   });
 
-  const generalFODAText =
-    'Se puede señalar  que el paciente: ' + data.generalFODA;
+  const generalFODAText = 'Se puede señalar  que el paciente: ' + data.generalFODA;
 
   const splitThirdText = doc.splitTextToSize(generalFODAText, maxWidth);
   splitThirdText.forEach((line: string) => {
     doc.text(line, 10, y);
     y += lineHeight;
     checkPageBreakk();
-    y += 1
+    y += 1;
   });
 
   y += 4;
@@ -157,7 +143,7 @@ export const generateTRPDF = (
   y += 10;
 
   doc.setFontSize(14);
-
+  y = checkPageBreak(doc, y, 30, true)
   doc.text('OBJETIVOS TERAPÉUTICOS', 10, y);
 
   y += 6;
@@ -165,22 +151,19 @@ export const generateTRPDF = (
   doc.setFont('Helvetica', 'normal');
   doc.setFontSize(10);
 
-  doc.text(
-    'En función de lo evaluado, se proponen los siguientes objetivos específicos de abordaje: ',
-    10,
-    y
-  );
+  doc.text('En función de lo evaluado, se proponen los siguientes objetivos específicos de abordaje: ', 10, y);
 
   y += 10;
   checkPageBreakk();
 
-  data.therapeuticObjetives.forEach((objective) => {
+  data.therapeuticObjetives.forEach(objective => {
     doc.setFont('Helvetica');
     doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
-    doc.text(`\u2022 ${objective}`, 10, y, { align: 'justify' });
+    // doc.text(`\u2022 ${objective}`, 10, y, { align: 'justify' });
+    y = textArea(doc, `\u2022 ${objective}`, 10, y, lineHeight, 1, undefined, undefined, true);
     checkPageBreakk();
-    y += spacing;
+    // y += spacing;
   });
 
   y += 10;
@@ -198,22 +181,19 @@ export const generateTRPDF = (
   doc.setFont('Helvetica', 'normal');
   doc.setFontSize(10);
 
-  doc.text(
-    'Los objetivos planteados se desarrollaran a partir de las siguientes estrategias de intervención: ',
-    10,
-    y
-  );
+  doc.text('Los objetivos planteados se desarrollaran a partir de las siguientes estrategias de intervención: ', 10, y);
   checkPageBreakk();
 
   y += 10;
 
-  data.therapeuticStrategies.forEach((strat) => {
+  data.therapeuticStrategies.forEach(strat => {
     doc.setFont('Helvetica');
     doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
-    doc.text(`\u2022 ${strat}`, 10, y, { align: 'justify' });
+    // doc.text(`\u2022 ${strat}`, 10, y, { align: 'justify' });
+    y = textArea(doc, `\u2022 ${strat}`, 10, y, lineHeight, 1, undefined, undefined, true);
     checkPageBreakk();
-    y += spacing;
+    // y += spacing;
   });
 
   y += 10;
@@ -221,20 +201,21 @@ export const generateTRPDF = (
   const signatureWidth = 70;
   const signatureHeight = 30;
   y = checkPageBreak(doc, y, 40);
-  if (signatureData)
-    doc.addImage(signatureData, 'PNG', 10, y, signatureWidth, signatureHeight);
+  if (signatureData) doc.addImage(signatureData, 'PNG', 10, y, signatureWidth, signatureHeight);
   doc.text(`${user?.firstName} ${user?.lastName}`, 125, y + 10);
 
   checkPageBreakk();
 
+  const pageCount = doc.internal.pages;
+  for (let i = 1; i <= pageCount.length; i++) {
+    doc.setPage(i);
+    doc.addImage(aidamHeader.src, 'PNG', 80, 3, 60, 10);
+  }
+
   const blobDoc = doc.output('blob');
-  const file = new File(
-    [blobDoc],
-    `${data.selectedPlanType}.pdf`,
-    {
-      type: 'application/pdf',
-    }
-  );
+  const file = new File([blobDoc], `${data.selectedPlanType}.pdf`, {
+    type: 'application/pdf',
+  });
   if (patient.data && user) {
     const formData = new FormData();
     formData.append('firstName', patient.data.firstName);

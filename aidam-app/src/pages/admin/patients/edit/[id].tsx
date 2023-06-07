@@ -75,7 +75,6 @@ const editPatient = ({ query }: MyPageProps) => {
     Object.keys(patientInfo).forEach(key => {
       formData.append(key, patientInfo[key]);
     });
-    console.log('PROFESSIONALSS', professionals)
     formData.append('professionals', JSON.stringify(professionals));
     certificate && formData.append('certificate', certificate as Blob);
 
