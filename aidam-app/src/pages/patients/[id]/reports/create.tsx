@@ -319,9 +319,9 @@ const create = ({ query }: MyPageProps) => {
                   />
                   <Button type='button' onClick={() => setStrat(strategy)} text='Agregar' />
                 </div>
-                <div className='flex flex-col list-disc break-words'>
+                <ul className='flex flex-col list-disc break-words'>
                   {therapeuticStrategies ? therapeuticStrategies.map(strat => <li className='mb-2 text-ss lg:text-lb'>{strat}</li>) : ''}
-                </div>
+                </ul>
               </div>
             </div>
             <div className='flex flex-col mt-20'>
