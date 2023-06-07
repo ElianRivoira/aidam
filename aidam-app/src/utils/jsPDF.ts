@@ -9,11 +9,11 @@ export function centerHeaders(text: string, doc: jsPDF, headingFontSize: number,
   doc.text(headingText, headingX, y);
 }
 
-export function checkPageBreak(doc: jsPDF, y: number, space?: number) {
+export function checkPageBreak(doc: jsPDF, y: number, space?: number, header?: boolean) {
   const pageHeight = doc.internal.pageSize.getHeight();
   if (y > pageHeight - (space ? space : 15)) {
     doc.addPage();
-    return (y = 10);
+    return header ? (y = 22) : (y = 10);
   } else return y;
 }
 
@@ -60,7 +60,8 @@ export function textArea(
   lineHeight: number,
   spacing?: number,
   fontSize?: number,
-  fontWeight?: string
+  fontWeight?: string,
+  header?: boolean,
 ): number {
   fontSize ? doc.setFontSize(fontSize) : doc.setFontSize(10);
   fontWeight ? doc.setFont('Helvetica', fontWeight) : doc.setFont('Helvetica', 'normal');
@@ -68,9 +69,9 @@ export function textArea(
   splittedText.forEach((line: string) => {
     doc.text(line, x, y);
     y += lineHeight;
-    y = checkPageBreak(doc, y);
+    header ? y = checkPageBreak(doc, y, undefined, true) : y = checkPageBreak(doc, y);
   });
   y += spacing ? spacing : 5;
-  y = checkPageBreak(doc, y);
+  header ? y = checkPageBreak(doc, y, undefined, true) : y = checkPageBreak(doc, y);
   return y;
 }
