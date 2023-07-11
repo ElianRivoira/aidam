@@ -152,7 +152,7 @@ const create = ({ query }: MyPageProps) => {
       <Head>
         <title>{`AIDAM - Generar informe`}</title>
       </Head>
-      <main className='flex flex-col items-center min-h-screen bg-background'>
+      <main className='flex flex-col items-center bg-background'>
         {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
         <div className='w-full md:px-14 px-4 pb-10 text-lh md:text-base'>
           <div className='flex justify-between items-center my-3 lg:my-7 w-full'>

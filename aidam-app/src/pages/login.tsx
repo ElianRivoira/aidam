@@ -49,7 +49,7 @@ const Login = () => {
       <Head>
         <title>AIDAM - Iniciar Sesión</title>
       </Head>
-      <main className='flex h-screen justify-center items-center'>
+      <main className='flex pt-[70px] justify-center items-center'>
         <div className='w-full shadow-xg mx-5 rounded-3xl p-3.5 pb-5 max-w-md flex flex-col items-center'>
           <form
             onSubmit={handleSubmit}

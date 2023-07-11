@@ -111,7 +111,7 @@ const Profile = ({ query }: MyPageProps) => {
             : `AIDAM - Perfil de ${patient.data?.firstName} ${patient.data?.lastName}`}
         </title>
       </Head>
-      <main className='flex flex-col items-center min-h-screen bg-background'>
+      <main className='flex flex-col items-center bg-background'>
         {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
         <div className='w-full lg:px-12 lg:mt-2.5'>
           <NavbarPatient />
@@ -201,7 +201,7 @@ const Profile = ({ query }: MyPageProps) => {
               </div>
               {useMediaQuery(1024) && <hr className='w-full border-black03 mb-5' />}
               <div className='flex flex-col px-2.5 mb-4 lg:w-1/3 lg:items-center'>
-                <div className='w-fit'>
+                <div className='w-fit max-w-[80%]'>
                   {!useMediaQuery(1024) && (
                     <>
                       <h1 className='font-semibold mb-11 text-xg'>DIAGNÓSTICO</h1>

@@ -68,7 +68,7 @@ const ResetPasswordPage = () => {
 
   return (
     <>
-      <div className='h-screen flex justify-center items-center'>
+      <div className='flex pt-[70px] justify-center items-center'>
         <div className='w-full shadow-xg rounded-3xl p-3.5 pb-5 mx-5 max-w-md flex flex-col items-center'>
           <p className='text-sm flex text-center'>
             Generá una nueva contraseña para:

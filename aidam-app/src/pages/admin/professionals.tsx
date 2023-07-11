@@ -53,7 +53,7 @@ const professionals = () => {
       <Head>
         <title>AIDAM Admin - Profesionales</title>
       </Head>
-      <main className='min-h-screen pt-[30px] bg-background'>
+      <main className='pt-[30px] bg-background'>
         {useMediaQuery(1024) ? (
           <>
             {/* <Navbar /> */}

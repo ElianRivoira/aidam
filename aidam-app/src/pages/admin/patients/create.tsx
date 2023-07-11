@@ -100,7 +100,7 @@ const create = () => {
       <Head>
         <title>AIDAM Admin - Nuevo paciente</title>
       </Head>
-      <main className='min-h-screen pt-6 lg:pt-12 bg-background'>
+      <main className='pt-6 lg:pt-12 bg-background'>
         {/* <NavbarDesktop /> */}
         <div className='w-full px-6 lg:px-12 mb-4'>
           <ArrowBack route='/patients' />

@@ -68,7 +68,7 @@ const Profile = ({ query }: MyPageProps) => {
   const filter = (patientsArr: Patient[], letters: string) => {
     let filteredPatients: Patient[];
     if (letters === '') {
-      setFilteredPatients(patientsArr);
+      setFilteredPatients(patientsArr.filter((patient: Patient) => patient.active));
       return;
     }
     if (letters.includes(' ')) {
@@ -76,7 +76,8 @@ const Profile = ({ query }: MyPageProps) => {
       filteredPatients = patientsArr.filter((patient: Patient) => {
         if (
           patient.firstName.toLowerCase().includes(firstName.toLowerCase()) &&
-          patient.lastName.toLowerCase().includes(lastName.toLowerCase())
+          patient.lastName.toLowerCase().includes(lastName.toLowerCase()) &&
+          patient.active
         )
           return true;
         else return false;
@@ -84,10 +85,11 @@ const Profile = ({ query }: MyPageProps) => {
     } else {
       filteredPatients = patientsArr.filter(
         (patient: Patient) =>
-          patient.firstName.toLowerCase().includes(letters.toLowerCase()) ||
-          patient.lastName.toLowerCase().includes(letters.toLowerCase())
+          (patient.firstName.toLowerCase().includes(letters.toLowerCase()) && patient.active) ||
+          (patient.lastName.toLowerCase().includes(letters.toLowerCase()) && patient.active)
       );
     }
+    console.log(filteredPatients);
     setFilteredPatients(filteredPatients);
   };
 
@@ -97,7 +99,7 @@ const Profile = ({ query }: MyPageProps) => {
   }, [open]);
 
   useEffect(() => {
-    setFilteredPatients(user.data?.patientsId);
+    setFilteredPatients(user.data?.patientsId.filter(patient => patient.active));
     if (user.data?.profileImg) {
       const path = `http://${process.env.NEXT_PUBLIC_DOWNLOAD}/users/profileimg/${user.data.profileImg}`;
       setPathImg(path);
@@ -115,21 +117,21 @@ const Profile = ({ query }: MyPageProps) => {
       <Head>
         <title>{loggedUser.data?.admin ? 'AIDAM Admin - Perfil' : 'AIDAM - Perfil'}</title>
       </Head>
-      <main className='min-h-screen flex flex-col items-center bg-background'>
+      <main className='flex flex-col items-center bg-background'>
         {useMediaQuery(1024) ? (
           <>
             {/* <Navbar /> */}
             <div className='px-3.5 w-full'>
               <div className='flex flex-col'>
-              <div className={`flex ${loggedUser.data?.admin ? 'justify-between' : 'justify-end'} mt-4`}>
-                {loggedUser.data?.admin && <ArrowBack route='/admin/professionals' />}
-                <Link
-                  href={`/profile/edit/${user.data?._id}`}
-                  className='self-end text-xs font-normal text-white px-4 py-2.5 mr-1 h-fit rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
-                >
-                  Editar
-                </Link>
-              </div>
+                <div className={`flex ${loggedUser.data?.admin ? 'justify-between' : 'justify-end'} mt-4`}>
+                  {loggedUser.data?.admin && <ArrowBack route='/admin/professionals' />}
+                  <Link
+                    href={`/profile/edit/${user.data?._id}`}
+                    className='self-end text-xs font-normal text-white px-4 py-2.5 mr-1 h-fit rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
+                  >
+                    Editar
+                  </Link>
+                </div>
                 <div className='flex flex-col items-center mx-auto'>
                   <div className='rounded-full w-[90px] h-[90px] overflow-hidden mb-2'>
                     {pathImg ? (
@@ -164,7 +166,7 @@ const Profile = ({ query }: MyPageProps) => {
                     {filteredPatients?.map((patient, index) => (
                       <li key={index} className='mb-4 hover:text-aidam70 transition-colors'>
                         <Link href={`/patients/${patient._id}/profile`}>
-                          {patient.firstName} {patient.lastName}
+                          {patient.lastName} {patient.firstName}
                         </Link>
                       </li>
                     ))}

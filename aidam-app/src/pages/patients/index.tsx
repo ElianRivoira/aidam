@@ -108,7 +108,7 @@ const patients = () => {
         </main>
       ) : (
         <>
-          <main className='min-h-screen pt-[30px] bg-background'>
+          <main className='pt-[30px] bg-background'>
             {/* <NavbarDesktop /> */}
             <div className='flex justify-end w-full'>
               <div className='w-[70%] flex justify-between items-center mr-12'>
