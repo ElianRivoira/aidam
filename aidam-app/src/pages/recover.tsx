@@ -4,11 +4,11 @@ import Image from 'next/image';
 import { useMutation } from '@tanstack/react-query';
 import { forgotPassword } from '@/services/users';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 import aidamTexto from '@/assets/icons/aidamTexto.svg';
 import Input from '@/components/form/Input';
 import Modal from '@/components/Modal';
-import Link from 'next/link';
 import Button from '@/components/Button';
 
 const Recover = () => {
@@ -39,9 +39,9 @@ const Recover = () => {
   return (
     <>
       <Head>
-        <title>AIDAM - Iniciar Sesión</title>
+        <title>AIDAM - Recuperar contraseña</title>
       </Head>
-      <div className='flex h-screen justify-center items-center'>
+      <div className='flex pt-[70px] justify-center items-center'>
         <div className='w-full shadow-xg mx-5 rounded-3xl p-3.5 pb-5 max-w-md flex flex-col items-center'>
           <form onSubmit={handleSubmit} className='flex w-full px-4 flex-col items-center'>
             <div>

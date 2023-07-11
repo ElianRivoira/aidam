@@ -78,7 +78,7 @@ const getLoggedUser = async (id: String, populate?: boolean) => {
 };
 
 const getAllUsers = async (id: String) => {
-  const users = await User.find({ userId: { $ne: id } });
+  const users = await User.find({ userId: { $ne: id } }).sort({ lastName: 1 });
   return users;
 };
 
@@ -132,7 +132,7 @@ const searchUser = async (name: string | INames): Promise<UserDoc[]> => {
   let findedUsers: UserDoc[];
 
   if (name === '*') {
-    findedUsers = await User.find({ status: true });
+    findedUsers = await User.find({ status: true }).sort({ lastName: 1 });
   } else if (typeof name === 'object') {
     const { firstName1, firstName2, lastName1, lastName2, id } = name;
     findedUsers = await User.find({
@@ -158,7 +158,7 @@ const searchUser = async (name: string | INames): Promise<UserDoc[]> => {
         },
         { status: true },
       ],
-    });
+    }).sort({ lastName: 1 });
   } else {
     findedUsers = await User.find({
       $and: [
@@ -170,7 +170,7 @@ const searchUser = async (name: string | INames): Promise<UserDoc[]> => {
         },
         { status: true },
       ],
-    });
+    }).sort({ lastName: 1 });
   }
   return findedUsers;
 };

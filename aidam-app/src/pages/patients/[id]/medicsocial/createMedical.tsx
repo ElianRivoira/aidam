@@ -365,7 +365,7 @@ const createMedical = ({ query }: MyPageProps) => {
       <Head>
         <title>{`AIDAM - Generar informe médico`}</title>
       </Head>
-      <main className='flex flex-col items-center pt-3 lg:pt-7 min-h-screen bg-background'>
+      <main className='flex flex-col items-center pt-3 lg:pt-7 bg-background'>
         {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
         <div className='w-full lg:px-12'>
           <div className='flex flex-col lgMax:px-4'>

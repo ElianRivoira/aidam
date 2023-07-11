@@ -146,6 +146,16 @@ patientSchema.statics.build = (attrs: PatientAttrs) => {
   return new Patient(attrs);
 };
 
+patientSchema.pre('save', async function (done) {
+  let lastName = this.get('lastName');
+  let firstName = this.get('firstName');
+  lastName = lastName.toUpperCase();
+  firstName = firstName.toUpperCase();
+  this.set('lastName', lastName);
+  this.set('firstName', firstName);
+  done();
+});
+
 const Patient = mongoose.model<PatientDoc, PatientModel>(
   'Patient',
   patientSchema

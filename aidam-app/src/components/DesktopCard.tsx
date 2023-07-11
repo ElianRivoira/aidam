@@ -39,9 +39,9 @@ const DesktopCard: React.FC<DesktopCardProps> = ({
           className='flex py-5 px-7 rounded-xl border border-grey2 mb-4 hover:bg-gray-100 hover:border-grey3 transition-colors bg-white'
         >
           <div className='w-[20%]'>
-            <div className='mb-4 text-sm text-grey8'>Nombre y Apellido</div>
+            <div className='mb-4 text-sm text-grey8'>Apellido y Nombre</div>
             <div className='font-semibold'>
-              {user.firstName + ' ' + user.lastName}
+              {user.lastName + ' ' + user.firstName}
             </div>
           </div>
           <div className='w-[20%]'>
@@ -71,9 +71,9 @@ const DesktopCard: React.FC<DesktopCardProps> = ({
           className='flex py-5 px-7 rounded-xl border border-grey2 mb-4 hover:bg-gray-100 hover:border-grey3 transition-colors bg-white'
         >
           <div className='w-1/4'>
-            <div className='mb-4 text-sm text-grey8'>Nombre y Apellido</div>
+            <div className='mb-4 text-sm text-grey8'>Apellido y Nombre</div>
             <div className='font-semibold'>
-              {patient.firstName + ' ' + patient.lastName}
+              {patient.lastName + ' ' + patient.firstName}
             </div>
           </div>
           <div className='w-1/4'>

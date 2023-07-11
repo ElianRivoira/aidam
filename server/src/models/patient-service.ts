@@ -3,17 +3,19 @@ import Patient, { PatientDoc, PatientAttrs } from './patient.model';
 
 const getAllPatients = async (): Promise<PatientDoc[]> => {
   const patients = Patient.find()
+    .sort({ lastName: 1 })
     .populate({
       path: 'observationsId',
       options: { populate: { path: 'professional' } },
     })
     .populate({ path: 'professionalsId' });
+  console.log(patients);
   return patients;
 };
 
 const getAllPatientsFromTherapist = async (professionalId: string): Promise<PatientDoc[]> => {
   try {
-    const patients = await Patient.find({ professionalsId: professionalId });
+    const patients = await Patient.find({ professionalsId: professionalId }).sort({ lastName: 1 });
     return patients;
   } catch (error) {
     console.error(error);
@@ -216,7 +218,8 @@ const searchPatient = async (name: string | INames): Promise<PatientDoc[]> => {
         path: 'observationsId',
         options: { populate: { path: 'professional' } },
       })
-      .populate({ path: 'professionalsId' });
+      .populate({ path: 'professionalsId' })
+      .sort({ lastName: 1 });
   } else if (typeof name === 'object') {
     const { firstName1, firstName2, lastName1, lastName2, id } = name;
     findedPatients = await Patient.find({
@@ -247,7 +250,8 @@ const searchPatient = async (name: string | INames): Promise<PatientDoc[]> => {
         path: 'observationsId',
         options: { populate: { path: 'professional' } },
       })
-      .populate({ path: 'professionalsId' });
+      .populate({ path: 'professionalsId' })
+      .sort({ lastName: 1 });
   } else {
     findedPatients = await Patient.find({
       $and: [
@@ -264,7 +268,8 @@ const searchPatient = async (name: string | INames): Promise<PatientDoc[]> => {
         path: 'observationsId',
         options: { populate: { path: 'professional' } },
       })
-      .populate({ path: 'professionalsId' });
+      .populate({ path: 'professionalsId' })
+      .sort({ lastName: 1 });
   }
   return findedPatients;
 };

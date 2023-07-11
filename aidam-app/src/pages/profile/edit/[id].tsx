@@ -137,7 +137,7 @@ const editUser = ({ query }: MyPageProps) => {
       <Head>
         <title>{loggedUser.data?.admin ? 'AIDAM Admin - Editar usuario' : 'AIDAM - Editar usuario'}</title>
       </Head>
-      <main className='min-h-screen pt-12 bg-background'>
+      <main className='pt-12 bg-background'>
         {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
         <div className='w-full lgMax:mt-4 px-12'>
           <div className='flex items-center w-full'>

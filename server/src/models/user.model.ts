@@ -76,9 +76,7 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: null,
   },
-  observationsId: [
-    { type: mongoose.Schema.Types.ObjectId, ref: 'Observation' },
-  ],
+  observationsId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Observation' }],
   patientsId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Patient' }],
   status: {
     type: Boolean,
@@ -86,7 +84,7 @@ const userSchema = new mongoose.Schema({
   },
   profileImg: {
     type: String,
-  }
+  },
 });
 
 userSchema.pre('save', async function (done) {
@@ -94,6 +92,12 @@ userSchema.pre('save', async function (done) {
     const hashed = await Password.toHash(this.get('password'));
     this.set('password', hashed);
   }
+  let lastName = this.get('lastName');
+  let firstName = this.get('firstName');
+  lastName = lastName.toUpperCase();
+  firstName = firstName.toUpperCase();
+  this.set('lastName', lastName);
+  this.set('firstName', firstName);
   done();
 });
 

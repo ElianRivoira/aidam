@@ -135,7 +135,7 @@ const Observations = ({ query }: MyPageProps) => {
       <Head>
         <title>{`AIDAM - Observaciones de ${patient.data?.firstName} ${patient.data?.lastName}`}</title>
       </Head>
-      <main className='flex flex-col items-center min-h-screen bg-background'>
+      <main className='flex flex-col items-center bg-background'>
         {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
         <div className='w-full lg:px-12 lg:mt-2.5'>
           <NavbarPatient />

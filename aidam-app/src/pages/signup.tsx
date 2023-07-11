@@ -78,7 +78,7 @@ const Signup = () => {
       <Head>
         <title>AIDAM - Registro</title>
       </Head>
-      <div className='h-screen flex justify-center items-center'>
+      <div className='pt-[70px] flex justify-center items-center'>
         <div className='w-full shadow-xg rounded-3xl p-3.5 pb-5 mx-5 max-w-md flex flex-col items-center'>
           <Image src={aidamTexto} alt='aidam' className='mb-8' />
           <form
