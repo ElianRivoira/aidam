@@ -37,7 +37,6 @@ app.use(
     secure: false, // Set to true if using HTTPS
     httpOnly: false,
     sameSite: 'strict',
-    domain: 'http://aidam.online'
   })
 );
 app.use(morgan('dev'));
@@ -49,6 +48,10 @@ app.use('/users/profileimg', validateLoggedUser, express.static(path.join(__dirn
 app.use('/patients/reports', validateLoggedUser, express.static(path.join(__dirname, '../reports')));
 app.use('/patients/reports/medical', validateLoggedUser, express.static(path.join(__dirname, '../medicalReports')));
 app.use('/patients/reports/social', validateLoggedUser, express.static(path.join(__dirname, '../socialReports')));
+
+app.use('/healthcheck', (req, res) => {
+  res.send(200);
+});
 
 app.use('/api', apiRouter);
 
