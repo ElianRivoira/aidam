@@ -50,7 +50,7 @@ app.use('/patients/reports/medical', validateLoggedUser, express.static(path.joi
 app.use('/patients/reports/social', validateLoggedUser, express.static(path.join(__dirname, '../socialReports')));
 
 app.use('/healthcheck', (req, res) => {
-  res.send(200);
+  res.sendStatus(200);
 });
 
 app.use('/api', apiRouter);
