@@ -16,7 +16,7 @@ const MobileCard: React.FC<CardProps> = ({ patient, user }) => {
           <div>
             <Image src={aidamLogo} alt='aidam' className='w-24 h-24' />
           </div>
-          <div className='font-semibold flex text-center'>{patient.firstName} {patient.lastName}</div>
+          <div className='font-semibold flex text-center'>{patient.lastName} {patient.firstName}</div>
         </div>
         <div className='flex flex-col items-center justify-center w-1/2'>
           <div className='text-center'>Otros terapeutas</div>
