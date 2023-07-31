@@ -26,11 +26,11 @@ const MobileCard: React.FC<CardProps> = ({ patient, user }) => {
               if(therapist._id === user._id) return null;
               if(therapist.firstName.includes(' ')){
                 return (
-                  <li key={index}>{therapist.firstName} {therapist.lastName}</li>
+                  <li key={index}>{therapist.lastName} {therapist.firstName}</li>
                 )
               }
               else return (
-                <li key={index}>{therapist.firstName} {therapist.lastName}</li>
+                <li key={index}>{therapist.lastName} {therapist.firstName}</li>
               )
               })}
           </div>

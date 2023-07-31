@@ -23,10 +23,10 @@ const MobileUsersCard: React.FC<CardProps> = ({ user }) => {
       <div className='flex mt-2 mb-1 '>
         <div className='w-1/2'>
           <div className='text-xs text-grey8 font-medium'>
-            Nombre y Apellido
+            Apellido y Nombre
           </div>
           <div className='text-sm'>
-            {user.firstName + ' ' + user.lastName}
+            {user.lastName + ' ' + user.firstName}
           </div>
         </div>
         <div className='w-1/2'>
