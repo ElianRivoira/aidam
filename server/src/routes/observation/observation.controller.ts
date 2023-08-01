@@ -22,8 +22,6 @@ const httpPostObservation = async (req: Request, res: Response) => {
       const loggedUser = await userService.getLoggedUser(user.id);
       if (loggedUser) {
         if (!loggedUser.patientsId.includes(patientId) && loggedUser.admin === false) {
-          console.log('PACIENTES USUARIO', loggedUser.patientsId);
-          console.log('PACIENTE ID', patientId);
           throw new BadRequestError('No posee permisos para crear una observación en este paciente');
         }
       }

@@ -4,7 +4,6 @@ export const postObservation = async (
   data: PostObservation
 ): Promise<Observation> => {
   const obs = await api.post('/observations', data);
-  console.log("asdada", data)
   return obs.data;
 };
 

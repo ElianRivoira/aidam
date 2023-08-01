@@ -126,7 +126,6 @@ const TagInput: React.FC<TagInputProps> = ({ tagged, setTagged, patient }) => {
             >
               <button
                 onClick={() => {
-                  console.log('PROFF', prof);
                   patient && unassignProfessional.mutate({ id: patient._id, prof });
                 }}
                 className='flex items-center mr-1'

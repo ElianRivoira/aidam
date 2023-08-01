@@ -14,7 +14,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       {!hasCookie('session') ? null : useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />}
-      <div className={`${!hasCookie('session') ? '' : 'pt-[70px] lg:pt-[80px]'}`}>
+      <div className={`${!hasCookie('session') ? '' : 'pt-[70px] lg:pt-[80px] min-h-screen bg-background'}`}>
         <Component {...pageProps} />
       </div>
       <ReactQueryDevtools />

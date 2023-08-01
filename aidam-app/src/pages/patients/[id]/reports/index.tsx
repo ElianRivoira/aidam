@@ -63,7 +63,6 @@ const Reports = ({ query }: MyPageProps) => {
     },
     onSuccess: patient => {
       filterReports(actualDate, patient);
-      console.log(patient)
     },
   });
 
@@ -195,7 +194,6 @@ const Reports = ({ query }: MyPageProps) => {
                     filteredReports.length ? (
                       <div className='w-full px-4'>
                         {filteredReports.map(report => {
-                          console.log('MAP', report)
                           return (
                           <ReportItem
                             index={report}

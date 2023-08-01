@@ -42,6 +42,7 @@ const Observations = ({ query }: MyPageProps) => {
     keepPreviousData: true,
     queryFn: () => getOnePatient(query.id),
     retry: 1,
+    refetchOnWindowFocus: false,
     onError: error => {
       setType(2);
       setErrors((error as any).response.data.errors);
@@ -49,7 +50,8 @@ const Observations = ({ query }: MyPageProps) => {
       setCookieError(true);
     },
     onSuccess: patient => {
-      filterObs(actualDate, patient);
+      if(searchDate) filterObs(searchDate, patient);
+      else filterObs(actualDate, patient);
     },
   });
 

@@ -89,7 +89,6 @@ const Profile = ({ query }: MyPageProps) => {
           (patient.lastName.toLowerCase().includes(letters.toLowerCase()) && patient.active)
       );
     }
-    console.log(filteredPatients);
     setFilteredPatients(filteredPatients);
   };
 

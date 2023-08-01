@@ -9,6 +9,7 @@ import INames from '../interfaces/INames';
 import { sendPasswordChangerEmail } from '../utils/emails';
 
 import dotenv from 'dotenv';
+import { searchUsers } from '../utils/searchUsers';
 dotenv.config();
 
 const signUp = async (data: UserAttrs): Promise<UserDoc> => {
@@ -160,22 +161,19 @@ const searchUser = async (name: string | INames): Promise<UserDoc[]> => {
       ],
     }).sort({ lastName: 1 });
   } else {
-    findedUsers = await User.find({
-      $and: [
-        {
-          $or: [
-            { firstName: { $regex: `.*${name}.*`, $options: 'i' } },
-            { lastName: { $regex: `.*${name}.*`, $options: 'i' } },
-          ],
-        },
-        { status: true },
-      ],
-    }).sort({ lastName: 1 });
+    const splittedName = name.split(' ');
+    findedUsers = await searchUsers(splittedName.length, splittedName);
   }
   return findedUsers;
 };
 
-const putUser = async (id: string, data?: object, patientId?: string, pull?: boolean, profileImg?: string) => {
+const putUser = async (
+  id: string,
+  data?: object,
+  patientId?: string,
+  pull?: boolean,
+  profileImg?: string
+) => {
   const findAndUpdate = () => {
     if (pull) {
       return User.findByIdAndUpdate(

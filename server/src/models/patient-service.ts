@@ -1,4 +1,5 @@
 import INames from '../interfaces/INames';
+import { searchPatients } from '../utils/searchPatient';
 import Patient, { PatientDoc, PatientAttrs } from './patient.model';
 
 const getAllPatients = async (): Promise<PatientDoc[]> => {
@@ -9,7 +10,6 @@ const getAllPatients = async (): Promise<PatientDoc[]> => {
       options: { populate: { path: 'professional' } },
     })
     .populate({ path: 'professionalsId' });
-  console.log(patients);
   return patients;
 };
 
@@ -253,23 +253,8 @@ const searchPatient = async (name: string | INames): Promise<PatientDoc[]> => {
       .populate({ path: 'professionalsId' })
       .sort({ lastName: 1 });
   } else {
-    findedPatients = await Patient.find({
-      $and: [
-        {
-          $or: [
-            { firstName: { $regex: `.*${name}.*`, $options: 'i' } },
-            { lastName: { $regex: `.*${name}.*`, $options: 'i' } },
-          ],
-        },
-        { active: true },
-      ],
-    })
-      .populate({
-        path: 'observationsId',
-        options: { populate: { path: 'professional' } },
-      })
-      .populate({ path: 'professionalsId' })
-      .sort({ lastName: 1 });
+    const splittedName = name.split(' ');
+    findedPatients = await searchPatients(splittedName.length, splittedName);
   }
   return findedPatients;
 };
