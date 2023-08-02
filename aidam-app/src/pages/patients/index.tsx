@@ -64,10 +64,6 @@ const patients = () => {
           return [...prevPatients, ...findedPatients];
         });
       }
-      console.log(
-        'patients page: ',
-        optionalPageNumber ? optionalPageNumber : resetPatients ? 0 : pageNumber
-      );
 
       setIsLoading(false);
     } catch (error) {
@@ -90,12 +86,10 @@ const patients = () => {
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver(async entries => {
       if (entries[0].isIntersecting) {
-        console.log('VISIBLE');
         if (!hasMore) return;
         else {
           await getPatients(search, pageNumber + 1);
           setPageNumber(prevState => {
-            console.log('pageNumber actualizado', prevState, ' + ', 1);
             return prevState + 1;
           });
         }
@@ -105,7 +99,6 @@ const patients = () => {
   };
 
   useEffect(() => {
-    console.log('ref en index', lastPatientRef.current);
     setObserver(lastPatientRef.current);
   }, [pageNumber, lastPatientRef, patientLengthVariation]);
 

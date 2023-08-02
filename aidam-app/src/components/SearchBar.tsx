@@ -54,7 +54,6 @@ const SearchBar: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    console.log('ref en searchbar', lastPatientRef);
     setObserver && setObserver(lastPatientRef);
   }, [lastPatientRef, pageNumber]);
 
