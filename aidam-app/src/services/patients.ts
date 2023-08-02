@@ -43,7 +43,7 @@ export const unassignProf = async ({
 };
 
 export const searchPatients = async (name: string, page?: number): Promise<{findedPatients: Patient[], hasMore: boolean}> => {
-  const res = await api.get(`/patients/search/${name}/${page}`);
+  const res = await api.get(`/patients/search/${name}/${page ? page : 0}`);
   return res.data;
 };
 
