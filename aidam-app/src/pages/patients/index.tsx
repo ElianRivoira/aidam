@@ -108,32 +108,33 @@ const patients = () => {
         <title>{loggedUser.data?.admin ? 'AIDAM Admin - Pacientes' : 'AIDAM - Pacientes'}</title>
       </Head>
       {useMediaQuery(1024) ? (
-        <main className='bg-background pt-[30px]'>
-          {/* <Navbar /> */}
-          <div className='mb-10 flex w-full justify-between items-center gap-3 px-3.5'>
-            <SearchBar
-              search={search}
-              setSearch={setSearch}
-              getPatients={getPatients}
-              width={loggedUser.data?.admin ? '' : 'w-full'}
-              setObserver={setObserver}
-              lastPatientRef={lastPatientRef.current}
-              pageNumber={pageNumber}
-            />
-            {loggedUser.data?.admin ? (
-              <div className='w-1/3 flex justify-center'>
-                <Link
-                  href={'/admin/patients/create'}
-                  className='h-10 bg-aidam80 hover:bg-aidam70 transition-colors text-lm lgMax:text-sm lgMax:font-normal text-white font-medium rounded-md flex px-2 text-center justify-center w-fit items-center'
-                >
-                  Nuevo paciente
-                </Link>
-              </div>
-            ) : (
-              <></>
-            )}
+        <main className='bg-background pt-[70px]'>
+          <div className='flex w-full h-[80px] pb-3 justify-center items-end gap-3 px-3.5 fixed z-10 bg-background top-[70px]'>
+            <div className='flex justify-between w-full max-w-[550px] gap-4 items-center'>
+              <SearchBar
+                search={search}
+                setSearch={setSearch}
+                getPatients={getPatients}
+                width='w-full'
+                setObserver={setObserver}
+                lastPatientRef={lastPatientRef.current}
+                pageNumber={pageNumber}
+              />
+              {loggedUser.data?.admin ? (
+                <div className='w-fit min-w-max'>
+                  <Link
+                    href={'/admin/patients/create'}
+                    className='h-10 bg-aidam80 hover:bg-aidam70 transition-colors text-lm lgMax:text-sm lgMax:font-normal text-white font-medium rounded-md flex px-2 text-center justify-center w-fit items-center'
+                  >
+                    Nuevo paciente
+                  </Link>
+                </div>
+              ) : (
+                <></>
+              )}
+            </div>
           </div>
-          <div className='m-3.5 flex flex-col items-center'>
+          <div className='m-3.5 flex flex-col items-center mt-10'>
             {loggedUser.data?.admin
               ? // si es admin
                 patients.map((patient, index) => {
@@ -178,9 +179,9 @@ const patients = () => {
         </main>
       ) : (
         <>
-          <main className='pt-[30px] bg-background'>
-            <div className='flex justify-end w-full'>
-              <div className='w-[70%] flex justify-between items-center mr-12'>
+          <main className='pt-[80px] bg-background'>
+            <div className='flex justify-end items-end pb-3 w-full h-[80px] fixed z-10 lg:top-[80px] bg-background'>
+              <div className='w-[70%] h-fit flex justify-between items-center mr-12'>
                 <SearchBar
                   search={search}
                   setSearch={setSearch}
@@ -201,7 +202,7 @@ const patients = () => {
                 )}
               </div>
             </div>
-            <div className='mx-12 mt-14'>
+            <div className='mx-12 mt-10'>
               {loggedUser.data?.admin
                 ? // si es admin
                   patients.map((patient, index) => {
