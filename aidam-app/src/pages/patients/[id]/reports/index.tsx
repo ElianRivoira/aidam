@@ -21,7 +21,6 @@ const Reports = ({ query }: MyPageProps) => {
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(0);
   const [errors, setErrors] = useState<CustomError[]>([]);
-  // const [search, setSearch] = useState('');
   const [reports, setReports] = useState<string[]>([]);
   const [openReportModal, setOpenReportModal] = useState(false);
   const [newReport, setNewReport] = useState<File | null>(null);

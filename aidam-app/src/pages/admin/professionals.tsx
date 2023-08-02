@@ -54,7 +54,6 @@ const professionals = () => {
       <main className='pt-[30px] bg-background'>
         {useMediaQuery(1024) ? (
           <>
-            {/* <Navbar /> */}
             <div className='px-3.5 mb-10 flex justify-between w-full'>
               <SearchBar
                 search={search}

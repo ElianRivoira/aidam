@@ -117,7 +117,6 @@ const Profile = ({ query }: MyPageProps) => {
       <main className='flex flex-col items-center bg-background'>
         {useMediaQuery(1024) ? (
           <>
-            {/* <Navbar /> */}
             <div className='px-3.5 w-full'>
               <div className='flex flex-col'>
                 <div className={`flex ${loggedUser.data?.admin ? 'justify-between' : 'justify-end'} mt-4`}>
