@@ -212,7 +212,6 @@ const Observations = ({ query }: MyPageProps) => {
                             onClick={() => handleOpenObs(obs._id)}
                             observation={obs}
                             key={obs._id}
-                            patientId={patient.data._id}
                           />
                         );
                       })

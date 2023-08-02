@@ -99,7 +99,7 @@ const TagInputPatients: React.FC<TagInputProps> = ({ tagged, setTagged, user }) 
       />
       {searchText && (
         <div className='absolute z-20 border bg-white rounded-md flex flex-col gap-2 w-full'>
-          {patients.data?.map((patient, index) => (
+          {patients.data?.findedPatients.map((patient, index) => (
             <div
               key={index}
               onClick={() => {
