@@ -14,8 +14,13 @@ import Menu from './Menu';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import { getLoggedUser } from '@/services/users';
 import Modal from '../Modal';
+import { checkPathname } from '@/utils/checkPathname';
 
-const Navbar = () => {
+interface Props {
+  mobile: boolean;
+}
+
+const Navbar: React.FC<Props> = ({ mobile }) => {
   const [isHovered, setIsHovered] = useState(false);
   const regExp = /\/profile\/[a-z0-9]+/i;
   const [isOpen, setIsOpen] = useState(false);
@@ -28,6 +33,7 @@ const Navbar = () => {
   const user = useQuery({
     queryKey: ['loggedUser'],
     retry: 1,
+    enabled: checkPathname(router.pathname),
     queryFn: getLoggedUser,
     onError: error => {
       setType(2);
@@ -46,11 +52,11 @@ const Navbar = () => {
     if (type === 2 && !open && cookieError) router.push('/login');
   }, [open]);
 
-  if (!hasCookie('session')) return <></>;
+  if (!checkPathname(router.pathname)) return <></>;
 
   return (
     <>
-      {useMediaQuery(1024) ? (
+      {mobile ? (
         <nav className={`h-17.5 w-full shadow-xm flex justify-between bg-white fixed z-20 px-3`}>
           <button onClick={() => setIsOpen(true)}>
             <Image src={hamburMenu} alt='menu' />
