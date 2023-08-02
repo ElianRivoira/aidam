@@ -3,7 +3,6 @@ import Head from 'next/head';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 
-// import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import Input from '@/components/form/Input';
 import ArrowBack from '@/components/ArrowBack';
 import TagInputProf from '@/components/form/TagInputProfessionals';
@@ -101,7 +100,6 @@ const create = () => {
         <title>AIDAM Admin - Nuevo paciente</title>
       </Head>
       <main className='pt-6 lg:pt-12 bg-background'>
-        {/* <NavbarDesktop /> */}
         <div className='w-full px-6 lg:px-12 mb-4'>
           <ArrowBack route='/patients' />
           <h1 className='text-center text-xl4 font-semibold lgMax:mt-3'>NUEVO PACIENTE</h1>

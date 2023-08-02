@@ -15,8 +15,6 @@ import phoneIcon from '@/assets/icons/phoneIcon.svg';
 import emailIcon from '@/assets/icons/emailIcon.svg';
 import cardIcon from '@/assets/icons/cardIcon.svg';
 import scheduleIcon from '@/assets/icons/scheduleIcon.svg';
-// import Navbar from '@/components/navbar/Navbar';
-// import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import NavbarPatient from '@/components/profile/patient/NavbarPatient';
 import { deleteCertificate, getOnePatient } from '@/services/patients';
 import useMediaQuery from '@/hooks/useMediaQuery';
@@ -112,7 +110,6 @@ const Profile = ({ query }: MyPageProps) => {
         </title>
       </Head>
       <main className='flex flex-col items-center bg-background'>
-        {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
         <div className='w-full lg:px-12 lg:mt-2.5'>
           <NavbarPatient />
           <div className='flex flex-col lgMax:px-3.5'>

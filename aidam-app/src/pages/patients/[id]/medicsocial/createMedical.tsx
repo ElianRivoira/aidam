@@ -5,8 +5,6 @@ import { NextPageContext } from 'next';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import SignatureCanvas from 'react-signature-canvas';
 
-// import Navbar from '@/components/navbar/Navbar';
-// import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import { getOnePatient, uploadMedicalReport } from '@/services/patients';
 import { TextArea, DateInput, RadioInput, TextInput } from '@/components/reports/Inputs';
@@ -366,7 +364,6 @@ const createMedical = ({ query }: MyPageProps) => {
         <title>{`AIDAM - Generar informe médico`}</title>
       </Head>
       <main className='flex flex-col items-center pt-3 lg:pt-7 bg-background'>
-        {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
         <div className='w-full lg:px-12'>
           <div className='flex flex-col lgMax:px-4'>
             <div className='flex justify-between items-center mb-3 lg:mb-7 w-full'>

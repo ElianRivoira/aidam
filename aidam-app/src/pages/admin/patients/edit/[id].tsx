@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 import { NextPageContext } from 'next';
 import { hasCookie } from 'cookies-next';
 
-// import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import Input from '@/components/form/Input';
 import ArrowBack from '@/components/ArrowBack';
 import { getOnePatient, putPatient } from '@/services/patients';
@@ -129,7 +128,6 @@ const editPatient = ({ query }: MyPageProps) => {
         <title>AIDAM Admin - Editar paciente</title>
       </Head>
       <main className='pt-6 lg:pt-12 bg-background'>
-        {/* <NavbarDesktop /> */}
         <div className='w-full px-6 lg:px-12 mb-4'>
           <ArrowBack route={`/patients/${query.id}/profile`} />
           <h1 className='text-center text-xl4 font-semibold lgMax:mt-3'>EDITAR PACIENTE</h1>

@@ -10,9 +10,6 @@ import { getOnePatient, uploadReport } from '@/services/patients';
 import { getLoggedUser } from '@/services/users';
 import Modal from '@/components/Modal';
 import Button from '@/components/Button';
-import useMediaQuery from '@/hooks/useMediaQuery';
-// import Navbar from '@/components/navbar/Navbar';
-// import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import ArrowBack from '@/components/ArrowBack';
 import { DateInput, TextArea, TextInput } from '@/components/reports/Inputs';
 import { setCanvasHeight, setCanvasWidth } from '@/utils/canvas';
@@ -153,7 +150,6 @@ const create = ({ query }: MyPageProps) => {
         <title>{`AIDAM - Generar informe`}</title>
       </Head>
       <main className='flex flex-col items-center bg-background'>
-        {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
         <div className='w-full md:px-14 px-4 pb-10 text-lh md:text-base'>
           <div className='flex justify-between items-center my-3 lg:my-7 w-full'>
             <div className='flex lgMax:self-start items-center lg:gap-8 gap-4'>

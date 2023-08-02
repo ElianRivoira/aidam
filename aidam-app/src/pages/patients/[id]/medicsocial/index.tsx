@@ -205,7 +205,6 @@ const medicSocial = ({ query }: MyPageProps) => {
         <title>{`AIDAM - Informes médicos de ${patient.data?.firstName} ${patient.data?.lastName}`}</title>
       </Head>
       <main className='flex flex-col items-center bg-background'>
-        {/* {useMediaQuery(1024) ? <Navbar /> : <NavbarDesktop />} */}
         <div className='w-full lg:px-12 lg:mt-2.5'>
           <NavbarPatient />
           <h2 className='text-lm font-medium text-start flex items-center mt-2 lgMax:px-4'>

@@ -3,8 +3,6 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
 
-// import NavbarDesktop from '@/components/navbar/NavbarDesktop';
-// import Navbar from '@/components/navbar/Navbar';
 import SearchBar from '@/components/SearchBar';
 import DesktopCard from '@/components/DesktopCard';
 import { getAllUsers } from '@/services/users';
@@ -58,16 +56,25 @@ const professionals = () => {
           <>
             {/* <Navbar /> */}
             <div className='px-3.5 mb-10 flex justify-between w-full'>
-              <SearchBar search={search} setSearch={setSearch} setActiveUsers={setActiveUsers} setIsLoading={setIsLoading} />
+              <SearchBar
+                search={search}
+                setSearch={setSearch}
+                setActiveUsers={setActiveUsers}
+                setIsLoading={setIsLoading}
+              />
               <Button onClick={toggleModal} text='Dar de alta' classname='px-3 h-10' />
             </div>
           </>
         ) : (
           <>
-            {/* <NavbarDesktop />{' '} */}
             <div className='flex justify-end w-full mb-14'>
               <div className='w-[70%] flex justify-between items-center mr-12'>
-                <SearchBar search={search} setSearch={setSearch} setActiveUsers={setActiveUsers} setIsLoading={setIsLoading} />
+                <SearchBar
+                  search={search}
+                  setSearch={setSearch}
+                  setActiveUsers={setActiveUsers}
+                  setIsLoading={setIsLoading}
+                />
                 <Button onClick={toggleModal} text='Dar de alta' classname='px-4 h-10' />
               </div>
             </div>

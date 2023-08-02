@@ -8,8 +8,6 @@ import { hasCookie } from 'cookies-next';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import useMediaQuery from '@/hooks/useMediaQuery';
-// import Navbar from '@/components/navbar/Navbar';
-// import NavbarDesktop from '@/components/navbar/NavbarDesktop';
 import Data from '@/components/profile/Data';
 import profileImage from '@/assets/icons/profileImage.svg';
 import professionLogo from '@/assets/icons/professionLogo.svg';
@@ -182,7 +180,6 @@ const Profile = ({ query }: MyPageProps) => {
           </>
         ) : (
           <>
-            {/* <NavbarDesktop /> */}
             <div className='w-full px-12'>
               <div className={`flex mt-9 ${loggedUser.data?.admin ? 'justify-between' : 'justify-end'} items-center`}>
                 {loggedUser.data?.admin && <ArrowBack route='/admin/professionals' />}
