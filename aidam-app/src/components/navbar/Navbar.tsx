@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { deleteCookie } from 'cookies-next';
+import { deleteCookie, hasCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
 
@@ -45,6 +45,8 @@ const Navbar = () => {
   useEffect(() => {
     if (type === 2 && !open && cookieError) router.push('/login');
   }, [open]);
+
+  if (!hasCookie('session')) return <></>;
 
   return (
     <>
