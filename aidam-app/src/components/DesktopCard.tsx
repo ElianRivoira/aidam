@@ -8,16 +8,16 @@ interface DesktopCardProps {
   user?: User;
   patient?: Patient;
   observation?: Observation;
-  patientId?: string;
   onClick?: () => void;
+  reference?: React.RefObject<HTMLDivElement>;
 }
 
 const DesktopCard: React.FC<DesktopCardProps> = ({
   user,
   patient,
   observation,
-  patientId,
   onClick,
+  reference,
 }) => {
   const [lastConnectionString, setLastConnectionString] = useState('');
   const [obsDate, setObsDate] = useState('');
@@ -38,7 +38,7 @@ const DesktopCard: React.FC<DesktopCardProps> = ({
           href={`/profile/${user._id}`}
           className='flex py-5 px-7 rounded-xl border border-grey2 mb-4 hover:bg-gray-100 hover:border-grey3 transition-colors bg-white'
         >
-          <div className='w-[20%]'>
+          <div className='w-[20%]' ref={reference}>
             <div className='mb-4 text-sm text-grey8'>Apellido y Nombre</div>
             <div className='font-semibold'>
               {user.lastName + ' ' + user.firstName}
@@ -70,7 +70,7 @@ const DesktopCard: React.FC<DesktopCardProps> = ({
           href={`/patients/${patient._id}/profile`}
           className='flex py-5 px-7 rounded-xl border border-grey2 mb-4 hover:bg-gray-100 hover:border-grey3 transition-colors bg-white'
         >
-          <div className='w-1/4'>
+          <div className='w-1/4' ref={reference}>
             <div className='mb-4 text-sm text-grey8'>Apellido y Nombre</div>
             <div className='font-semibold'>
               {patient.lastName + ' ' + patient.firstName}

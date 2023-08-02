@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 import { searchUser } from '@/services/users';
@@ -11,10 +11,15 @@ interface Props {
   setSearch: (e: string) => void;
   setActiveUsers?: React.Dispatch<React.SetStateAction<User[] | undefined>>;
   width?: string;
-  // searchFn?: (search: string, reportsType?: string) => void;
-  getPatients?: (search: string) => Promise<void>;
-  // reportsType?: string;
+  getPatients?: (
+    search: string,
+    optionalPageNumber?: number,
+    resetPatients?: boolean
+  ) => Promise<void>;
   setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>;
+  setObserver?: (node: any) => void;
+  lastPatientRef?: HTMLDivElement | null;
+  pageNumber?: number;
 }
 
 const SearchBar: React.FC<Props> = ({
@@ -22,10 +27,11 @@ const SearchBar: React.FC<Props> = ({
   setSearch,
   setActiveUsers,
   width,
-  // searchFn,
   getPatients,
-  // reportsType,
   setIsLoading,
+  setObserver,
+  lastPatientRef,
+  pageNumber,
 }) => {
   const [error, setError] = useState<string | null>(null);
 
@@ -43,24 +49,20 @@ const SearchBar: React.FC<Props> = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // if (searchFn) {
-    //   searchFn(search, reportsType);
-    // } else {
-    if (!search) {
-      getPatients && getPatients('*');
-      await fetchSearchedUsers('*');
-    } else {
-      getPatients && getPatients(search);
-      await fetchSearchedUsers(search);
-    }
-    // }
+    getPatients && (await getPatients(search ? search : '*', 0, true));
+    setActiveUsers && (await fetchSearchedUsers(search ? search : '*'));
   };
+
+  useEffect(() => {
+    console.log('ref en searchbar', lastPatientRef);
+    setObserver && setObserver(lastPatientRef);
+  }, [lastPatientRef, pageNumber]);
 
   const clearButton = async () => {
     setSearch('');
-    // searchFn && searchFn('', reportsType);
-    getPatients && getPatients('*');
-    await fetchSearchedUsers('*');
+
+    getPatients && (await getPatients('*', 0, true));
+    setActiveUsers && (await fetchSearchedUsers('*'));
   };
 
   return (

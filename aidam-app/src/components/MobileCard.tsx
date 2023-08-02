@@ -6,11 +6,12 @@ import aidamLogo from '../assets/icons/aidamLogo.svg';
 interface CardProps {
   patient: Patient;
   user: User;
+  reference?: React.RefObject<HTMLDivElement>;
 }
 
-const MobileCard: React.FC<CardProps> = ({ patient, user }) => {
+const MobileCard: React.FC<CardProps> = ({ patient, user, reference }) => {
   return (
-    <div className='flex w-full min-h-[168px] rounded-2xl px-3 py-2 shadow-card max-w-md mb-4'>
+    <div ref={reference} className='flex w-full min-h-[168px] rounded-2xl px-3 py-2 shadow-card max-w-md mb-4'>
       <Link href={`/patients/${patient._id}/profile`} className='flex w-full'>
         <div className='flex flex-col w-1/2 items-center justify-center'>
           <div>

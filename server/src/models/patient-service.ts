@@ -1,3 +1,4 @@
+import { ServerError } from '../errors/server-error';
 import INames from '../interfaces/INames';
 import { searchPatients } from '../utils/searchPatient';
 import Patient, { PatientDoc, PatientAttrs } from './patient.model';
@@ -210,10 +211,19 @@ const deletePatient = async (id: string): Promise<PatientDoc | null> => {
   return patient;
 };
 
-const searchPatient = async (name: string | INames): Promise<PatientDoc[]> => {
-  let findedPatients: PatientDoc[];
+const searchPatient = async (
+  name: string | INames,
+  page?: number
+): Promise<{ findedPatients: PatientDoc[]; hasMore: boolean }> => {
+  let findedPatients: PatientDoc[] = [];
+  const limit = 10;
+  let count = 0;
+
   if (name === '*') {
+    count = await Patient.countDocuments({ active: true });
     findedPatients = await Patient.find({ active: true })
+      .skip(limit * (page ? page : 0))
+      .limit(limit)
       .populate({
         path: 'observationsId',
         options: { populate: { path: 'professional' } },
@@ -254,9 +264,19 @@ const searchPatient = async (name: string | INames): Promise<PatientDoc[]> => {
       .sort({ lastName: 1 });
   } else {
     const splittedName = name.split(' ');
-    findedPatients = await searchPatients(splittedName.length, splittedName);
+    const result = await searchPatients(
+      splittedName.length,
+      splittedName,
+      limit,
+      page ? page : 0,
+      count
+    );
+    findedPatients = result.findedPatients;
+    count = result.count;
   }
-  return findedPatients;
+  const hasMore = limit * (page ? page : 0) + limit < count;
+  console.log('hasMore', hasMore)
+  return { findedPatients, hasMore };
 };
 
 export default {

@@ -104,8 +104,7 @@ async function httpUserLogin(req: Request, res: Response) {
   try {
     const response = await userService.userLogin({ email, password });
 
-    if (!response.user.status)
-      throw new Error("Todavía no estas dado de alta en la aplicación");
+    if (!response.user.status) throw new Error('Todavía no estas dado de alta en la aplicación');
 
     if (req.session) {
       req.session.token = response?.token;
@@ -147,16 +146,7 @@ const httpPutUser = async (req: Request, res: Response) => {
     throw new RequestValidationError(errors.array());
   }
   try {
-    const {
-      email,
-      phone,
-      firstName,
-      lastName,
-      license,
-      profession,
-      _id,
-      patients,
-    } = req.body;
+    const { email, phone, firstName, lastName, license, profession, _id, patients } = req.body;
 
     const user = await userService.getLoggedUser(_id, true);
 
@@ -181,17 +171,9 @@ const httpPutUser = async (req: Request, res: Response) => {
 
     if (updatedUser) {
       patientsArray.forEach(async (patient: INames) => {
-        const foundedPatient = await patientService.searchPatient(patient);
-        await patientService.putPatient(
-          foundedPatient[0]._id,
-          undefined,
-          updatedUser._id
-        );
-        await userService.putUser(
-          updatedUser._id,
-          undefined,
-          foundedPatient[0]._id
-        );
+        const { findedPatients } = await patientService.searchPatient(patient);
+        await patientService.putPatient(findedPatients[0]._id, undefined, updatedUser._id);
+        await userService.putUser(updatedUser._id, undefined, findedPatients[0]._id);
       });
     }
 
@@ -214,19 +196,9 @@ const httpUnassignPatient = async (req: Request, res: Response) => {
     const { data } = await userService.getUserById(req.params.id);
 
     if (data) {
-      const foundedPatient = await patientService.searchPatient(patientName);
-      await patientService.putPatient(
-        foundedPatient[0]._id,
-        undefined,
-        data._id,
-        true
-      );
-      await userService.putUser(
-        data._id,
-        undefined,
-        foundedPatient[0]._id,
-        true
-      );
+      const {findedPatients} = await patientService.searchPatient(patientName);
+      await patientService.putPatient(findedPatients[0]._id, undefined, data._id, true);
+      await userService.putUser(data._id, undefined, findedPatients[0]._id, true);
     }
 
     res.send({ user: data, patientName });
@@ -257,21 +229,15 @@ const httpRecoverPassword = async (req: Request, res: Response) => {
   const token = String(req.query.token);
 
   if (!token) {
-    return res
-      .status(204)
-      .send({ status: false, message: 'El Token no existe' });
+    return res.status(204).send({ status: false, message: 'El Token no existe' });
   }
 
   try {
     const decodedToken = validateRecoverToken(token);
     const email = decodedToken.email;
-    res
-      .status(200)
-      .send({ status: true, message: 'El Token es válido', email });
+    res.status(200).send({ status: true, message: 'El Token es válido', email });
   } catch (err) {
-    return res
-      .status(200)
-      .send({ status: false, message: 'El Token es inválido o ha expirado' });
+    return res.status(200).send({ status: false, message: 'El Token es inválido o ha expirado' });
   }
 };
 

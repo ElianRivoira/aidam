@@ -15,7 +15,11 @@ import dotenv from 'dotenv';
 import { performTask } from '../../services/taskMetric';
 dotenv.config();
 
-const httpGetAllPatientsFromTherapist = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const httpGetAllPatientsFromTherapist = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -29,7 +33,11 @@ const httpGetAllPatientsFromTherapist = async (req: Request, res: Response, next
   }
 };
 
-const httpGetAllPatients = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const httpGetAllPatients = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -85,7 +93,11 @@ const httpPostPatient = async (req: any, res: Response): Promise<void> => {
   }
 };
 
-const httpGetOnePatient = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const httpGetOnePatient = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -174,7 +186,11 @@ const httpEditPatient = async (req: any, res: Response, next: NextFunction): Pro
   }
 };
 
-const httpDeletePatient = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const httpDeletePatient = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -220,7 +236,8 @@ const httpSearchPatient = async (req: Request, res: Response) => {
   }
   try {
     const name = req.params.name ? req.params.name : '*';
-    const findedPatients = await patientService.searchPatient(name);
+    const page = parseInt(req.params.page);
+    const findedPatients = await patientService.searchPatient(name, page);
     res.send(findedPatients);
   } catch (e) {
     throw new ServerError(e);
@@ -248,7 +265,9 @@ const httpDownloadCertificate = async (req: Request, res: Response) => {
     // res.setHeader('Content-Disposition', `attachment; filename=${responseFileName}`);
 
     // res.sendFile(filePath);
-    res.send(`http://${process.env.SERVER_IP}:8000/download/certificate/${patient?.certificate[0]}`);
+    res.send(
+      `http://${process.env.SERVER_IP}:8000/download/certificate/${patient?.certificate[0]}`
+    );
   } catch (e) {
     console.error(e);
     throw new ServerError(e);
@@ -303,7 +322,14 @@ const httpUploadReport = async (req: Request, res: Response) => {
 
     const filename = req.file && req.file.filename;
 
-    const editedPatient = await patientService.putPatient(req.params.id, undefined, null, false, undefined, filename);
+    const editedPatient = await patientService.putPatient(
+      req.params.id,
+      undefined,
+      null,
+      false,
+      undefined,
+      filename
+    );
 
     performTask(loggedUser._id, 'Subió un informe');
     loggedUser.save();
@@ -394,7 +420,7 @@ const httpDeleteReport = async (req: Request, res: Response) => {
     const { user } = validateToken(req.session?.token);
     const loggedUser = await userService.getLoggedUser(user.id);
     if (loggedUser) {
-      if(loggedUser.admin === false){
+      if (loggedUser.admin === false) {
         if (loggedUser._id.toString() !== fileOwnerId)
           throw new BadRequestError('No posee permisos para borrar este informe');
       }
@@ -428,11 +454,11 @@ const httpDeleteMedicalReport = async (req: Request, res: Response) => {
     const { fileName } = req.body;
 
     const fileOwnerId = fileName.split('_')[0];
-    
+
     const { user } = validateToken(req.session?.token);
     const loggedUser = await userService.getLoggedUser(user.id);
     if (loggedUser) {
-      if(loggedUser.admin === false){
+      if (loggedUser.admin === false) {
         if (loggedUser._id.toString() !== fileOwnerId)
           throw new BadRequestError('No posee permisos para borrar este informe');
       }
@@ -448,7 +474,15 @@ const httpDeleteMedicalReport = async (req: Request, res: Response) => {
         console.log('El archivo fue eliminado exitosamente');
       });
 
-      await patientService.putPatient(patient._id, undefined, null, true, undefined, undefined, fileName);
+      await patientService.putPatient(
+        patient._id,
+        undefined,
+        null,
+        true,
+        undefined,
+        undefined,
+        fileName
+      );
     }
 
     res.send(patient);
@@ -466,11 +500,11 @@ const httpDeleteSocialReport = async (req: Request, res: Response) => {
     const { fileName } = req.body;
 
     const fileOwnerId = fileName.split('_')[0];
-    
+
     const { user } = validateToken(req.session?.token);
     const loggedUser = await userService.getLoggedUser(user.id);
     if (loggedUser) {
-      if(loggedUser.admin === false){
+      if (loggedUser.admin === false) {
         if (loggedUser._id.toString() !== fileOwnerId)
           throw new BadRequestError('No posee permisos para borrar este informe');
       }
@@ -486,7 +520,16 @@ const httpDeleteSocialReport = async (req: Request, res: Response) => {
         console.log('El archivo fue eliminado exitosamente');
       });
 
-      await patientService.putPatient(patient._id, undefined, null, true, undefined, undefined, undefined, fileName);
+      await patientService.putPatient(
+        patient._id,
+        undefined,
+        null,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        fileName
+      );
     }
 
     res.send(patient);
