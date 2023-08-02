@@ -54,7 +54,6 @@ const Recover = () => {
                 name='email'
                 onChange={e => setEmail(e.target.value)}
                 value={email}
-                pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$'
               />
             </div>
             <div className='flex flex-col mb-3'>
