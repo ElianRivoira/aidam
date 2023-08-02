@@ -49,17 +49,21 @@ const SearchBar: React.FC<Props> = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (window) window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    
     getPatients && (await getPatients(search ? search : '*', 0, true));
     setActiveUsers && (await fetchSearchedUsers(search ? search : '*'));
   };
-
+  
   useEffect(() => {
     setObserver && setObserver(lastPatientRef);
   }, [lastPatientRef, pageNumber]);
-
+  
   const clearButton = async () => {
     setSearch('');
-
+    
+    if (window) window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    
     getPatients && (await getPatients('*', 0, true));
     setActiveUsers && (await fetchSearchedUsers('*'));
   };
