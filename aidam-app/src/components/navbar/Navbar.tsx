@@ -33,6 +33,7 @@ const Navbar: React.FC<Props> = ({ mobile }) => {
   const user = useQuery({
     queryKey: ['loggedUser'],
     retry: 1,
+    refetchOnWindowFocus: false,
     enabled: checkPathname(router.pathname),
     queryFn: getLoggedUser,
     onError: error => {
@@ -40,6 +41,7 @@ const Navbar: React.FC<Props> = ({ mobile }) => {
       setErrors((error as any).response.data.errors);
       setOpen(true);
       setCookieError(true);
+      localStorage.setItem('reload', '1');
     },
   });
 
@@ -111,7 +113,15 @@ const Navbar: React.FC<Props> = ({ mobile }) => {
               </button>
             </div>
           </div>
-          <Modal open={open} onClose={() => router.push('/login')} type={type} errors={errors}>
+          <Modal
+            open={open}
+            onClose={() => {
+              deleteCookie('session');
+              router.push('/login');
+            }}
+            type={type}
+            errors={errors}
+          >
             <h1></h1>
           </Modal>
         </nav>

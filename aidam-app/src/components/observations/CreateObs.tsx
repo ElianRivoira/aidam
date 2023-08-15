@@ -24,7 +24,9 @@ const CreateObs: React.FC<CreateObsProps> = ({ open, onClose, postObs, patient, 
       const now = new Date();
       const hours = now.getHours();
       const minutes = now.getMinutes()
-      const dateObs = new Date(`${date}T${hours}:${10}:00`);
+      console.log(hours)
+      console.log(minutes)
+      const dateObs = new Date(`${date}T${hours<10 ? `0${hours}` : `${hours}`}:${minutes<10 ? `0${minutes}` : `${minutes}`}:00`);
       postObs.mutate({
         title: titleRef.current.value,
         date: dateObs,

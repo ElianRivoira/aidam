@@ -12,6 +12,7 @@ import useMediaQuery from '@/hooks/useMediaQuery';
 import MobileUsersCard from '@/components/MobileUsersCard';
 import Button from '@/components/Button';
 import Spinner from '@/components/Spinner';
+import { hasCookie } from 'cookies-next';
 
 const professionals = () => {
   const [activeUsers, setActiveUsers] = useState<User[]>();
@@ -32,6 +33,8 @@ const professionals = () => {
     queryKey: ['users'],
     queryFn: getAllUsers,
     retry: 1,
+    enabled: hasCookie('session'),
+    refetchOnWindowFocus: false,
     onSuccess: data => {
       const activeUsrs = data.filter(user => user.status === true);
       const inactiveUsrs = data.filter(user => user.status === false);

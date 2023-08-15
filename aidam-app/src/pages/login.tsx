@@ -38,11 +38,17 @@ const Login = () => {
 
   useEffect(() => {
     if (type === 1 && open === false) {
-      loginUser.data?.admin
-        ? router.push('/admin/professionals')
-        : router.push('/patients');
+      loginUser.data?.admin ? router.push('/admin/professionals') : router.push('/patients');
     }
   }, [open]);
+
+  useEffect(() => {
+    const reload = localStorage.getItem('reload');
+    if (reload) {
+      localStorage.removeItem('reload');
+      router.reload();
+    }
+  }, []);
 
   return (
     <>
@@ -51,10 +57,7 @@ const Login = () => {
       </Head>
       <main className='flex pt-[70px] justify-center items-center'>
         <div className='w-full shadow-xg mx-5 rounded-3xl p-3.5 pb-5 max-w-md flex flex-col items-center'>
-          <form
-            onSubmit={handleSubmit}
-            className='flex w-full px-4 flex-col items-center'
-          >
+          <form onSubmit={handleSubmit} className='flex w-full px-4 flex-col items-center'>
             <div>
               <Image src={aidamTexto} alt='aidam' className='mb-8 mt-5' />
             </div>
@@ -75,7 +78,10 @@ const Login = () => {
               />
             </div>
             <div className='flex flex-col'>
-              <Link href={'/recover'} className='text-xs text-aidam hover:text-aidam80 mb-3 self-center'>
+              <Link
+                href={'/recover'}
+                className='text-xs text-aidam hover:text-aidam80 mb-3 self-center'
+              >
                 ¿Olvidaste tu contraseña?
               </Link>
               <button
@@ -92,12 +98,7 @@ const Login = () => {
               </Link>
             </div>
           </form>
-          <Modal
-            open={open}
-            onClose={() => setOpen(false)}
-            type={type}
-            errors={errors}
-          >
+          <Modal open={open} onClose={() => setOpen(false)} type={type} errors={errors}>
             <h1>Inicio de sesión satisfactorio</h1>
           </Modal>
         </div>
