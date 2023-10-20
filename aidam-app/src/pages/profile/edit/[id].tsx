@@ -138,7 +138,7 @@ const editUser = ({ query }: MyPageProps) => {
       <main className='pt-12 bg-background'>
         <div className='w-full lgMax:mt-4 px-12'>
           <div className='flex items-center w-full'>
-            <ArrowBack route={`/profile/${user.data?._id}`} />
+            <ArrowBack />
             <h1 className='text-center text-xl4 lgMax:text-xl2 font-semibold mx-auto'>EDITAR USUARIO</h1>
           </div>
           <form encType='multipart/form-data' onSubmit={handleSubmit} className='mt-20 lgMax:mt-10 flex flex-col'>

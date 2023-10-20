@@ -46,7 +46,7 @@ const ProfessionalsModal: React.FC<Props> = ({
           <div className='flex flex-col px-4 mt-7 mb-4'>
             {inactiveUsers.length ? (
               inactiveUsers.map((user) => (
-                <div className='flex justify-between mb-2 px-4 py-6 rounded-2xl bg-white border drop-shadow-xl'>
+                <div key={user._id} className='flex justify-between mb-2 px-4 py-6 rounded-2xl bg-white border drop-shadow-xl'>
                   <div className='md:ml-4'>
                     {user.firstName.toUpperCase()} {user.lastName.toUpperCase()}{' '}
                   </div>

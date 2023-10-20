@@ -114,7 +114,7 @@ const Profile = ({ query }: MyPageProps) => {
           <NavbarPatient />
           <div className='flex flex-col lgMax:px-3.5'>
             <div className='flex justify-between items-center mt-5 lg:mt-8'>
-              <ArrowBack route='/patients' />
+              <ArrowBack />
               <div className='flex gap-12 relative z-0'>
                 {!useMediaQuery(1024) && <Button onClick={() => setOpenCertificateModal(true)} text='Certificado' />}
                 {patient.data && loggedUser.data?.admin ? (

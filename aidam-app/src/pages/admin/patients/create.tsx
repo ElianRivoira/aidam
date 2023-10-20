@@ -101,7 +101,7 @@ const create = () => {
       </Head>
       <main className='pt-6 lg:pt-12 bg-background'>
         <div className='w-full px-6 lg:px-12 mb-4'>
-          <ArrowBack route='/patients' />
+          <ArrowBack />
           <h1 className='text-center text-xl4 font-semibold lgMax:mt-3'>NUEVO PACIENTE</h1>
           <form encType='multipart/form-data' onSubmit={handleSubmit} className='mt-20 flex flex-col'>
             <div className='flex lgMax:flex-col justify-evenly'>

@@ -17,7 +17,7 @@ const MobileCard: React.FC<CardProps> = ({ patient, user, reference }) => {
           <div>
             <Image src={aidamLogo} alt='aidam' className='w-24 h-24' />
           </div>
-          <div className='font-semibold flex text-center'>{patient.lastName} {patient.firstName}</div>
+          <div className='font-semibold flex text-center'>{patient.lastName.toUpperCase()} {patient.firstName.toUpperCase()}</div>
         </div>
         <div className='flex flex-col items-center justify-center w-1/2'>
           <div className='text-center'>Otros terapeutas</div>
@@ -26,12 +26,12 @@ const MobileCard: React.FC<CardProps> = ({ patient, user, reference }) => {
             {patient.professionalsId.map((therapist, index) => {
               if(therapist._id === user._id) return null;
               if(therapist.firstName.includes(' ')){
-                return (
-                  <li key={index}>{therapist.lastName} {therapist.firstName}</li>
+                return ( 
+                  <li key={index}>{therapist.lastName.toUpperCase()} {therapist.firstName.toUpperCase()}</li>
                 )
               }
               else return (
-                <li key={index}>{therapist.lastName} {therapist.firstName}</li>
+                <li key={index}>{therapist.lastName.toUpperCase()} {therapist.firstName.toUpperCase()}</li>
               )
               })}
           </div>

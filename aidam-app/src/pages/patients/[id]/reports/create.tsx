@@ -153,7 +153,7 @@ const create = ({ query }: MyPageProps) => {
         <div className='w-full md:px-14 px-4 pb-10 text-lh md:text-base'>
           <div className='flex justify-between items-center my-3 lg:my-7 w-full'>
             <div className='flex lgMax:self-start items-center lg:gap-8 gap-4'>
-              <ArrowBack width={40} route={`/patients/${patient.data?._id}/reports`} />
+              <ArrowBack width={40} />
               <h2 className='text-xg lgMax:text-lm font-medium'>
                 {patient.data?.firstName} {patient.data?.lastName}
               </h2>

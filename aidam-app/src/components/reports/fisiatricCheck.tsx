@@ -37,7 +37,7 @@ export const FisiatricCheck: React.FC<InputProps> = ({
           ? array.map((type, index) => {
               let iString: string = i.toString();
               let html = (
-                <label className='flex gap-2'>
+                <label key={index} className='flex gap-2'>
                   <p>{type}</p>
                   <input
                     type='checkbox'

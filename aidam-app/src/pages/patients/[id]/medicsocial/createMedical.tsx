@@ -368,7 +368,7 @@ const createMedical = ({ query }: MyPageProps) => {
           <div className='flex flex-col lgMax:px-4'>
             <div className='flex justify-between items-center mb-3 lg:mb-7 w-full'>
               <div className='flex lgMax:self-start items-center lg:gap-8 gap-4'>
-                <ArrowBack route={`/patients/${query.id}/medicsocial`} width={useMediaQuery(1024) ? 33 : undefined} />
+                <ArrowBack width={useMediaQuery(1024) ? 33 : undefined} />
                 <h2 className='text-xg lgMax:text-lm font-medium'>
                   {patient.data?.firstName} {patient.data?.lastName}
                 </h2>

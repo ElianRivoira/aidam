@@ -120,7 +120,7 @@ const Profile = ({ query }: MyPageProps) => {
             <div className='px-3.5 w-full'>
               <div className='flex flex-col'>
                 <div className={`flex ${loggedUser.data?.admin ? 'justify-between' : 'justify-end'} mt-4`}>
-                  {loggedUser.data?.admin && <ArrowBack route='/admin/professionals' />}
+                  {loggedUser.data?.admin && <ArrowBack />}
                   <Link
                     href={`/profile/edit/${user.data?._id}`}
                     className='self-end text-xs font-normal text-white px-4 py-2.5 mr-1 h-fit rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'
@@ -181,7 +181,7 @@ const Profile = ({ query }: MyPageProps) => {
           <>
             <div className='w-full px-12'>
               <div className={`flex mt-9 ${loggedUser.data?.admin ? 'justify-between' : 'justify-end'} items-center`}>
-                {loggedUser.data?.admin && <ArrowBack route='/admin/professionals' />}
+                {loggedUser.data?.admin && <ArrowBack />}
                 <div className='flex gap-4'>
                   <Link
                     className='flex items-center text-lb font-semibold text-white h-10 p-4 rounded-md bg-aidam80 hover:bg-aidam70 transition-colors'

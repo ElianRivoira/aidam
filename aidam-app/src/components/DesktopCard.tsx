@@ -41,7 +41,7 @@ const DesktopCard: React.FC<DesktopCardProps> = ({
           <div className='w-[20%]' ref={reference}>
             <div className='mb-4 text-sm text-grey8'>Apellido y Nombre</div>
             <div className='font-semibold'>
-              {user.lastName + ' ' + user.firstName}
+              {user.lastName.toUpperCase() + ' ' + user.firstName.toUpperCase()}
             </div>
           </div>
           <div className='w-[20%]'>
