@@ -47,7 +47,7 @@ const Reports = ({ query }: MyPageProps) => {
 
   const patient = useQuery({
     queryKey: ['patient', query.id],
-    keepPreviousData: true,
+    keepPreviousData: false,
     queryFn: () => getOnePatient(query.id),
     retry: 1,
     refetchOnWindowFocus: false,
@@ -83,7 +83,7 @@ const Reports = ({ query }: MyPageProps) => {
       setSuccessMsg('Informe eliminado correctamente');
       setType(1);
       setOpen(true);
-      patient.refetch();
+      // patient.refetch();
     },
     onError: (err: any) => {
       setType(2);
@@ -140,13 +140,17 @@ const Reports = ({ query }: MyPageProps) => {
 
   useEffect(() => {
     if (type === 1 && open === false) {
-      patient.refetch();
+      // patient.refetch();
+      router.reload();
     } else if (type === 2 && !open && cookieError) router.push('/login');
   }, [open]);
 
   const filterReports = (searchDate: Date, patient: Patient | undefined) => {
     const filtered = patient?.reports.filter(report => {
-      const reportDate = report.split(' - ')[1];
+      let reportDate = '';
+      if(report.includes('___')) reportDate = report.split('___')[1]
+      else reportDate = report.split(' - ')[1]
+
       const reportMonth = Number(reportDate.split('-')[1]);
       if (reportMonth === searchDate.getMonth() + 1) return true;
     });

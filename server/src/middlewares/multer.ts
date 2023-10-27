@@ -20,6 +20,8 @@ const REPORT_MIMETYPES = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 ];
 
+const FILE_SIZE = 1024 * 2048; // bytes
+
 export const uploadCertificate = multer({
   storage: multer.diskStorage({
     destination: CERT_DIR,
@@ -77,7 +79,8 @@ export const uploadReport = multer({
         .replaceAll('/', '-');
         const fileBasename = file.originalname.split('.')[0];
         const fileExtension = path.extname(file.originalname);
-      cb(null, `${userId}_${firstName}-${lastName}_${fileBasename}_${userFirstName}-${userLastName} - (${date})${fileExtension}`);
+        console.log(fileExtension)
+      cb(null, `${userId}_${firstName}-${lastName}_${fileBasename}_${userFirstName}-${userLastName}___(${date})${fileExtension}`);
     },
   }),
   fileFilter: (req, file, cb) => {
@@ -89,6 +92,9 @@ export const uploadReport = multer({
         )
       );
   },
+  limits: {
+    fileSize: FILE_SIZE
+  }
 });
 
 export const uploadMedicalReport = multer({
