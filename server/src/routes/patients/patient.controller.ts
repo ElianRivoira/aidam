@@ -61,9 +61,12 @@ const httpPostPatient = async (req: any, res: Response): Promise<void> => {
     const { professionals } = req.body;
     const professionalsArray = JSON.parse(professionals);
 
+    const firstName = req.body.firstName.trim().replace(/\s+/g, ' ').toUpperCase();
+    const lastName = req.body.lastName.trim().replace(/\s+/g, ' ').toUpperCase();
+
     const patient = await patientService.postPatient({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
+      firstName: firstName,
+      lastName: lastName,
       diagnosis: req.body.diagnosis,
       authorizedModule: req.body.authorizedModule,
       socialwork: req.body.socialwork,
@@ -145,11 +148,14 @@ const httpEditPatient = async (req: any, res: Response, next: NextFunction): Pro
         throw new BadRequestError('No posee permisos para editar este paciente');
     }
 
+    const trimedFirstName = firstName.trim().replace(/\s+/g, ' ').toUpperCase();
+    const trimedLastName = lastName.trim().replace(/\s+/g, ' ').toUpperCase();
+
     const editedPatient = await patientService.putPatient(
       req.params.id,
       {
-        firstName,
-        lastName,
+        trimedFirstName,
+        trimedLastName,
         diagnosis,
         socialwork,
         affiliateNumber,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 
 import x from '@/assets/icons/x.svg';
@@ -32,7 +32,7 @@ const UploadReportModal: React.FC<UploadReportModalProps> = ({
             <Image src={x} alt='cerrar' />
           </button>
         <h1 className='font-semibold text-ln mb-4'>Seleccione el archivo</h1>
-        <form className='p-2.5 pt-0 w-full' onSubmit={handleSubmit}>
+        <form className='p-2.5 pt-0 w-full' encType='UTF-8' onSubmit={handleSubmit}>
         <>
           <label
             htmlFor='report'

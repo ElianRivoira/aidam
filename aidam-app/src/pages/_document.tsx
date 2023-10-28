@@ -18,6 +18,7 @@ export default function Document() {
           rel='stylesheet'
         ></link>
         <meta name='theme-color' content='rgba(12, 9, 146, 0.8)' />
+        <meta charSet="UTF-8" />
       </Head>
       <body>
         <Main />

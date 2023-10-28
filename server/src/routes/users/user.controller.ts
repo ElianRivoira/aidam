@@ -81,9 +81,12 @@ const httpSignUp = async (req: Request, res: Response) => {
       'Ya existe una cuenta con este email. Por favor intente nuevamente con un correo distinto'
     );
 
+  const firstName = req.body.firstName.trim().replace(/\s+/g, ' ').toUpperCase();
+  const lastName = req.body.lastName.trim().replace(/\s+/g, ' ').toUpperCase();
+
   const user = await userService.signUp({
-    firstName: body.firstName,
-    lastName: body.lastName,
+    firstName: firstName,
+    lastName: lastName,
     email: body.email,
     password: body.password,
     license: body.license,
@@ -152,13 +155,16 @@ const httpPutUser = async (req: Request, res: Response) => {
 
     const profileImg = req.file?.filename;
 
+    const trimedFirstName = firstName.trim().replace(/\s+/g, ' ').toUpperCase();
+    const trimedLastName = lastName.trim().replace(/\s+/g, ' ').toUpperCase();
+
     const updatedUser = await userService.putUser(
       user._id,
       {
         email,
         phone,
-        firstName,
-        lastName,
+        trimedFirstName,
+        trimedLastName,
         license,
         profession,
       },
@@ -196,7 +202,7 @@ const httpUnassignPatient = async (req: Request, res: Response) => {
     const { data } = await userService.getUserById(req.params.id);
 
     if (data) {
-      const {findedPatients} = await patientService.searchPatient(patientName);
+      const { findedPatients } = await patientService.searchPatient(patientName);
       await patientService.putPatient(findedPatients[0]._id, undefined, data._id, true);
       await userService.putUser(data._id, undefined, findedPatients[0]._id, true);
     }

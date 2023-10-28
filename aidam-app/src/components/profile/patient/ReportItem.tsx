@@ -38,8 +38,7 @@ const ReportItem: React.FC<ReportItemProps> = ({
     const splittedReportName = report.split('.');
     const extension = splittedReportName[splittedReportName.length - 1];
     setfileExtension(extension);
-    patient &&
-      setFileName(report.split(`${patient.firstName}-${patient.lastName}_`)[1]);
+    patient && setFileName(report.split(`${patient.firstName}-${patient.lastName}_`)[1]);
   }, []);
 
   return (
@@ -49,18 +48,13 @@ const ReportItem: React.FC<ReportItemProps> = ({
         width ? width : 'w-2/3'
       } mb-3 hover:text-lightBlue lgMax:text-lightBlue cursor-pointer transition-colors`}
     >
-      <div className='w-full flex items-center'>
+      <div className='w-full flex items-center' onClick={() => handleDownloadReport(report, type)}>
         <Image
           src={fileExtension === 'pdf' ? pdfIcon2 : wordIcon}
           alt='icono de archivo'
           className='w-8'
         />
-        <p
-          className='text-lb w-full ml-1'
-          onClick={() => handleDownloadReport(report, type)}
-        >
-          {fileName}
-        </p>
+        <p className='text-lb w-full ml-1'>{fileName}</p>
       </div>
       <button
         onClick={() => {
